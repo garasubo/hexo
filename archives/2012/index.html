@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Archives: 2012 | もはやこれまで</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="もはやこれまで">
+<meta property="og:type" content="website">
+<meta property="og:title" content="もはやこれまで">
+<meta property="og:url" content="http://garasubo.github.io/hexo/archives/2012/">
+<meta property="og:site_name" content="もはやこれまで">
+<meta property="og:description" content="もはやこれまで">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="もはやこれまで">
+<meta name="twitter:description" content="もはやこれまで">
+
+  
+    <link rel="alternative" href="/atom.xml" title="もはやこれまで" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">もはやこれまで</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">もはやこれまで</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://garasubo.github.io/hexo"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-2012-12-28-new-post" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/12/28/2012-12-28-new-post/" class="article-date">
+  <time datetime="2012-12-28T10:21:00.000Z" itemprop="datePublished">Dec 28 2012</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/12/28/2012-12-28-new-post/">Gitでのミスリカバリー</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="マージコミットをリバート">マージコミットをリバート</h2>
+<p>うっかり間違ったブランチで—no-ffでmergeを打ってしまった場合、<br>revertでそのコミットの変更を消すコミットをつくることができる。<br>ただし、このときどちらのブランチを残すのかという事を指示してあげる必要がある。<br>git logなどで、その時のマージコミットのログを見ると、どのコミット同士をマージしたのかということが書いてある。<br>それを見てどちらを残すかを-mオプションで指定する。</p>
+<p>詳しくは<a href="http://books.google.co.jp/books?id=8DAvoM4OMxEC&amp;printsec=frontcover&amp;hl=ja#v=onepage&amp;q&amp;f=false" target="_blank" rel="external">ここ</a>の80ページ目あたりが親切。</p>
+<h2 id="リモートレポジトリに対してリセットをする">リモートレポジトリに対してリセットをする</h2>
+<p><a href="http://tmtms.hatenablog.com/entry/20101221/git" target="_blank" rel="external">Gitでリモートリポジトリを巻き戻す - @tmtms のメモ</a>を参考にした。</p>
+<p>まず、リセットしたいレポジトリのバックアップレポジトリをつくる。<br>これはいざ間違えた時の対策。<br>    git push origin tar_bak</p>
+<p>つづいてgit reflogして戻したい地点を見つける<br>    <strong><em>*</em></strong> HEAD@{0}: hoge<br>    <strong><em>*</em></strong> HEAD@{1}: hogehoge<br>    <strong><em>*</em></strong> HEAD@{2}: hogehogehoge<br>    <strong><em>*</em></strong> HEAD@{3}: hogehogehogehoge<br>    …<br>hogehogehogeの地点まで戻りたいとして、<br>    git push -f origin HEAD@{2}:tar<br>とすればよい。こうすると、origin/tarの指すコミットが移動する。</p>
+<p>他の人にも影響することなので、やるときは注意。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://garasubo.github.io/hexo/2012/12/28/2012-12-28-new-post/" data-id="n5i4jrpoytj6wg0x" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2012-11-26-new-post" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/11/26/2012-11-26-new-post/" class="article-date">
+  <time datetime="2012-11-26T05:17:00.000Z" itemprop="datePublished">Nov 26 2012</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/11/26/2012-11-26-new-post/">Ubuntuのgccでリンクのオプションが無視される問題について</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Ubuntuを10.04から12.04にアップデートした際、<br>gccで-lで指定したファイルが全然リンクされないという問題があった。<br>たとえば、<br>    gcc -lm main.c<br>として、main.cで普通にmathライブラリを使うようなファイルを書くと、<br>そんな関数の実体見つからんよ、と怒られていた。</p>
+<p>ちょっと検索したらこんなの見つかった。<br><a href="https://forums.ubuntulinux.jp/viewtopic.php?id=13673" target="_blank" rel="external">Ubuntu日本語フォーラム / math.h へのリンクがうまくいかない</a><br>どうやら、Ubuntuのあるバージョンからgccの—as-neededというオプションが<br>デフォルトで有効になるような親切設計になったらしく、<br>これがあると-lのオプションはソースファイルの後に置かないと無視されるようになるらしい。<br>なので、<br>    gcc main.c -lm<br>とすればいいのだが、makeの暗黙ルールでLDFLAGSはソースの前に置かれるようなっているので、なんかルール書き換えるのは癪。</p>
+<p>そこで、LDFLAGSに<br>    -Wl,—no-as-needed<br>というオプションを追加してやると、—as-neededオプションが無効化された。</p>
+<p>しかし、なんでこんなオプションをデフォルトで有効にしてしまったのか。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://garasubo.github.io/hexo/2012/11/26/2012-11-26-new-post/" data-id="z5b79rktdkxqa9nu" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2012-11-20-git" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/11/20/2012-11-20-git/" class="article-date">
+  <time datetime="2012-11-20T12:49:00.000Z" itemprop="datePublished">Nov 20 2012</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/11/20/2012-11-20-git/">gitでのbranchでの開発</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近何かとgitを使うことが多くなったので、branchの作り方から<br>mergeの仕方まできちんと学ばなきゃなと思い立って色々調べた。</p>
+<h2 id="リモートブランチの扱い方">リモートブランチの扱い方</h2>
+<p><a href="http://d.hatena.ne.jp/nayutaya/20090519/1242701594" target="_blank" rel="external">“gitのリモートブランチを使って作業を行う流れのメモ - 那由多屋 開発日誌”</a></p>
+<h2 id="merge">merge</h2>
+<p>ブランチつくったら、あとでマージしなきゃいけない。<br>実はgitのマージにはいくつか種類があるらしく、これはきちんと把握しておく必要が有りそう。<br><a href="http://d.hatena.ne.jp/sinsoku/20111025/1319497900" target="_blank" rel="external">“図で分かるgit-mergeの—ff, —no-ff, —squashの違い - アジャイルSEを目指すブログ”</a><br>これを読む限り、基本的には—no—ffでマージコミットをきちんとつくるのが<br>あとでログ見返すときにも良さそうな気がする。</p>
+<h2 id="うっかりマージミスした時の対処。">うっかりマージミスした時の対処。</h2>
+<p>commitを取り消すコマンドであるresetは使い方を誤るととんでもないことになるので気をつけなければならない。<br>このへんが参考になりそう。<br><a href="http://d.hatena.ne.jp/ToMmY/20110719/1311034743" target="_blank" rel="external">git で merge をとりけす法 - ToMmY Makes Love with Codes</a><br><a href="http://projects.tsuntsun.net/~nabeken/diary/Sysadmin/git-7.html" target="_blank" rel="external">~nabeken/diary/ : git で間違って merge してしまった場合 (fast forward でマージしてしまったのを取り消したい)</a>  </p>
+<h2 id="rebaseコマンドについて">rebaseコマンドについて</h2>
+<p>誰かがrebaseコマンド使えない奴はgit使えるうちに入らないと言っていたので調べた。<br>コミットに対して直接変更を加えるので危ないことは確かっぽいが、<br>小さなmergeをしたい時とかはこっちのほうが良いのかもしれない。<br>少なくとも知っておいて損はないと思うので。<br><a href="http://d.hatena.ne.jp/sinsoku/20110925/1316933393" target="_blank" rel="external">図で分かるgit-rebase - アジャイルSEを目指すブログ</a>  </p>
+<h2 id="間違ったブランチを変更してしまった！">間違ったブランチを変更してしまった！</h2>
+<p>gitならこんなことまで出来るんだって感じ。<br>記事読んで理解するのにちょっと時間かかった。<br><a href="http://d.hatena.ne.jp/ToMmY/20110914/1316024033" target="_blank" rel="external">別のトピックブランチにしてしまった複数のコミットを移動する - ToMmY Makes Love with Codes</a>  </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://garasubo.github.io/hexo/2012/11/20/2012-11-20-git/" data-id="vkhfxk5bpokjo0o5" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2012-11-16-st2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/11/16/2012-11-16-st2/" class="article-date">
+  <time datetime="2012-11-16T00:55:00.000Z" itemprop="datePublished">Nov 16 2012</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/11/16/2012-11-16-st2/">Sublime Text 2を使ってみる</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>こんな記事を見たのがきっかけ<br><a href="http://liginc.co.jp/designer/archives/6774" target="_blank" rel="external">”恋に落ちるエディタ”「Sublime Text」 完全入門ガイド！ | デザイナーブログ | 株式会社LIG</a>  </p>
+<p>普段はvimを愛用して、たしかに単体のファイルを編集する分にはいいのだが、<br>ある程度のプロジェクトを管理するために便利なものはないかなあと思っていたが、これは便利そうだなと思った。</p>
+<p>導入方法とかはさっきの記事にあるので割愛。<br>ただし、package controlのインストールのところだけはなんかコピペじゃうまくいかなかった。<br><a href="http://wbond.net/sublime_packages/package_control/installation" target="_blank" rel="external">公式</a>のところにあるのをコピペしたらうまくいった。</p>
+<p>設定として、まずはvimキーバインドを使いたいので、<br>Preferences &gt; Setting —Defaultを開き、<br>    “ignored_packages”: [“Vintage”]<br>とかなっているのを<br>    “ignored_packages”: []<br>としてやれば、Vintageというパッケージが有効化されvimのコマンドが使えるようになる。<br>参考:<a href="http://ginpen.com/2012/07/15/vim-for-sublime-text/" target="_blank" rel="external">Sublime Text 2をvim風に操作するには、プラグインすら不要でした。設定の変更のみ。</a><br>ただし、すべてのコマンドが使えるわけでなく:eとか:qとかは使えない。</p>
+<p>あと、タブをスペースに展開したかったので<br><a href="http://d.hatena.ne.jp/soikw/20120603/1338713309" target="_blank" rel="external">Sublime TextでHaskell編集時のタブをスペース4つにする</a><br>にあった設定をSetting —Usersに追加した。</p>
+<p>便利だと思う機能としてCtr-pでのファイルサーチで、<br>今までだと、あるディレクトリの下にあるファイルとかをそのディレクトリ<br>名をいちいち入力しなきゃならなかったのが、その手間が省けて便利。</p>
+<p>他にもいろいろな便利なショートカットがあるらしく、<br><a href="http://funatti.hatenablog.com/entry/2012/07/13/155629" target="_blank" rel="external"> Emacs, Vim, Sublime Text 2 徹底比較</a><br>とかいう記事がそれなりにまとまっている。</p>
+<p>とまあ、便利そうなんだけど、やっぱり新しいツールとだけあって自分はまださぐりさぐりの状態で使っている。<br>makeコマンドをsublimeから呼び出したいのだが、build systemとかいうのを使えばできるのか？</p>
+<p>あとはgitとかとの連携もできるらしいけど、そのへんもよくわかんない。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://garasubo.github.io/hexo/2012/11/16/2012-11-16-st2/" data-id="8gneixcysfadl02t" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2012-11-14-new-post" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/11/14/2012-11-14-new-post/" class="article-date">
+  <time datetime="2012-11-14T01:38:00.000Z" itemprop="datePublished">Nov 14 2012</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/11/14/2012-11-14-new-post/">Octopress導入記</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>octopressを導入するまで</p>
+<h2 id="ruby_1-9を導入">ruby 1.9を導入</h2>
+<p>octopressを動かすにはruby 1.9以上が必要。<br>自分のubuntu 12.04には1.8.7しか入っていなかったのでrvmというものをつかって導入。<br>rvmとはrubyの複数のバージョンを管理するためのツールで、これを使うとrubyの様々なバージョンをインストールすることが可能。</p>
+<p>で、「rvm インストール」とかで検索したらいろいろな方法があるのだが、どうもうまくいかない。<br>twitterでヘルプを投げたところ@ompugaoさんから教えてもらった方法がうまくいった。</p>
+<ol>
+<li>curl -L get.rvm.io | bash -s stable</li>
+<li>rvm requirementsで必要なパッケージを確認してinstall</li>
+<li>rvm install ruby-1.9.3</li>
+</ol>
+<p>これをやる前にうっかりaptitudeでrvm-rubyをinstallしちゃったら<br>    It looks you are one of the happy Ubuntu users,<br>    RVM packaged by Ubuntu is old and broken,<br>とか言われる。happyだから仕方ないね。<br>まあ、解決策もちゃんとでてきて<br><a href="http://stackoverflow.com/questions/9056008/installed-ruby-1-9-3-with-rvm-but-command-line-doesnt-show-ruby-v/9056395#9056395" target="_blank" rel="external">Installed Ruby 1.9.3 with RVM but command line doesn’t show ruby -v</a><br>の言われたとおりにすれば直った。</p>
+<p>それで<br>    rvm 1.9.3<br>とかすれば、バージョン1.9.3が使える。が、シェルの設定でログインシェルとして使用するとかいうのをチェックしないとうまくいかない。</p>
+<h2 id="octopress導入">octopress導入</h2>
+<p><a href="http://blog.glidenote.com/blog/2011/11/07/install-octopress-on-github/" target="_blank" rel="external">GithubとOctopressでモダンな技術系ブログを作ってみる</a><br>あたりを参考にすれば何とかなる。</p>
+<p>あとつまずいたのは、実際の記事を書くときになぜかファイルの文字コードがutf-8になっていなくてrake generateでコケたことくらいか。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://garasubo.github.io/hexo/2012/11/14/2012-11-14-new-post/" data-id="qijueb2irbc5junm" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2012-11-12-start-up" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/11/12/2012-11-12-start-up/" class="article-date">
+  <time datetime="2012-11-12T14:15:00.000Z" itemprop="datePublished">Nov 12 2012</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/11/12/2012-11-12-start-up/">start up</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>できつぁ</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://garasubo.github.io/hexo/2012/11/12/2012-11-12-start-up/" data-id="ks1x1cqjtd6cmpjl" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/procon/">procon</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/procon/" style="font-size: NaNpx;">procon</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">October 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">September 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">July 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">April 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/07/">July 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">April 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">March 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/02/">February 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/12/">December 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">November 2012</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/12/07/2014-12-07-advent/">論文紹介ー&quot;User-guided device driver synthesis&quot;</a>
+          </li>
+        
+          <li>
+            <a href="/2014/10/07/2014-10-07-vmware/">UbuntuにインストールされたVMware Playerをアンインストール</a>
+          </li>
+        
+          <li>
+            <a href="/2014/09/27/2014-09-27-android/">Android開発あれこれ</a>
+          </li>
+        
+          <li>
+            <a href="/2014/07/12/2014-07-12-icpc/">ICPC2014参戦記</a>
+          </li>
+        
+          <li>
+            <a href="/2014/04/19/2014-04-19-code-reading/">Vimでコードリーティング</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 garasubo<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>

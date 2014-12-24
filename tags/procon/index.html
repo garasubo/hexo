@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Tag: procon | もはやこれまで</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="もはやこれまで">
+<meta property="og:type" content="website">
+<meta property="og:title" content="もはやこれまで">
+<meta property="og:url" content="http://garasubo.github.io/hexo/tags/procon/">
+<meta property="og:site_name" content="もはやこれまで">
+<meta property="og:description" content="もはやこれまで">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="もはやこれまで">
+<meta name="twitter:description" content="もはやこれまで">
+
+  
+    <link rel="alternative" href="/atom.xml" title="もはやこれまで" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">もはやこれまで</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">もはやこれまで</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://garasubo.github.io/hexo"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-2014-07-12-icpc" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/07/12/2014-07-12-icpc/" class="article-date">
+  <time datetime="2014-07-12T10:16:00.000Z" itemprop="datePublished">Jul 12 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/07/12/2014-07-12-icpc/">ICPC2014参戦記</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>ICPC2014国内予選参加しました。<br>結果は5完の24位でアジア地区予選には自明に進めないのでここでおしまい。</p>
+<h1 id="解いた問題と方針">解いた問題と方針</h1>
+<p>相方にAを任している間に、C,Eの実装を考えて、<br>Aが終わった後、Cを通す。<br>疲れたので相方にBを任せている間に、Dの方針を聞いたり他の問題考えていた。<br>Bが終わった後、DとEを連続して実装して通す。<br>F、Gは歯がたちませんでした。</p>
+<h2 id="C問題">C問題</h2>
+<p>はじめは二部探索かな、と思ったが、判定関数考えているうちに直接求まることに気がつく。</p>
+<p>まず、各々のx軸上の区間のビルの高さの最大値を求める。ビルが存在しなければ0とする。<br>i&lt;=0となるような[i-1,i]区間ではx=iの地点がより太陽が先に見えてしまう。<br>i&gt;0となるような[i-1,i]区間ではx=i-1の地点がより太陽が先に見える。<br>よってそれぞれの区間について、太陽が先に見えるx座標とそこの高さに円が到達する時間を求める。<br>そのうち最小のものが答えとわかる。</p>
+<p>r&lt;=20という制限により、区間中に存在するビルの高さの最大値は愚直に求まり、<br>到達する時間については2次方程式をさくっと解くだけ。</p>
+<h2 id="D問題">D問題</h2>
+<p>相方から聞いた方針を具体化しただけ。</p>
+<p>文字数がたかだか20なので、各文字について変換されたorされないと仮定して復号化、それを暗号化してちゃんと元に戻るかを計算すれば大丈夫、<br>というもので実装した。<br>各文字について変換したかどうかをビットマスクで表現して、’z’を復号化するときだけは例外処理。<br>ちゃんと元に戻った文字列は記録し、最後にソートして出力。</p>
+<p>ただ、この方針、すぐには実装できるのだが、最大で2^20*20*25の計算となり、500000000くらいとなり、普通のプロコンだと通用しない計算量となってしまった。<br>（暗号化するかしないかのパターンで2^20通り、暗号化で20*25の処理が入る）<br>ただ、ICPCは制限時間が無く、手元で実行し出力ファイルを提出すればいいだけなので、<br>出力を待っている間、他の問題を実装していれば問題なく正解をもらえた。</p>
+<p>もうちょい何とかするとすると、暗号化するところの処理を文字の出現位置とかをメモすることで高速化するか、<br>DFSとかで暗号化できないような文字列は探索しないようにすることでそもそも判定の手間を減らすとかか。<br>あと、ビットマスクの探索順を工夫すれば最後のソートはいらない。<br>まあ、いずれも実装が複雑化しそうなので、これはこれでよかったのかなあ。</p>
+<h2 id="E問題">E問題</h2>
+<p>自明に木構造をしているので、木DP的な何かかなと当たりをつける。<br>ノード数が300と少ないので、全ての点について根であると仮定した場合で回しても十分間に合いそう。<br>終点についてもそれぞれについて終点としてみて試せば300*300*300で間に合うんじゃないか、となったが、<br>擬似コード書き始める時点で、終点を固定して探索するの厄介だなあと考え、もうちょっと考えなおしてみる。</p>
+<p>そこで、始点と終点が同じであるパターンからまず考える。<br>始点をAとしておく。<br>葉、つまりこの先に何もない島につながっている橋はわざわざ渡る必要もなく、即座に撤去すれば良い。<br>そうではない島(Bとおく)につながっている橋は、まず、Bより先にある橋を撤去する必要があるので、一度その橋をわたらなければならない。<br>Bについても、Aに戻るためには同じ橋を渡らなければならないので即座には撤去できず、Bよりも先にある橋を全て撤去してBに戻り、<br>Aに戻り、やっとA-B間の橋を撤去出来る。<br>つまり、ある島を始点とした場合、それを根にした木と考えた時、葉をつなぐ橋は即座に撤去し、そうでない橋は2回渡った後撤去することで、<br>全ての橋を撤去できる。始点と終点が同じならこれが最小コストのはずだ。</p>
+<p>始点と終点が異なる場合、最後に終点まで行くとき、そのパス上にある橋を渡ることになるが、この時、戻る必要性がないので、渡った時点で即撤去できる。<br>つまり、始点と終点が異なる場合、始点から終点までのパス長ぶん戻るコストを節約できるという訳である。<br>よって、始点と終点が異なる場合の最終コストは始点を固定した場合、その始点から最も長い長さの葉ではない島を終点とした時である。</p>
+<p>コードとしては、DFSで始点と終点が同じと仮定した場合のコストを計算しつつ、始点からその島までのコストを持つことで最も遠い島を探すようなコードになった。<br>最も遠い島に関してと始点と終点が同じ時のコストを計算するDFSを分けてもDFS1回の計算量が高々ノード数程度なので、十分に間に合う。</p>
+<h1 id="感想・反省">感想・反省</h1>
+<p>3度目の参戦となり、今までの反省を活かせたんじゃないかなと思っている。<br>1度目は個人としての能力があまりにも低すぎた＆相方がガチ勢だったので、足を引っ張るだけのゴミだったのだが、<br>2度目は自分の能力もそれなりについて、相方もほぼ同レベルだったが、結構足を引っ張ってしまったと反省していた。<br>原因はちゃんと実装を細かいレベルで考えていなかったことで、<br>方針は立っても細かいところでつまり1台しか使えないパソコンをかなり占有してしまった。</p>
+<p>今回は相方が実装している間に、実装の細かいところをじっくりと考えたので、実装はかなり早く終わったのではないかな、と思っている。<br>前回の僕であれば、Eで始点・終点それぞれ固定して探索しようで行けると思い込んで実装に詰まっているところだった。<br>あと、チーム全体和やかな雰囲気だったので、練習量も個人の能力もそこそこだった割にはいい成績を残せたのかなと。</p>
+<p>ただ、今回も反省はあって、入出力パターンの確認はしっかりやるべきだった。<br>これで1回躓いてしまった。ロスは小さかったかもしれないが、やはり、事前に意識すべき範囲であった。</p>
+<h1 id="まとめ">まとめ</h1>
+<p>ICPCにおいて最も重要なこと、それはパーフェクト・ハーモニー、完全調和だ！</p>
+<p>（強い人に怒られそう）</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://garasubo.github.io/hexo/2014/07/12/2014-07-12-icpc/" data-id="phupp6i1b2j6xqr6" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/procon/">procon</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/procon/">procon</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/procon/" style="font-size: NaNpx;">procon</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">October 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">September 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">July 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">April 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/07/">July 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">April 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">March 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/02/">February 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/12/">December 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">November 2012</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/12/07/2014-12-07-advent/">論文紹介ー&quot;User-guided device driver synthesis&quot;</a>
+          </li>
+        
+          <li>
+            <a href="/2014/10/07/2014-10-07-vmware/">UbuntuにインストールされたVMware Playerをアンインストール</a>
+          </li>
+        
+          <li>
+            <a href="/2014/09/27/2014-09-27-android/">Android開発あれこれ</a>
+          </li>
+        
+          <li>
+            <a href="/2014/07/12/2014-07-12-icpc/">ICPC2014参戦記</a>
+          </li>
+        
+          <li>
+            <a href="/2014/04/19/2014-04-19-code-reading/">Vimでコードリーティング</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 garasubo<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>
