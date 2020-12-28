@@ -1,0 +1,801 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Page 3 | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta property="og:type" content="website">
+<meta property="og:title" content="己の不学を恥じる">
+<meta property="og:url" content="http://garasubo.github.io/hexo/page/3/index.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:locale" content="ja">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="己の不学を恥じる">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-03-19T15:00:00.000Z"><a href="/hexo/2019/03/20/go-kernel.html">2019-03-20</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2019/03/20/go-kernel.html">論文紹介：The benefits and costs of writing a POSIX kernel in a high-level language</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>元論文: <a href="https://www.usenix.org/conference/osdi18/presentation/cutler" target="_blank" rel="noopener">https://www.usenix.org/conference/osdi18/presentation/cutler</a></p>
+<p>Go言語でPOSIXインターフェースを備えたカーネルを実装し、その利点と欠点を比較してみた、という論文です。</p>
+<h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
+<li>タイトル：The benefits and costs of writing a POSIX kernel in a high-level language</li>
+<li>著者：Cody Cutler, M. Frans Kaashoek, and Robert T. Morris (MIT CSAIL)</li>
+<li>会議：13th USENIX Symposium on Operating Systems Design and Implementation (OSDI ‘18)</li>
+</ul>
+<p>去年のUSENIX OSDIで発表された論文です。USENIXはハイレベルな低レイヤー関連の会議が多く、かつ論文をオープンアクセスで提供してくれるのはアカデミアから離れた身としてはうれしい限りです。</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>著名なOSのカーネルはC言語で書かれている。C言語は直接メモリを操作したり、デバイスのレジスタを操作したりできる。また、ランタイムを介さないためパフォーマンスも高い。一方、安全なコードを書くことが難しく、バッファーオーバーフローやuse-after-freeのようなバグの温床ともなりうる。<br>Go言語などの高級言語は、型検査やメモリの安全性がC言語よりも強く保証されるものの、多くの場合はランタイムを介しての実行となり、ガベージコレクション（GC)に頼るため、パフォーマンスへの懸念が生じる。<br>そこで彼らはBiscuitと名付けたPOSIXのサブセットを備えたカーネルをx86_64プロセッサ用に実装し、評価を行った。</p>
+<p>この論文はカーネルの実装にC言語が用いられるべきか、高級言語が用いられるか、という主張をするものではなく、あくまで高級言語を用いた実装がどのようなものかという指標を提供するものだと著者らは位置づけている</p>
+<h2 id="実装"><a href="#実装" class="headerlink" title="実装"></a>実装</h2><p>Go言語とアセンブラのみで書かれていて、C言語は全く用いていない。<br>Biscuitを動かすにはGo言語を動かすためのランタイムが必要で、通常であればランタイムはカーネルの機能を呼び出す。<br>今回は呼び出すカーネルがないので、代わりの機能を提供するShimというレイヤーを用意している。<br>Goのランタイムは標準のものにGCのタイミングを調整するなどの変更を加えたものを使用している。</p>
+<p>割り込み対応、マルチプロセス、ファイルシステム、ネットワークスタックなどPOSIXのカーネルなら備えている機能はおおよそされている。</p>
+<h2 id="GCとヒープ枯渇問題"><a href="#GCとヒープ枯渇問題" class="headerlink" title="GCとヒープ枯渇問題"></a>GCとヒープ枯渇問題</h2><p>Goはmark-and-sweep方式のGCを持っていて、確保していたメモリがある程度使われるとヒープ領域を適宜拡大していくということをしている。<br>Biscuitではこの通常のヒープ領域拡大を無効化して独自のタイミングでヒープ枯渇問題を回避している。<br>ヒープ領域が足りなくなったとき、Biscuitは</p>
+<ol>
+<li>キャッシュやソフトステイトのような保持する必要のないものを解放する</li>
+<li>システムコールが消費するであろうヒープ領域のサイズをあらかじめ確保しておく</li>
+<li>キラースレッドにより異常にヒープ領域を消費しているプロセスを殺す<br>ということをしている</li>
+</ol>
+<p>システムコールの消費するヒープの量を計算するためにMAXLIVEというツールを開発し、静的解析により事前に必要なヒープの量を計算している。<br>コールグラフからアロケーションの量を計算していくのが基本だが、ループによる繰り返し処理がからんでくるとアノテーションをつけることでヒントを与えたり、例外的な処理をして回避したりしている。</p>
+<h2 id="評価"><a href="#評価" class="headerlink" title="評価"></a>評価</h2><p>この研究では高級言語をカーネルの実装に用いることでの利点・欠点を具体化するのが目的なので、評価軸もそれに沿ったものになっている。</p>
+<p>まずそもそも高級言語の機能がどれくらい用いられているのか、というのを他のGoで書かれたソフトウェアとの比較を行っている。<br>GoのコンパイラとMoby（Dockerがつくったコンテナを用いたシステムのフレームワーク）と比較して同じくらいだとしている。<br>GCで管理されるオブジェクトが有用な場面とそうでない場面もある、と具体例も上げている。<br>有用な例としてはpollのシステムコールでは入力待ちのスレッドを起こすためのヘルパーオブジェクトのを挿入するが、そのヘルパーオブジェクトのフリーのタイミングを気にしなくても競合が起きないことをあげている。<br>一方、TCPのコネクションオブジェクトはTCPのシャットダウンプロトコルを実行することが必要だが、Goのfinalizerではオブジェクト間の循環ができないためそのままでは難しいので、そのようなオブジェクトに対してはBiscuit自身が参照カウントを管理している。<br>また、LinuxのCVEを参照し、Use-after-freeやOut-of-boundsなどのGoでは脆弱性になりえないものとそうでないものを分類している。65個の深刻な脆弱性のうち40個はGoなら防げるとしている。<br>一方、Goのランタイムやパッケージ自体にも14のCVEが報告されて、うち4つはカーネルにとって深刻な脆弱性になりうるとしている。</p>
+<p>アプリケーションベンチマークとしては、CMailbench（メールサーバーをモデルとしたforkとexecにより仮想メモリシステムへのストレス試験）、NGINX、Redisを実際に動かし、Linuxとの比較、ヒープサイズと使用メモリ割合に対するパフォーマンスなどの実験を行っている。</p>
+<h2 id="関連研究"><a href="#関連研究" class="headerlink" title="関連研究"></a>関連研究</h2><p>カーネルの実装に高級言語を用いる例は様々ある。<a href="2018/05/23/tock.html">以前ここでも紹介したRust製カーネルのTock</a>も一例として挙げられている。<br>しかし、これらの研究はC言語との比較というよりも、新しいコンセプトのOSということに重きを置いている。<br>カーネル用に既存の言語を改変して用いるというものもあるが、この研究ではGoそのものに大きな変更は加えないようにしている。</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>Go言語を用いてBiscuitと名付けたPOSIXカーネルを実装し、C言語を用いた場合との比較を行った。<br>高級言語のもたらすパフォーマンス低下は15％を下回るとした一方、だからといってGoを使うべきだと結論づけてはいない。<br>しかし、Go言語でカーネルを実装する際の恩恵やコストを明らかにし、Goのような高級言語を使うべきか否かの判断材料になるであろうとしている</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-02-17T15:00:00.000Z"><a href="/hexo/2019/02/18/tockapp.html">2019-02-18</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2019/02/18/tockapp.html">Rust製組込みOS TockでC言語アプリケーションを動かす</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h2 id="Tockとは"><a href="#Tockとは" class="headerlink" title="Tockとは"></a>Tockとは</h2><p>このブログでも何度か紹介したRust製組込みOSです。<br><a href="/hexo/2018/05/23/tock.html">以前の記事</a><br>ターゲットはCortex-MのようなCPUリソースが限られたようなプロセッサです。<br>Rust Embeddedグループ発足前から公開されていて、Rust純粋でちゃんとしたOSを組む先駆けにもなっています。Rustで書かれているだけでなく、組込みOSの設計としてもおもしろいものになっています。<br>以前は専用ボードへの実装しか公開されていなかったのですが、最近になりSTM社製のNUCLEO-446REボードのサポートが追加されました。<br>手元にあったNUCLEO−429ZIボード用のサポートも追加してもらえるようPRを投げ、無事マージされたことにより、自分の手元でも動かせるようになりました。</p>
+<p>このTockの性質として、ユーザーアプリケーションは独立にビルドする仕組みとなっているため、任意の言語で書くことができるというものがあります。<br>今回はC言語を用いて簡単なアプリケーションを書いてみて、さらにその仕組みを簡単に見ていきたいと思います。</p>
+<h2 id="サンプルアプリケーション"><a href="#サンプルアプリケーション" class="headerlink" title="サンプルアプリケーション"></a>サンプルアプリケーション</h2><p><a href="https://github.com/tock/libtock-c" target="_blank" rel="noopener">libtock-c</a>というライブラリがTockのカーネルを叩くための各種関数を提供しています。<br>これを用いて簡単なアプリケーションを書いてみました</p>
+<p><a href="https://github.com/garasubo/tockapp" target="_blank" rel="noopener">garasubo/tockapp</a></p>
+<p>このアプリケーションはキーボードの入力を受けるとLチカが動き出し、もう一度入力を受けると止まる、というものになっています。<br>サンプルアプリケーションのレポジトリではlibtock-cをgitのサブモジュールとして取り込んで、ビルドはlibtock-c内のAppMakefile.mkに全面的に依存しています。</p>
+<p>libtock-cのレポジトリ自体にもサンプルコードがあります。<br>今回のサンプルでは使っていないのですが、Newlibによって実装されたC標準ライブラリやluaのランタイムもあります。</p>
+<h2 id="ブートプロセス"><a href="#ブートプロセス" class="headerlink" title="ブートプロセス"></a>ブートプロセス</h2><p>サンプルアプリケーションでは普通にmain関数を書いているわけですが、これがTock側からどう呼ばれているかを見てみましょう。<br>リンカスクリプトがlibtock-cのuserland_generic.ldにあります。まずは、アプリケーションがどのようにビルドされるか見てみましょう。</p>
+<a href="https://github.com/tock/libtock-c/blob/master/userland_generic.ld" title="userland_generic.ld" target="_blank" rel="noopener">userland_generic.ld</a>
+
+<p>11行目、<code>ENTRY(_start)</code>となっていますが、これは<code>libtock/crt0.c</code>に定義されています。26行目の.crt0_headerの構造についてもここで定義されています。</p>
+<a href="https://github.com/tock/libtock-c/blob/master/libtock/crt0.c" title="crt0.c" target="_blank" rel="noopener">crt0.c</a>
+
+<p>アプリケーションはメモリ上のどこにおかれるかはビルド時には決定できません。さらにCortex-Mには仮想アドレス機構はないため、すべて物理アドレスで扱う必要があります。<br>そのため、<code>_start</code>関数では4つのメモリレイアウトに関する情報を受けとり、それをもとにアプリケーション上の情報を書き換えるということをやってます。<br>スタックやヒープ領域、デバッグ用の情報などを設定する他に、<a href="https://www.intel.co.jp/content/www/jp/ja/programmable/documentation/iga1420498949526.html#iga1409353027116" target="_blank" rel="noopener">グローバルオフセットテーブル(GOT)</a>の書き換えもやってます。<br>GOTの書き換えは<code>_start</code>で呼び出される<code>_c_start</code>で行われています。<br>159行目のループ中で最上位ビットで場合分けを行っていますが、<br>これはリンカスクリプトでROM領域は0x80000000以上の領域、RAM領域は0x00000000に配置されていることを利用して（17、18行目）、<br>本来アプリケーション領域にある定数を指すものなのか、スタック上に配置されるグローバル変数なのかを判別してアドレスを調整しているためです。</p>
+<h2 id="システムコール"><a href="#システムコール" class="headerlink" title="システムコール"></a>システムコール</h2><p>カーネルとのやりとりは<code>SVC</code>命令を用いたシステムコールにより実現しています。<code>SVC</code>命令を介しているのでそこのインターフェースさえ何らかの方法で実装できれば、Rust以外の言語でもカーネルの機能を呼び出せるという仕組みです。<br>これは<code>libtock/tock.c</code>で実装されていて、サンプルアプリケーションでは直接は呼び出していませんが、<code>libtock-c</code>内の関数を呼び出すことにより間接的に使っています。<br>システムコールは5つのみです。簡単に説明すると</p>
+<ul>
+<li>yield: そのアプリケーションの終了をする。アプリケーションはスケジュールされなくなる</li>
+<li>subscribe: ドライバのコールバック関数を登録する（例：タイマー割り込みで関数を呼び出してもらう）</li>
+<li>command:　ドライバに対して指示を出す（例：LEDを点灯させる）</li>
+<li>allow: カーネルとアプリケーション間で特定のメモリを共有させる（例：タイマードライバにコールバック制御用のデータ構造体を渡す）</li>
+<li>memop: ヒープ領域を変更してもらったり、現在のメモリレイアウトの情報を手に入れるなど、メモリの操作を依頼する</li>
+</ul>
+<h2 id="おまけ"><a href="#おまけ" class="headerlink" title="おまけ"></a>おまけ</h2><p>サンプルアプリケーションで<code>tock_timer_t</code>の実体をユーザーアプリケーション側に持っていて、そのアドレスをカーネルに渡しています。<br>普通の場合はむしろ構造体の実体はカーネル側に持っておき、そのアドレスなりIDなりをユーザーアプリケーションが持つのが一般的だと思いますが、これには理由があります（以前のブログで紹介した論文にも書いてあります）。<br>今回は扱いませんでしたが、Tockでは複数のアプリケーションを動かすこともできます。<br>メモリ領域はアプリケーションごとに独立に持っていて、カーネルや他のアプリケーションとは基本的に共有しません。<br>もしカーネル側が実体を持っているとすると、あるユーザーアプリケーションが大量のタイマーを要求してきた場合、他のアプリケーションがメモリ不足によりタイマーを手に入れられない場合が考えられます。<br>アプリケーション側がタイマーの構造体を抱えれば、大量に要求してきたアプリケーションのみがメモリ不足になり、カーネル及び他のアプリケーションが困るということにはなりません。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://github.com/tock/tock/blob/master/doc/Userland.md" target="_blank" rel="noopener">tock/Userland</a></li>
+<li><a href="https://github.com/tock/tock/blob/master/doc/Syscalls.md" target="_blank" rel="noopener">tock/Syscalls</a></li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-01-07T15:00:00.000Z"><a href="/hexo/2019/01/08/expertise.html">2019-01-08</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2019/01/08/expertise.html">論文紹介： Towards a Theory of Software Development Expertise</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Twitterで見かけたどうやったらソフトウェア開発のプロになれるかの理論を構築したという論文。<br>ソフトウェアエンジニアにはもちろん、その上司だったり経営者とかにも参考になると思う</p>
+<h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
+<li>タイトル：Towards a Theory of Software Development Expertise</li>
+<li>著者：Sebastian Baltes　(University of Trier) et al.</li>
+<li>会議：Engineering Conference and Symposium on the Foundations of Software Engineering (ESEC/FSE ’18)</li>
+</ul>
+<p>FSEというのはソフトウェア工学のトップカンファレンスの1つ。<br>どうすればソフトウェアエンジニアとして成長できるか、という話は本であったりブログであったりとそこらじゅうに溢れているが、このような論文となっているのはなかなかないのではなかろうか。<br>この論文で示されている著者らの構築したソフトウェアエンジニアのプロ（以下、原文に習いSDExp）になるための理論はもちろんのこと、その理論の構築過程もとてもおもしろい。<br>今回のブログでは理論の構築過程については自分の前提知識が足りなくまだ十分に理解できていないので、彼らの導いた理論の要旨、というよりも自分が印象に残った部分だけを紹介する。</p>
+<p>元の論文はarXivで誰でも見られるので、詳しくはそちらへ<br><a href="https://arxiv.org/abs/1807.06087" target="_blank" rel="noopener">https://arxiv.org/abs/1807.06087</a></p>
+<h2 id="手法"><a href="#手法" class="headerlink" title="手法"></a>手法</h2><p>彼らの理論はどのようなコンセプトがSDExpになるためには必要で、そのコンセプトがどのように関係しあっているか、というものをモデル化したものである。<br>この論文では３つのフェーズを経てそのモデルを構築している。</p>
+<p>フェーズ１ではGithubとStack Overflowのアクティブなユーザーをサンプリングしてアンケートを取り、<br>その結果をベースに理論のベースとなるgrounded theory (GT)を構築している。<br>フェーズ２では既存の文献を用いて、GTに対してそれらの理論を埋め込んでいく形で発展させたモデルを構築する。<br>フェーズ３ではフェーズ２までの結果を踏まえて、フェーズ１よりも踏み込んだ形のアンケートをつくり、アクティブなJava開発者と長い開発経験を持つ開発者それぞれを対象として回答を得た。<br>Javaにターゲットを絞ったのは、対象をわかりやすくるため、研究開始時最もメジャーな言語であったJavaを選んだとのこと。<br>その結果を元に彼らの理論を完成させた。</p>
+<h2 id="SDExpになるには"><a href="#SDExpになるには" class="headerlink" title="SDExpになるには"></a>SDExpになるには</h2><p>では、フェーズ３で構築した理論の図を論文から引用して見てみる</p>
+<img src="/hexo/images/fse18figure4.png" title="figure 4">
+
+<p>この巨大な図だけでは意味がわからないので、いくつか印象に残った部分だけを説明する。<br>このモデルはconcepts（コンセプト）とrelationship（関係）の２つからなる。<br>今回はコンセプトと関係の中からいくつか重要なものあるいは印象的だったものについて見ていく。</p>
+<h3 id="Tasks"><a href="#Tasks" class="headerlink" title="Tasks"></a>Tasks</h3><p>このモデルはTaskを中心に据えている。ここでいうTaskというのは要件定義であったりリファクタリングであったりするわけだが、それぞれのTaskには専用の知識であったり経験がある。<br>ソフトウェア開発には人が関わってくるので、人の関わり（Work Context）というのも重要な要素であるが、これもTask毎に違う。</p>
+<p>フェーズ３にて最も重要だと思うTaskはという質問に対して、</p>
+<ol>
+<li>ソフトウェアアーキテクチャのデザイン</li>
+<li>ソースコードを書く</li>
+<li>要求を分析・理解する<br>が最も多い回答だった。</li>
+</ol>
+<h3 id="deliberate-practice"><a href="#deliberate-practice" class="headerlink" title="deliberate practice"></a>deliberate practice</h3><p>この論文でかなり強調されていた関係の１つにdeliberate practice（訳すとすれば計画的実践？）というのがある。<br>単に同じような経験をたくさん積む、というのはパフォーマンスを向上させるのには貢献しない、むしろ逆効果にすらなり得る。<br>経験の年数が能力に比例するのは最初の２年程度なので、その後はタスクの難易度を上げていくことでパフォーマンスをあげていくことが必要になる。これがdeliberate practiceである。<br>このdeliberate practiceにはパフォーマンスをモニターし、フィードバックを与えてあげるメンターなどの存在も必要になる。<br>また、自分の強みや弱みを把握する自己反省の資質も大事である。</p>
+<h3 id="Work-Context-Task-Context"><a href="#Work-Context-Task-Context" class="headerlink" title="Work Context (Task Context)"></a>Work Context (Task Context)</h3><p>ソフトウェア開発にはマネージャーに相談したり、客からの要望に答えたりといったWork Contextが存在する。<br>フェーズ３で経営者が従業員の開発スキルを向上させるためにするべきことという質問に対する答えをカテゴライズすると</p>
+<ol>
+<li>学習を奨励する</li>
+<li>実験することを奨励する</li>
+<li>情報交換をしやすくする</li>
+<li>自由を認める<br>というのが最も多い回答であった。<br>具体的には</li>
+</ol>
+<ul>
+<li>外部のトレーニングコースの受講を勧める</li>
+<li>カンファレンスの参加費を負担する</li>
+<li>“Self-improvement Friday”、”lunch-and-learn session”などのミーティングやイベントで情報交換や学習の機会をつくる</li>
+</ul>
+<h3 id="Performance-Decline"><a href="#Performance-Decline" class="headerlink" title="Performance Decline"></a>Performance Decline</h3><p>年を経るごとにパフォーマンスが落ちていくということがあるが、これについても分析している。<br>フェーズ３での回答をカテゴライズすると</p>
+<ol>
+<li>モチベーションの低下</li>
+<li>仕事の環境の変化</li>
+<li>年齢による衰え</li>
+<li>態度の変化</li>
+<li>他のTaskへの移動<br>となった。<br>同じような仕事をやらされ続けてモチベーションを失う、きつい締切へのプレッシャー、マネージャーのコミュニケーション不足などなどが具体例として挙げられている。</li>
+</ol>
+<p>年齢による衰えについてはいくつかの実際の回答を引用している。例えば、「50代のころから新しい言語やフレームワークについていけなくなった」、「物忘れがひどくなってプログラムを書く速度が落ちた」、といったものであるが、<br>「40歳からritalinのような薬を飲むようにした。これは年老いたプログラマーの間では極めて一般的」などという回答まであった。<br>ritalinとは、どうやら多動性障害（ADHD）のための向精神剤らしいが（参考：<a href="https://ja.wikipedia.org/wiki/%E3%83%A1%E3%83%81%E3%83%AB%E3%83%95%E3%82%A7%E3%83%8B%E3%83%87%E3%83%BC%E3%83%88" target="_blank" rel="noopener">メチルフェニデール</a>）本当に広く使われていたりするのだろうか…</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>SDExpになるための理論を構築したという論文から、構築した理論についてその要素部分をかいつまんで紹介した。<br>紹介しきれなかったところ、また構築するまでの過程も非常におもしろかったので、興味があれば是非元論文を読んでもらいたい。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-12-30T13:05:52.000Z"><a href="/hexo/2018/12/30/this-year.html">2018-12-30</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2018/12/30/this-year.html">今年の振り返り</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>今年は仕事以外でのインプット・アウトプットを増やすというのを1つ目標にして過ごしてきて、まだまだ少ないけれど去年よりは増えているのでいい傾向かなあと思っている</p>
+<h2 id="RustでArmベアメタルプログラミング"><a href="#RustでArmベアメタルプログラミング" class="headerlink" title="RustでArmベアメタルプログラミング"></a>RustでArmベアメタルプログラミング</h2><p>以前から興味があったRustでArmベアメタルプログラミングができるようになってきたと聞いて、今年はいろいろな技術資料を漁りつつCortex-Mボードでのプログラミングを始めた。<br>現状だとUARTモジュールを動かしたり、タイマー割り込みを使ったり程度でまだまだなのだが、ゆくゆくは簡単なOSくらいにまでは進めていきたい。<br>とりあえず、目下の課題としてはSSD1306のOLEDモジュールを購入したので、それの動作用のライブラリ作成となりそう</p>
+<h2 id="ブログ"><a href="#ブログ" class="headerlink" title="ブログ"></a>ブログ</h2><p>今年は技術関連であれば9件投稿した。本当は月一ペースで出したかったが、去年は2件しかなかったのでだいぶマシ。<br>とはいっても内容もまだまだなので、もうちょっとがんばりたい。<br>モチベーションをあげるためにGoogle Analysticも最近になってようやく導入した。<br>一応、ネタのストックはあるので、来年の早いうちに1件は出そうと思う。</p>
+<h2 id="プログラミングコンテスト"><a href="#プログラミングコンテスト" class="headerlink" title="プログラミングコンテスト"></a>プログラミングコンテスト</h2><p>学生時代は頻繁に参加していたが、最近は参加する気が起きなくてスルーしていた。<br>しかし、なんだか簡単なプログラムを一気に書く瞬発力的なものが衰えてきた気がするので、Rustの勉強も兼ねてAtCoderのBeginner ContestのC問題を中心に時々解くようにした。<br>今後はちゃんとコンテストに参加してみようと思う。</p>
+<h2 id="LFCE"><a href="#LFCE" class="headerlink" title="LFCE"></a>LFCE</h2><p>Linux Foundationの提供する<a href="https://training.linuxfoundation.org/certification/linux-foundation-certified-engineer-lfce/" target="_blank" rel="noopener">Linux Foundation Certified Engineer</a>(LFCE)の試験とそのためのオンラインレッスンを受講した。<br>結果は合格からは程遠かった。試験内容は口外できないのだが、レッスンに含まれていない内容もかなり出してきて、試験中は外部ネットアクセス禁止でmanしかアクセスできないというハードな内容だった。<br>一応、もう一回試験を受ける権利はあるのだが、そもそも合格してもメリットが少なそうだし、分野がそこまでしっかり勉強したい部分ではないので見送ると思う。<br>とはいっても、自分のLinuxシステムの理解の浅さや、すぐにとりあえずGoogle検索に頼ってしまう自分の姿勢は反省すべきだと思った。</p>
+<h2 id="その他"><a href="#その他" class="headerlink" title="その他"></a>その他</h2><p><a href="https://turingcomplete.fm/" target="_blank" rel="noopener">TCFM</a>は低レイヤ関係の話を聞けるいい機会なのでモチベーション向上に役立った。<br>低レイヤプログラミングをがっつりやっているコミュニティに属していないので、情報交換の意味でもそういうコミュニティへの参加を増やせたらなあと思う</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-12-12T15:00:00.000Z"><a href="/hexo/2018/12/13/rust-arm.html">2018-12-13</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2018/12/13/rust-arm.html">RustでArm Cortex-Mプログラミングをする 2018</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>この記事は<a href="https://adventar.org/calendars/2915" target="_blank" rel="noopener">自作OS Advent Calendar 2018</a>および<a href="https://qiita.com/advent-calendar/2018/rust2" target="_blank" rel="noopener">Rust その2 Advent Calendar 2018</a>の記事です。</p>
+<p>ベアメタルプログラミングといえばC言語であったが、C言語でプログラミングするのはつらい、ということでその代わりとなる言語としてRustが注目されてきている。<br>Rust+Armのベアメタルプログラミングに関しては<a href="https://qiita.com/tatsuya6502/items/7d8aaf3792bdb5b66f93" target="_blank" rel="noopener">去年のRustアドベントカレンダーにも記事</a>があったほか、自分も何件かすでにブログを書いているが、今年はRust Embeded Working Groupが発足し、資料も充実してきた（参考：<a href="https://rust-embedded.github.io/blog/2018-11-14-this-year-in-embedded-rust/" target="_blank" rel="noopener">This Year in Embedded Rust</a>）</p>
+<h2 id="Rustでベアメタル"><a href="#Rustでベアメタル" class="headerlink" title="Rustでベアメタル"></a>Rustでベアメタル</h2><p>Rust Embeddedチームがすでにドキュメントをつくっているので（執筆中の章も存在するが）、これに従えば誰でもCortex-Mのベアメタルプログラミングできる<br><a href="https://rust-embedded.github.io/book/" target="_blank" rel="noopener">The Embedded Rust Book</a><br>ベースとなっているのはjaparic氏のブログなので、それの正式版と思ってもらえば良い。<br>チュートリアルはSTM32F3DISCOVERYをハードウェアと用いていて、<a href="http://akizukidenshi.com/catalog/g/gM-06268/" target="_blank" rel="noopener">秋月電子通商</a>などで日本でも2000円程度で手に入る。<br>以前、<a href="https://garasubo.github.io/hexo/2018/05/28/rust-qemu.html">QEMUで実行する方法</a>もブログにしたが、タイマーなどの一部ペリフェラルが動かない他、やはりLEDが手元で光っている方が楽しいと思うので、がっつりとやりたいのなら実機の購入をおすすめする<br>一応、後述する通り他のcortex-mボードを用いても十分に開発できると思われる。現に僕はSTM社製の他のボードを使っている。</p>
+<h2 id="cortex-m-quickstart"><a href="#cortex-m-quickstart" class="headerlink" title="cortex-m-quickstart"></a>cortex-m-quickstart</h2><p>では実際にArm Cortex-Mでのベアメタルプログラミングの話に入ろうと思うのだが、<br>ベアメタルプログラミングするための手順だけであればThe Embedded Rust Bookがよくまとまっているので、それを読め、で終了してしまう。</p>
+<p>なので今回はThe Embedded Rust Bookでも用いられている<a href="https://github.com/rust-embedded/cortex-m-quickstart" target="_blank" rel="noopener">cortex-m-quickstart</a>からサンプルコードを抜粋して大体なにをしているかを見ていくことにする。</p>
+<h3 id="hello-world"><a href="#hello-world" class="headerlink" title="hello world"></a>hello world</h3><p>example/hello.rsを見てみよう。いわゆるhello worldである。<br>hprintln関数はセミホスティングを利用した出力を利用している。セミホスティングとはSVC命令などを利用することでデバッガに対してメッセージを送る機能である（参考:<a href="https://developer.arm.com/products/software-development-tools/compilers/arm-compiler-5/docs/dui0471/f/semihosting/what-is-semihosting" target="_blank" rel="noopener">https://developer.arm.com/products/software-development-tools/compilers/arm-compiler-5/docs/dui0471/f/semihosting/what-is-semihosting</a>）。<br>なので、UARTなどを利用したものでないため、本来ならデバッガをボードにつなぐ必要がある。が、DISCOVERYボードは基板にデバッガも内蔵しているので簡単に利用できる。</p>
+<p>この<code>#[entry]</code>というアトリビュートがついたものが実質的なmain関数となる。ブートコードはどこにあるか、というとこのcortex-m-quickstartが依存しているライブラリの一つ、<a href="https://rust-embedded.github.io/cortex-m-rt/0.6.1/cortex_m_rt/index.html" target="_blank" rel="noopener">cortex-m-rt</a>が担っている。<br>このライブラリはビルド時のリンカスクリプトの生成もしていて、このアトリビュートをつけた関数を展開し、ブートのための処理を行った後呼び出す、という流れになっている。<br>大まかな仕組みとしてはライブラリに含まれるlink.x.inというスクリプトをベースに<a href="https://doc.rust-lang.org/cargo/reference/build-scripts.html" target="_blank" rel="noopener">build.rs</a>がスタックサイズのチェックや必要に応じて他のライブラリのリンカスクリプトを読み込んだりしている。<br>その他、例外発生時のハンドラの登録用マクロも用意されている。<br>詳しい仕組みはドキュメントを参照。</p>
+<p>このテンプレートが依存しているもう一つのライブラリであるcortex-mライブラリはアセンブラ命令を呼び出すためのラッパやシステムレジスタの抽象化レイヤなどがふくまれている。<br><a href="https://github.com/rust-lang/rust/issues/29722" target="_blank" rel="noopener">インラインのアセンブラはまだ安定版ではないため</a>、対応していない場合、予めコンパイルしてあるアセンブラを関数をextern Cで呼び出している<br>その際のArmのバージョンごとの違いはbuild.rsが指定されたターゲットを見てどのバイナリをリンクするかで吸収している。</p>
+<h3 id="panic"><a href="#panic" class="headerlink" title="panic"></a>panic</h3><p>example/panic.rsはpanicを発生させるだけのコードである。no_std環境でもpanicが発生した際の処理を実装しておかなければならない。<br>これは<a href="https://github.com/rust-lang/rust/issues/44489" target="_blank" rel="noopener">最近安定化されたfeature</a>のひとつでもある。<br>このサンプルコードではpanicハンドラを実装したクレートを読み込むことで動作を決定している。</p>
+<h3 id="allocator"><a href="#allocator" class="headerlink" title="allocator"></a>allocator</h3><p>example/allocator.rsは自前で動的メモリ確保を実装することでno_std環境下でも動的配列を利用する例である。<br>基本的に組込みで動的メモリ確保は行わないほうがいいのだが、どうしても必要というケースは出てくる。<br>これも<a href="https://github.com/rust-lang/rust/issues/27389" target="_blank" rel="noopener">最近安定化されたfeature</a>のひとつでもある。<br>外部クレートで実装されたallocであるが、中身は空き領域をリスト形式で持っておき、要求に応じて空き領域リストを探索して返す、というシンプルなものになっている。<br>ただし、stdに含まれるvecは使えないので、allocクレート内のvecを使ってあげる必要がある。こちらはまだ<a href="https://github.com/rust-lang/rfcs/pull/2480" target="_blank" rel="noopener">unstableなfeature</a>。
+allocクレートの中にはBoxやArcなど、所有権周りの問題を解決するのにおなじみの構造体も含まれている。</p>
+<h3 id="device"><a href="#device" class="headerlink" title="device"></a>device</h3><p>マイコンのペリフェラルを使う例。stm32f103xxというクレートを使っているが、これはチップのMMIOのマッピングを記述したSVDファイルから<a href="https://docs.rs/svd2rust/0.14.0/svd2rust/" target="_blank" rel="noopener">svd2rust</a>を使って自動生成されたものである。<br>そのため、他のタイプのボードを使ってもSVDファイルさえ手に入れれば割と簡単に再現できる。<br>svd2rustはペリフェラルからの割り込みハンドラをリンクするためのcortex-m-rt用のリンカスクリプトもつくっている。<br>これはsvd2rustの生成したライブラリがCARGO_FEATURE_DEVICEというフラグをオンにすることで、device.xをcortex-m-rtが持つリンカスクリプトをインクルードさせている。</p>
+<h2 id="その他の資料"><a href="#その他の資料" class="headerlink" title="その他の資料"></a>その他の資料</h2><p>Armではないが、RISC-V向けの記事が今年の自作OS Advent Calendarに上がってる<br><a href="https://qiita.com/tomoyuki-nakabayashi/items/76f912adb6b7da6030c7" target="_blank" rel="noopener">RustでRISC-V OS自作！はじめの一歩</a></p>
+<p>また、以前も紹介したが、別のアプローチとしてTockという組込みOSが存在しており、そちらのデザインはなかなか工夫されている。<br><a href="https://www.tockos.org/" target="_blank" rel="noopener">Tock</a><br>ただし、こちらは専用ボード向けの実装しかないため、始めるにはハードルが高かったため、自分はまだ手が出ていない。</p>
+<p>また、Cortex-Mではないが、Rasberry Pi 3でのチュートリアルも提供されている<br><a href="https://github.com/rust-embedded/rust-raspi3-tutorial" target="_blank" rel="noopener">Bare Metal Rust Programming on Raspberry Pi 3</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-10-31T11:02:37.000Z"><a href="/hexo/2018/10/31/seccon.html">2018-10-31</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2018/10/31/seccon.html">SECCON 2018 参戦記</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>SECCON 2018予選にnegainoidoで参加して、ReversingのSepecial Device FileとSpecial Instructionsを解きました。</p>
+<h2 id="Special-Instructions"><a href="#Special-Instructions" class="headerlink" title="Special Instructions"></a>Special Instructions</h2><p>バイナリファイルが与えられ、それを実行してフラグを得る。いろいろなアーキテクチャのクロスコンパイラも与えられる。<br>とりあえず、そのツールチェーンをビルドしつつ、バイナリを眺める。<code>file</code>コマンドではアーキテクチャを特定できなかったが、<code>strings</code>コマンドを使うと、</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">This</span> <span class="selector-tag">program</span> <span class="selector-tag">uses</span> <span class="selector-tag">special</span> <span class="selector-tag">instructions</span>.</span><br><span class="line"><span class="selector-tag">SETRSEED</span>: (<span class="attribute">Opcode</span>:<span class="number">0</span>x16)</span><br><span class="line">    <span class="selector-tag">RegA</span> <span class="selector-tag">-</span>&gt; <span class="selector-tag">SEED</span></span><br><span class="line"><span class="selector-tag">GETRAND</span>: (<span class="attribute">Opcode</span>:<span class="number">0</span>x17)</span><br><span class="line">    <span class="selector-tag">xorshift32</span>(SEED) <span class="selector-tag">-</span>&gt; <span class="selector-tag">SEED</span></span><br><span class="line">    <span class="selector-tag">SEED</span> <span class="selector-tag">-</span>&gt; <span class="selector-tag">RegA</span></span><br><span class="line"><span class="selector-tag">GCC</span>: (GNU) <span class="selector-tag">4</span><span class="selector-class">.9</span><span class="selector-class">.4</span></span><br><span class="line"><span class="selector-tag">moxie-elf</span><span class="selector-class">.c</span></span><br></pre></td></tr></table></figure>
+
+<p>というのが見えるので、moxieというアーキテクチャだということがわかる。<br>ツールチェーンにはエミュレータも含まれているが、<code>strings</code>の結果にもあるとおり、xorshift専用の命令が組み込まれている。<br>xorshiftのアルゴリズムについては<a href="https://ja.wikipedia.org/wiki/Xorshift" target="_blank" rel="noopener">wikipedia</a>参照。xorとshiftによって簡単かつそこそこ質のよい乱数が生成できるらしい。<br>この専用命令を関数としてどこかにねじ込み、命令をその関数の呼び出しに書き換えるという戦略も考えられるが、今回はやっていることがバイナリ内のロジックが比較的シンプルなので、<br>それを適当なプログラミング言語に再実装して手元で走らせるのが楽。<br>moxieのアーキテクチャマニュアルはその時は見つけられなかったが、割と素直な構成なので、ある程度他のアセンブラを触った人ならなんなく読めるはず。<br>やっていることは、初めになんやかんやputsで文字列を出した後、decode関数で暗号化されたflagをデコードし、それをputsしている。<br>デコードの仕組みは暗号化された文字に対して、更に別のrandvalという埋め込まれている定数とxorshiftによって生まれる乱数とのxorをとっているだけ。</p>
+<p>乱数の初期シードをコピペミスするとかして無駄に時間を浪費してしまったが、なんとか提出できた</p>
+<h2 id="Special-Device-File"><a href="#Special-Device-File" class="headerlink" title="Special Device File"></a>Special Device File</h2><p>今度はaarch64のバイナリが与えられる。今度は/dev/xorshift64というデバイスを叩いているためそのままでは実行できない。<br>xorshift64は名前から察するにxorshiftで乱数を生成しているだけであろうと予想できる。</p>
+<p>ARMv7-Aのアセンブラは読み書きしたことがあるが、aarch64ははじめてだったので、少々戸惑ってしまったが、<br>ちょっと公式ドキュメントを読めば理解できた。64bitアーキテクチャのため、馴染みのない命令がそこそこあったが、<br><a href="https://developer.arm.com/products/architecture/cpu-architecture/a-profile/docs/100076/latest/part-a-instruction-set-overview/overview-of-aarch64-state/registers-in-aarch64-state" target="_blank" rel="noopener">Arm公式で提供しているドキュメント</a>がそこそこ親切なので調べれば大丈夫。<br>やっていることはSpecial Instructionと大差ない。xorshift64の初期シードを探すのに多少手間取ったが、よく見ると初めにスタックに64bitの定数を積んで、スタックポインタをwrite関数に渡していたのに気がつき、それがシードだった。</p>
+<h2 id="取り組んだが解けなかった問題"><a href="#取り組んだが解けなかった問題" class="headerlink" title="取り組んだが解けなかった問題"></a>取り組んだが解けなかった問題</h2><h3 id="Needle-in-a-haystack"><a href="#Needle-in-a-haystack" class="headerlink" title="Needle in a haystack"></a>Needle in a haystack</h3><p>恒例(?)の動画問題。題名から察するにどこか数フレームにフラグがあるのかなあ、とチームメイトがいろいろ試行錯誤。<br>自分もいろいろアイデアを出したが、結局何も掴めず。</p>
+<p>結論はビルの一室のあかりがモールス信号になっていたらしい。まあ、この問題は解けなくても仕方ないかなあという気分。</p>
+<h3 id="GhostKingdom"><a href="#GhostKingdom" class="headerlink" title="GhostKingdom"></a>GhostKingdom</h3><p>唯一のWeb問題。ウェブサービスが与えられていて、/FLAG以下のアドレスのどこかにフラグがあるらしい。<br>そのウェブサービスでできることは</p>
+<ul>
+<li>ユーザーの登録とログイン</li>
+<li>メッセージの送信フォーム</li>
+<li>URLを与えて、そのページのスクリーンショットの取得</li>
+</ul>
+<p>メッセージの送信フォームにはプレビュー機能があって、そこにcssという名前の怪しいパラメータがあった。<br>適当な値を入れると、プレビュー部分のstyleタグに壊れた文字が入っていたので、何らかの形式でエンコードされたcssであろうと考え、base64を試したら見事正解。</p>
+<p>他にはスクリーンショットの取得部分で、自分で適当なページをつくって、その中でlocalhostにリダイレクトさせることで、ページにlocalhostとしてアクセスすることで画像アップロード機能を使える、というところまでは掴んだ。<br>ログインはiframe内でログイン用のURLを叩かせた。</p>
+<p>しかし、それ以上をつかむことができず終了。<br>答えとしては<a href="https://speakerdeck.com/lmt_swallow/css-injection-plus-plus-ji-cun-shou-fa-falsegai-guan-todui-ce" target="_blank" rel="noopener">CSS injection</a>として知られている技法でフォームの値を抜き出し、セッションIDを取得すること、<br>その後、画像アップローダーで使われているImageMagicの脆弱性をつくことだったらしい。<br>参考：<a href="http://hakatashi.hatenadiary.com/entry/2018/10/28/211034" target="_blank" rel="noopener">http://hakatashi.hatenadiary.com/entry/2018/10/28/211034</a></p>
+<p>CSS injectionのことを知らなかったほか、セッションIDがcsrfトークンとしてフォームに埋め込まれていたことに気がつけなかった。<br>たとえそれらに気がついたとして、ImageMagicの脆弱性までたどり着けるかどうかも怪しい。<br>任意CSSを埋め込めることに気がつけた時点で、もっとCSSを利用したテクニックについて調べていればよかった。<br>常日頃CTFをやっている人間でないのでその場で知識を調達してこなければならないのが厳しい。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-09-26T14:01:18.000Z"><a href="/hexo/2018/09/26/isucon-extra.html">2018-09-26</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2018/09/26/isucon-extra.html">ISUCON8 予選延長戦</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>ISUCON8予選はみごと惨敗に終わったのだが、運営とスポンサーのご厚意により一週間予選のサーバーへのアクセスが開放されたので、予選時のトラブルの検証とどうすれば今年の予選を突破できたのかをいろいろ追加実装して試してみた。</p>
+<h2 id="トラブルの原因"><a href="#トラブルの原因" class="headerlink" title="トラブルの原因"></a>トラブルの原因</h2><p><a href="2018/09/17/isucon.html">前回の記事</a>で終了間際、初期実装に戻してもfailし続ける謎の現象に見舞われたことについて。<br>結論は、IPアドレスが書き換わっていた、というのが一番近い答えでした。<br>ISUCONの予選用のページにチームが使えるサーバーとそのIPアドレス一覧のページがあり、そのページでどのサーバーに対してベンチマークを走らせられるかも選べます。<br>我々はこのリストの一番上からisucon1,isucon2,isucon3と名前をつけて、ssh_configに設定をしておきました。<br>しかしなんと終了1時間前あたりにそのリストの順番がアナウンスなしに入れ替わっていたのです。<br>今回はisucon3を対象にベンチを走らせているつもりだったのですが、その入れ替わりの過程でisucon3が一番上に来ていたの気が付かず、実はisucon1を選んでいたのでした。<br>ただ、こんなのはアクセスログを見れば一発でわかったことなので、焦りは禁物ですね。</p>
+<p>また、たまにfailする問題ですが、なんと初期実装にバグがあり、高負荷時に予約時間等の整合性がとれなくなることがありました。<br>具体的にはデータベースを叩くときにトランザクションをつくる前にクエリを発行して予約対象の座席を決定している部分です。<br>さらに、他のエンドポイントもトランザクションをつくらずに複数のクエリを発行しているため、書き込み処理がそのクエリ群にはなくても、他のエンドポイントからの処理を並列で実行していた場合にデータベースの内容が書き換わり、APIのレスポンスの内容がおかしくなりfailするパターンもあるようでした。<br>具体的に満たすべき仕様が与えられないコンテストで、高負荷時にはじめて発現するとはいえ、初期実装にバグがあるっていうのはいかがなものなのか…とは個人的には思うのですが、こういうこともあると今後は気を配ったほうが良さそうです。</p>
+<h2 id="予選通過のための戦略"><a href="#予選通過のための戦略" class="headerlink" title="予選通過のための戦略"></a>予選通過のための戦略</h2><p><a href="http://isucon.net/archives/52459762.html" target="_blank" rel="noopener">今年のエントリまとめ</a>から予選通過したチームの戦略を読み解きたいと思います。</p>
+<h3 id="戦略その１-データベースの情報をすべてメモリ上に落とす"><a href="#戦略その１-データベースの情報をすべてメモリ上に落とす" class="headerlink" title="戦略その１: データベースの情報をすべてメモリ上に落とす"></a>戦略その１: データベースの情報をすべてメモリ上に落とす</h3><p>今回の問題の初期実装はとにかくデータベースのアクセスの仕方が非効率な部分が多く、これらを解決しなければなりません。<br>そこで、データベースアクセスをそもそもやめて、すべてメモリ上で操作すれば処理を格段に減らせるという戦略が考えられます。<br>参考: <a href="http://math314.hateblo.jp/entry/2018/09/17/195651" target="_blank" rel="noopener">ISUCON8予選参加記 - math314のブログ</a></p>
+<p>こちらの戦略、予選後の開放期間でためされた方もいて、なんと50万点を叩き出したようです（予選期間中での最高得点は9万点代）。<br>しかし、この戦略はデータベースアクセス全てを書き換えるため実装量がとても厳しいことになり、整合性をとるのが非常に難しい戦略でもあります。<br>また、サーバーは1台しか使えないことになります。<br>さらに、アプリケーションを終了させた後の整合性も検査対象のため、データベースへの書き込みも行わないと失格になります。<br>確かに、今回は非常に効果のある戦略だったようですが、実装力がないチームがうかつに手を出すと破滅しかねない危険な戦略です。</p>
+<h3 id="戦略その２；とにかく地道にクエリを改善し、3台フル活用する"><a href="#戦略その２；とにかく地道にクエリを改善し、3台フル活用する" class="headerlink" title="戦略その２；とにかく地道にクエリを改善し、3台フル活用する"></a>戦略その２；とにかく地道にクエリを改善し、3台フル活用する</h3><p>初期実装には大量のN+1クエリが存在しているため、これらを地道に潰し、3台の与えられたサーバーに適切に役割を与える、でも十分に得点は叩き出せます。<br>多くのチームはこちらの戦略をとっていたようです。</p>
+<p>特に、イベント情報取得の際のreservationsテーブルの叩き方は非常に非効率なので、ここをどう改善するのかが1つの鍵だったようです。また、予約時のreservationsテーブルへの書き込みも、ロックを取得するため、効率化が必要となります。</p>
+<p>具体的には</p>
+<ul>
+<li>N+1になっている箇所はJOINなどで潰す</li>
+<li>sheetsテーブルは不変なので、初期化時にメモリに展開しておく</li>
+<li>reservationsテーブルに適切なindexをつくる<ul>
+<li>event\idとcanceled_atに対してなど</li>
+</ul>
+</li>
+<li>予約時にランダムに席をとってくる際のSQLでの<code>ORDER BY RAND()</code>をやめて言語実装のランダムでおこなう<ul>
+<li>ランダムに返す事自体は要求仕様なので変えてはいけない</li>
+</ul>
+</li>
+</ul>
+<p>また、複数台の活用ですが、初期実装の状態では1つのAPIリクエストに対して複数回データベースクエリを投げるため、そのオーバーヘッドが大きいためデータベースとウェブサーバーを別にした瞬間、タイムアウトで落ちるようになります。<br>しかし、データベースサーバーのCPUリソースはかなりかつかつの状態なので、データベースアクセスの最適化がある程度行われたのち、複数台の実装にすることでスコアが伸びることが期待されます。<br>特に<code>/admin</code>以下にあるCSVを出力するエンドポイントはCPUを大きく消費するため、複数台化は必須となったでしょう。</p>
+<h2 id="今回の罠"><a href="#今回の罠" class="headerlink" title="今回の罠"></a>今回の罠</h2><p>延長戦の中で気がついた罠についていくつか紹介したいと思います</p>
+<h3 id="初期実装のSQLクエリ"><a href="#初期実装のSQLクエリ" class="headerlink" title="初期実装のSQLクエリ"></a>初期実装のSQLクエリ</h3><p>戦術の通り、トランザクションをつくるタイミングがおかしい、そもそもトランザクションをつくっていない、などの罠もありましたが、他にも初期実装にはバグではないが不要な文がいくつかありました。</p>
+<h4 id="HAVING節"><a href="#HAVING節" class="headerlink" title="HAVING節"></a>HAVING節</h4><p>初期実装に</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * <span class="keyword">FROM</span> reservations WHERE event_id = ? <span class="keyword">AND</span> sheet_id = ? <span class="keyword">AND</span> canceled_at IS <span class="literal">NULL</span><span class="built_in"> GROUP </span>BY event_id, sheet_id HAVING reserved_at = MIN(reserved_at)</span><br></pre></td></tr></table></figure>
+
+<p>という部分がありました。<br>気持ちとしては同じ<code>sheet_id</code>に対して複数のキャンセルされていない予約があった場合、<code>reserved_at</code>が最も小さいものを有効な予約とみなす、としたかったのでしょうが、このクエリは正しくありません。<br>なぜかというと、HAVING節はGROUPED BYされた後のエントリに対してフィルターをかけるものであり、その集約前のデータに対して、あるいは集約の仕方を指定するものではないからです。<br><a href="https://mariadb.com/kb/en/library/group-by/" target="_blank" rel="noopener">MariaDBの公式ドキュメント</a>にも</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">To</span><span class="built_in"> filter </span>grouped rows based on aggregate values, use the HAVING clause</span><br></pre></td></tr></table></figure>
+
+<p>とあります。<br>では、複数の予約があった場合はどうなるか。<br>その際ような際の仕様は不定で、今回のMariaDBで実験したところ、そのカラムはそもそも集約されず無視されていました。<br>標準のSQLではそもそもGROUP BYで指定していないカラムに関してはSELECT節で引っ張ってこれません。しかし、MySQLではその仕様が拡張され、そのようなカラムの場合、集約されたエントリ全てにおいて、そのカラムは同一であるならば、その同一の値が入ります。しかし、同一でない場合の値は未定義です。<br>参考: <a href="https://dev.mysql.com/doc/refman/5.6/ja/group-by-handling.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/5.6/ja/group-by-handling.html</a></p>
+<p>そもそも、予約時のトランザクションの作り方が正しければ、同じ<code>sheet_id</code>と<code>event_id</code>に複数の予約が入ることはありません（トランザクションをつくる前のSELECT文で予約のない席を探しているため）。<br>なので、このHAVING節は完全にいらないものです。</p>
+<h4 id="FOR-UPDATE"><a href="#FOR-UPDATE" class="headerlink" title="FOR UPDATE"></a>FOR UPDATE</h4><p>いろいろなところで使われていた<code>FOR UPDATE</code>文ですが、きちんと検証はしていないですが、これらは全く無意味だったと思われます。</p>
+<p><a href="https://mariadb.com/kb/en/library/for-update/" target="_blank" rel="noopener">MariaDBの公式ドキュメント</a>を見てみましょう。<br>この<code>FOR UPDATE</code>があると、次のデータベースの書き込みが発生するまで、他のトランザクションからの書き込みやロックの取得を防ぐことができます。<br>しかし、ドキュメントにあるように、この節は<code>autocommit</code>がオフになっている場合またはトランザクション外でないと効果がありません。<br>autocommitはデフォルトでは有効で、サーバーの元々の<code>my.cnf</code>では特に指定していないので、autocommitが有効だったようです。<br>そもそも、autocommitが無効だったとしたら、<code>FOR UPDATE</code>したあとにデータベースを<code>UPDATE</code>や<code>INSERT</code>がないと<code>COMMIT</code>を実行しない限りロックを取得したままになるのですが、今回、<code>COMMIT</code>をしていない箇所が結構ありました。</p>
+<h3 id="大量の外部からのアクセス"><a href="#大量の外部からのアクセス" class="headerlink" title="大量の外部からのアクセス"></a>大量の外部からのアクセス</h3><p>予選中でもあったのですが、外部からの攻撃が確認できました。これはそれなりにネットワークのリソースを食っていたようなので、場合によってはそれなりにパフォーマンスが低下していた可能性があります。<br>具体的には、アクセスログを見たところ、phpadminなどの怪しげなアクセスが記録されていたこと、<code>journalctl -xe</code>でsshでの認証失敗がたくさんあったことです。<br>今回のsshdの設定はパスワードログインを許可していたため、このような攻撃があったのでは、と思います。<br>denyhostsの導入や、アクセスログを見て一部IPアドレスをファイアウォールで弾くなどの設定が必要だったと思われます。</p>
+<h3 id="h2oプロキシが502-Gatewayエラーを返す"><a href="#h2oプロキシが502-Gatewayエラーを返す" class="headerlink" title="h2oプロキシが502 Gatewayエラーを返す"></a>h2oプロキシが502 Gatewayエラーを返す</h3><p>これはちゃんと検証できなかったのですが、h2oで80番ポートから8080番ポートへのプロキシで502が帰ってくることがあり、502を返してしまうとベンチマークがfailする、という問題が確認できました。<br>8080を直接叩くと問題は起きず、同じ内容のリクエストを投げても502が帰ってくる場合とそうでない場合もあり、原因はよくわかりませんでした。<br>予選中はそのような問題は起きませんでしたが、アクセスログに関する設定を外した他のサーバーでなぜか頻発しました。<br>エラーログのデフォルト設定では特に原因がつかめず、何が悪かったかはわかりませんでした。<br>他のチームは早々にnginxに切り替えていたので、延長戦では僕もnginxに切り替えて深くは原因追求しませんでした。</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>来年はもうちょっと環境整備をしたうえで、SQLを早く最適化できるようになりたいですね</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-09-17T03:56:00.000Z"><a href="/hexo/2018/09/17/isucon.html">2018-09-17</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2018/09/17/isucon.html">ISUCON2018予選敗戦記</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>isucon2018予選、一日目にガラスボッチとして参加して見事惨敗しました。大会の感想と来年に向けての準備について書いていきたいと思います。<br>懺悔の用意はできてるか</p>
+<h2 id="事前準備"><a href="#事前準備" class="headerlink" title="事前準備"></a>事前準備</h2><p>もともとはボッチ参戦予定でしたが、なんだかんだでなり（<a href="https://twitter.com/iw_tatsu" target="_blank" rel="noopener">@iwa_tatsu</a>）くんと一緒に出場しました。ガラスボッチだがボッチではない。<br>僕自身は初参加で、なりは去年のISUCONにも出ていたので、去年の問題とそのときにやったこと、上位陣のブログ記事などを参考に勉強会をやって役に立ちそうなことはprivate wikiにまとめておくなどしておきました。</p>
+<p><a href="http://isucon.net/archives/50949740.html" target="_blank" rel="noopener">去年のエントリまとめ</a></p>
+<p>去年の予選は複数台構成で、3台のマシンにどうロードバランシングしていくのかが1つのキーだったらしいので、今年も複数台構成であろうということで、そのへんを意識しながら資料を漁っていました。<br>今年の環境はsshでCentOSの環境にアクセスしてやるということは事前に公開されていたので、僕の方でansibleを使ってgitやvimなどの基本的なソフトウェアは開始と同時に勝手に入るように用意しておきました。</p>
+<p>言語選択についてですが、おそらくgo言語が実装が公開されている中では高速で有利であろうとは思ったのですが、去年はそうでもなかったらしく、<br>また、二人ともgoについての知識はなかったのでnodejsで勝負することにしました。<br>あと、僕の個人的趣味でScalaが好きだったので、スキがあれば<a href="https://www.playframework.com/documentation/2.6.x/ScalaHome" target="_blank" rel="noopener">Play</a>に移植する計画も立てていました。<br>sbtが起動するために必要なものはansibleで入るように準備しておきました。</p>
+<h2 id="当日"><a href="#当日" class="headerlink" title="当日"></a>当日</h2><p>mixiさんが会場提供してくれるとのことだったので、それに参加させていただきました。</p>
+<p>問題開始と同時にsshキーの登録、ansibleをつかってのツールインストールはすんなりできました。<br>今回サーバーは3台与えられていて、初期状態でアプリケーションとDBが1台のみで稼働し、残りは何もしていない状態でした。<br>スコアはそのうち1台を対象に大量のリクエストを飛ばすので、整合性を保ちつつたくさんリクエストを返せばよい、という内容でした。</p>
+<p>ウェブアプリケーションの構成を把握しようとしたが、どうもnginxの設定が見当たらない…と思ったら今年はなんと<a href="https://h2o.examp1e.net/" target="_blank" rel="noopener">h2o</a>という全く別のアプリケーションで動いていました。<br>DBもMySQLではなくMariaDBでしたが、これは想定の範囲内（多少設定に躓いた部分もありますが多分誤差程度）。</p>
+<h3 id="ログ解析"><a href="#ログ解析" class="headerlink" title="ログ解析"></a>ログ解析</h3><p>予定通りnodejsの実装に切り替えた後、ベンチマークを走らせました。初期状態ではせいぜい1000くらいのスコアしかでません。<br>では、ボトルネックはどこかな…とログ解析を開始しようとしたのですが、まずSQLのスロークエリが全くない。<br>あせりましたが、どうやら今年は一つ一つのクエリはそんなに重くないようです。<br>では、どのエンドポイントが重いのか。<a href="https://github.com/tkuchiki/alp" target="_blank" rel="noopener">alp</a>というのツールで一気にやってしまおう、と計画していたのですが、これを使うにはログのフォーマットをツールの期待する形に整形する必要があります。<br>nginxで予想していたため、h2oで同じようなconfigを書くかnginxに切り替えるかしかありません。</p>
+<p>nginx用の資料はいろいろ集めていたため、はじめはnginxに切り替えようとしたのですが、csvファイルを出力するエンドポイントにて何故かレスポンスが途中までしか出ないという問題が発生したため、最終的にh2oでがんばることに。<br>格闘の末、ようやくalpが使い物になる状態に。<br>わかったことは</p>
+<ul>
+<li>トップページへのアクセスがそれなりに多い上、一番時間を食う</li>
+<li><code>/admin/api/reports/sales</code>がアクセス回数が数回なのにめちゃくちゃ時間を食う</li>
+<li><code>/api/users/:id</code>もアクセスが多く時間がかかる</li>
+</ul>
+<p>また、<a href="https://github.com/firehol/netdata" target="_blank" rel="noopener">netdata</a>をつかってのパフォーマンス監視もしていました。こちらはansibleで事前準備しておいたのでiptablesでポートを開けさえすればすぐに使えたのですが、<br>CPUがめっちゃ動いている、くらいの情報しかわからなく、実際にどこを改善させればいいのかを確定させるためにはalpのアクセスログが必要でした。</p>
+<h3 id="複数台構成"><a href="#複数台構成" class="headerlink" title="複数台構成"></a>複数台構成</h3><p>netdataの情報からCPUがかつかつでトラフィックも相当というのがわかったので、他のサーバーでもアプリケーションが稼働できるように設定しようとしました。<br>データベースは1台のみで動かし、残りはリモートからアクセス、という形に。初期化のときに使うコマンドと、アプリケーションが参照するDBの設定が分離されているのがちょっと罠ですが、割とすぐに稼働できるようなりました。<br>しかし、ベンチマークを走らせるとfailしてしまい、メッセージを見るとタイムアウトとなっている。<br>どうやら、大量のDBリクエストがあるため、リモートにDBがある状態だとそのオーバーヘッドでタイムアウトしているようでした。<br>そのため、単にロードバランスするだけではかえって遅くなる危険性があると思い、データベースのアクセスが少ないがCPUリソースを大量に消費する<code>/admin/api/reports/sales</code>のみ他のサーバーにプロキシすることに。<br>これはかなりきいて、いくつかのアプリケーションコードの改善と合わせてスコアは一気に10000点台に。</p>
+<p>しかし、その後は後述するトラブルに見舞われ、思うように構成の見直しはできませんでした。</p>
+<h3 id="アプリケーションコード改善"><a href="#アプリケーションコード改善" class="headerlink" title="アプリケーションコード改善"></a>アプリケーションコード改善</h3><p>トップページのアクセスから見ていったのですが、N+1問題のオンパレードという感じでした。しかし、いきなり全部変えるのは整合性を保つのが難しくなるので、細かい改善を積み重ねつつリファクタリングする、という感じにしました。<br>最終的にできたのは</p>
+<ul>
+<li><code>getEvent</code>関数中の<code>reservations</code>テーブルのアクセスを<code>sheet_id</code>ごとではなく一括で行う</li>
+<li><code>sheets</code>テーブルは不変なので、初期化時にメモリに落としておく</li>
+<li>ログインが必要とされるページの処理で<code>nickname</code>を取得するために余計にDBを叩いていたのでcookieに保存</li>
+<li><code>getEvent</code>関数で取得される<code>reservations</code>テーブルの情報は<code>/api/users/:id</code>の表示に不要なので、専用関数をつくってに切り替えてそもそも叩かない</li>
+<li><code>/admin/api/reports/sales</code>はgzip圧縮して返す<br>くらいです。</li>
+</ul>
+<p>とにかくDBへのアクセスを減らすことに注力しました。</p>
+<h3 id="謎のトラブル"><a href="#謎のトラブル" class="headerlink" title="謎のトラブル"></a>謎のトラブル</h3><p>10000点台を叩き出し、アプリケーションコードの改善を進めていたのですが、何故か良くなる変更のはずなのに10000点を大きく下回る、ということが連続してきました。<br>よくnetdataの画面を見ると、何もアクセスのないはずのサーバーのnetworkの使用率がやたら高いことに気が付きます。<br>実は複数台構成にしたり、手元環境からアクセスしやすいようにiptablesでかなり緩い設定をいろいろと仕込んでいました。これはまずいと思い、iptablesの設定を慌てて変更。これで多少スコアは持ち直したのですが、それでも低い。<br>どうも、このスコア、ブレブレなのは日常茶飯事らしいいので、これは仕方ないと思い、最後の調整を進めました。</p>
+<p>ところが、終了30分前あたりから、なぜかベンチマークがfailになり続け全く通らなくなる、という事態に陷ってしまいました。iptablesの設定がおかしかったのか、と思いいろいろ再起動をかけましたが治らず。<br>アプリケーションコードを初期状態にするをしても治らず。<code>/etc</code>以下は<a href="https://wiki.archlinux.jp/index.php/Etckeeper" target="_blank" rel="noopener">etckeeper</a>で管理していたのですが、それも正常だった頃と差分なし。<br>DBの内容を初期状態に戻すのも効果なし。そもそも今回は<code>/initialize</code>というエンドポイントを叩くとDBとが初期化されるようにデフォルトでなっていて、そこはかえていません。<br>結局この謎のトラブルを解決できないまま競技終了となってしまいました。<br>原因として考えられるとしたら</p>
+<ul>
+<li>アプリケーションコードのバグ<ul>
+<li>randomなケースも混ざっていたのだろうが、それでも10回くらい連続で落ちていたのはおかしい</li>
+<li>初期実装にも戻したがfailした説明にはならない</li>
+</ul>
+</li>
+<li>h2oのバグを踏んでおかしな状態になっていた<ul>
+<li>そういえばh2oの再起動を試していなかった</li>
+</ul>
+</li>
+<li>IPアドレスが変わるなどネットワーク環境がおかしくなっていた<ul>
+<li>ベンチマークの実行はssh用のグローバルIPではなく、別の専用プライベートIPを利用していた</li>
+</ul>
+</li>
+<li>ベンチマークがバグっている<ul>
+<li>これは他のチームでそういう報告がないのでほとんどありえない</li>
+</ul>
+</li>
+<li>永続化されていない初期設定が存在した<ul>
+<li>運営は再起動後、追試のためベンチマークを走らせるという作業をするため、これもなさそう</li>
+</ul>
+</li>
+</ul>
+<p>ベンチマークを走らせていると、全く同じアプリケーション・同じ構成なのになぜかfailするということが稀にありました。その時は単になんかネットワークの調子が悪かったのかな、程度に考えていたのですが、<br>もしかしたら何か関係があったのかもしれません。</p>
+<p>結局、何が起きていたのかは特定できませんでしたが、このトラブルに遭遇してしまったとき終了間際ということもあり、パニックになってログを見返すなどのエラー特定作業ができませんでした。<br>仮に外部の影響だったとしてもそれを冷静に分析して、これは外部のせいであると断定するにいたれなかったのは問題でしょう。<br>いずれベンチマークコードも公開されると思うので、環境を再現して自分で追試してなにか原因をつかめれば、と思います。</p>
+<h3 id="Scala"><a href="#Scala" class="headerlink" title="Scala"></a>Scala</h3><p>実は<code>/admin/api/reports/sales</code>はScalaにすれば速くなるのでは、みたいな話はしていたのですが、さすがに余裕がありませんでした。<br>でも、勝ちを捨ててそういう方向性に走るのも悪くなかったかなあ</p>
+<h3 id="昼食"><a href="#昼食" class="headerlink" title="昼食"></a>昼食</h3><p>Uber Eatsで海鮮丼的なものを食べて優勝しよう（ここでいう優勝は競技での優勝ではない）という話になっていたのですが、そもそも店の選定をしていないという状態で、おまけに店を選定している最中にUber Eatsのサーバーが落ちるとかいうことに見舞われ、ろくな昼食が取れませんでした。<br>一応、SOYJOYを事前に買っていたのでそれでごまかしましたが、やはり海鮮丼には大きく劣り優勝には程遠い感じになってしまいました。</p>
+<p>その代わり、夜は焼肉っしょ！！！ということで夜はいい感じの焼肉を食べたのですが、その焼肉屋に傘を置き忘れるとかいうトドメを刺されてとてもつらい</p>
+<h2 id="感想・懺悔"><a href="#感想・懺悔" class="headerlink" title="感想・懺悔"></a>感想・懺悔</h2><p>ベストスコアは13000くらいだったと思うのですが、1日目のトップチームが50000点台であったことを考えると、トラブル云々がなくても予選通過は無理があろう思われます。</p>
+<h3 id="問題について"><a href="#問題について" class="headerlink" title="問題について"></a>問題について</h3><p>非常に良い問題だったと思います。初期実装ではかなり改善するところが多い状態ですべてを解決するのは短時間では無理なので、ちゃんとボトルネックを見極め、改善する箇所の優先度を見極められる能力が求められたものだと思います。<br>やるべきことが多い分、3人目がほしかった。</p>
+<p>あと、ベンチマークスコアのブレ幅は……去年も言われていたようですし、この手のコンテンストでは難しいのでしょうか</p>
+<h3 id="準備不足"><a href="#準備不足" class="headerlink" title="準備不足"></a>準備不足</h3><p>ある程度の準備はしてきたつもりでしたが、ログ解析周りの準備はかなりずさんでした。alpの使い方も十分に把握できていなく、また、alpはかなりログの形を限定してくるため、<br>もっと軽量で使いやすい解析手段の用意も考えるべきでした。<br>細かいところで言うと、.bashrcや.vimrcなども多少はいじっておいたほうがよかったかもしれません。<br>普段であれば僕は<a href="https://github.com/garasubo/dotfiles" target="_blank" rel="noopener">dotfiles</a>レポジトリに自分好みの設定を上げておきそれを入れているのですが、他の人も使うのに結構ゴテゴテしているので好みが分かれるかなと思って入れるのを見送りました。</p>
+<p>また、firewallの設定方法も確認しておくべきでした。今回僕はiptablesでポート開放を行っていましたが、CentOSはfirewall-cmdで操作するのが普通です。いい加減なセキュリティ設定はやめるべきでした。<br>ここらへんは踏み台サーバー的なものを用意しして置くと更に楽できたかもしれません。そうすれば初めのssh-copy-idは1サーバーあたり1回ですみますし、ポートもsource IPで制限して開放すればリスクをかなり軽減できたと思います。</p>
+<p>あと、<a href="http://www.keepalived.org/" target="_blank" rel="noopener">keepalived</a>なんかも使えるかなあとか画策していたのですが、事前にまともに使う練習をしなかったので、結局使えず仕舞いでした。</p>
+<p>ansibleはよかったです。ローカルのPCさえきちんと設定していれば動くし、単なるssh経由でshell scriptを走らせるラッパ程度の使い方でもかなり役に立つと思います。</p>
+<h3 id="整合性を保ちつつ改善する"><a href="#整合性を保ちつつ改善する" class="headerlink" title="整合性を保ちつつ改善する"></a>整合性を保ちつつ改善する</h3><p>今回の問題ではDBにアクセスする→結果を元にオブジェクトをつくる→足りない情報を別テーブルから複数のクエリを投げて取得するといういわゆるN+1問題が多く、仕込まれていました。<br>ただ、これを解決するにはコードが何をしているかをちゃんと把握して、書き換える必要があり、その際気をつけないと仕様を満たさなくなる恐れがあります。</p>
+<p>今回、僕らのチームは変更したらいきなりベンチマークを走らせてそれでテストするというやり方をとっていて、非常にヒヤヒヤしながら開発していました。テストケースのようなものは特に与えられていなかったので。<br>できれば、自前の小さなテストケースを用意しておいて、それを変更ごとに走らせて整合性を確認する、とかができるとよかったかもしれません。<br>ただ、この短時間・少人数のコンテストでそれができるかはかなり疑問ではあります。</p>
+<h3 id="来年に向けて"><a href="#来年に向けて" class="headerlink" title="来年に向けて"></a>来年に向けて</h3><p>そもそも来年開催されるかどうかは不明ですが…本当に面白いコンテストなので来年もあればぜひ参加したいですが、<br>運営はチーム数x3のサーバーを手配して参加費も取らないので相当大変だったと思います。本当にお疲れ様でした。</p>
+<ul>
+<li>まず3人チームをつくる</li>
+<li>今年の問題のトラブルの検証と延長戦</li>
+<li>もっとansibleでいろいろ入るようにする</li>
+<li>ログ解析手法の洗練化</li>
+<li>firewall-cmdの勉強</li>
+<li>昼食はちゃんと決める</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-09-02T11:08:20.000Z"><a href="/hexo/2018/09/02/vietnam.html">2018-09-02</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2018/09/02/vietnam.html">ベトナム旅行記</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>ベトナムのハノイに2泊3日に行ってきた</p>
+<h2 id="ホテル"><a href="#ホテル" class="headerlink" title="ホテル"></a>ホテル</h2><p><a href="http://www.littlehanoideluxehotel.com/" target="_blank" rel="noopener">Little Hanoi Deluxe Hotel</a>に宿泊した。かなり狭めのホテル。日本のビジネスホテル程度のクオリティ。<br>しかし、値段はその分安いし、英語も通じる。特にスタッフの対応はすごく親切で、外出する際の注意事項（道の渡り方とか）をアドバイスしてくれたり、チェックアウト時にはコーヒー粉とそれを淹れるためのフィルターをお土産としてくれたりしてくれた。</p>
+<h2 id="ネット環境"><a href="#ネット環境" class="headerlink" title="ネット環境"></a>ネット環境</h2><p>一応、FreeのWi-fiはいろいろなところで使えるようなのだが、かなり不安定でつらい。<br>SIMフリーの端末を持っていたので、格安のSIMカードが空港で買えるので、今回はそれを利用した。Viettelという会社でデータ通信のみ30日間で3.5GB利用可能のプランで、正確な値段は忘れてしまったが日本円で600円程度だったと思う。<br>電波の範囲もかなり広く届いていた印象。</p>
+<p>また、SIMカードはamazonで日本からでも購入可能なようだ。信頼性は分からないが、万が一ダメでも1000円もしないので、こっちで思い切って買ってしまうのも手であろう。</p>
+<h2 id="通貨"><a href="#通貨" class="headerlink" title="通貨"></a>通貨</h2><p>ベトナムドン（VDN）が使われている。1円≒210VDNとかなりインフレしている。1000ドン以下は切り捨てされるし、場合によっては1000ドンすらお釣りとして出すのを躊躇されることもある。<br>物価は全体的にかなり安い。ホテル代を除いて15000円両替したが、かなり良いレストランとかに入ったりしたが、ちょうど使い切るくらいだった。</p>
+<h2 id="交通"><a href="#交通" class="headerlink" title="交通"></a>交通</h2><p>車社会。バイクも車も多く、交通ルールもめちゃくちゃ。スピードは出しまくるし、信号も少なく、前の車を追い越すには対向車線にでることも厭わず進んでいく。<br>バスや電車は安いがそこまで多くはないので、タクシーを使うことになる。ただし、タクシーのボッタクリ業者には要注意。<br>また、Grabという配車アプリを使う手もある。こちらは信頼性も高く安いのだが、ベトナムで有効な電話番号が必要なのと、運転手にはベトナム語しか通じないことも多いのに要注意。</p>
+<p>歩道は狭く、バイクに占拠されていたり、なぜか道端でものを燃やしていたりして、横断歩道も少なく車も割と容赦してくれないので、歩き回るのには苦労した。</p>
+<h2 id="お土産"><a href="#お土産" class="headerlink" title="お土産"></a>お土産</h2><p>ハノイタワー1階にあるイオンシティマートで買った。お土産専門店ではないので輸入品も多い点には注意。<br>コーヒー（ベトナムは輸出量世界一らしい）やお菓子類、インスタントラーメン系などいろいろ買える。</p>
+<p>空港で買おうとするとここの3倍近い値段で買う羽目になるので注意。</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>ひさびさの海外旅行で楽しかったのだが、もうしばらくはベトナム行きたくない</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-05-28T09:12:46.000Z"><a href="/hexo/2018/05/28/rust-qemu.html">2018-05-28</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2018/05/28/rust-qemu.html">Arm Cortex-MのRustベアメタルをQEMUでデバッグ</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>前回記事で紹介したTockのように、RustでもArmでのベアメタルプログラムができるようになってきた。<br>ベアメタルプログラミングで複雑なことをやろうとするとやはりエミュレータが欲しいな（以前、ハイパーバイザをつくった時はエミュレータなしでつらかった）、と思ったのでやってみた。</p>
+<h2 id="STM32-Nucleo"><a href="#STM32-Nucleo" class="headerlink" title="STM32 Nucleo"></a>STM32 Nucleo</h2><p>省電力な組込み向けのアーキテクチャのCortex-MシリーズのMCU評価ボードは様々あるのだが、今回は<a href="http://www.st.com/ja/evaluation-tools/stm32-mcu-nucleo.html?querycriteria=productId=LN1847" target="_blank" rel="noopener">STM32 Nucleo</a>をターゲットとすることとした。<br>理由としては</p>
+<ul>
+<li>以前、STM32 Discoveryを使用していたことがある</li>
+<li>日本でも比較的安価な評価ボードが購入できる（3000円くらい）</li>
+<li><a href="https://www.mbed.com/" target="_blank" rel="noopener">Mbed</a>に対応しているため、C/C++ベースではあるがサンプルコードが豊富なため</li>
+</ul>
+<p>なお、Tockは独自の評価ボードを提供し、それを利用している。</p>
+<h2 id="GNU-MCU-Eclipse-QEMU"><a href="#GNU-MCU-Eclipse-QEMU" class="headerlink" title="GNU MCU Eclipse QEMU"></a>GNU MCU Eclipse QEMU</h2><p>今回使うことにしたQEMUは本家のではなく、そのフォークである<a href="https://gnu-mcu-eclipse.github.io/qemu/" target="_blank" rel="noopener">GNU MCU Eclipse QEMU</a>を用いる。</p>
+<p>参考: <a href="https://tnishinaga.hatenablog.com/entry/2016/12/31/130000" target="_blank" rel="noopener">QEMUでCortex-M3/M4マイコンボードをエミュレーションしてLチカする話</a></p>
+<p>Eclipseのプラグインのためのものであるが、コマンドラインから直接叩いて動かすのも可能。<br>本家QEMUより多くのボードをサポートしており、ボードの画像を表示してLチカのデバッグも可能なようだ。<br><a href="https://www.npmjs.com/package/xpm" target="_blank" rel="noopener">xpm</a>を用いて簡単に導入することができる。</p>
+<p>詳しい導入は<a href="https://gnu-mcu-eclipse.github.io/qemu/install/" target="_blank" rel="noopener">公式ドキュメント</a>に従えば良い。</p>
+<h2 id="サンプルコードの入手"><a href="#サンプルコードの入手" class="headerlink" title="サンプルコードの入手"></a>サンプルコードの入手</h2><p>参考: <a href="https://qiita.com/tatsuya6502/items/7d8aaf3792bdb5b66f93" target="_blank" rel="noopener">ARM Cortex-M 32ビットマイコンでベアメタル “Safe” Rust</a></p>
+<p>今回動かしたコードはjaparic氏が提供している<a href="https://github.com/japaric/cortex-m-quickstart" target="_blank" rel="noopener">cortex-m-quickstart</a>を用いた。<br>参考にしたブログ記事は微妙に古いので<a href="https://docs.rs/cortex-m-quickstart/0.3.1/cortex_m_quickstart/" target="_blank" rel="noopener">こちらのcrateのドキュメント</a>を参照した。</p>
+<h2 id="実行"><a href="#実行" class="headerlink" title="実行"></a>実行</h2><p>cortex-m-quickstartをドキュメント通りにビルドする。ただし、このQEMUはFPUのサポートがないため、targetはFPUなしのものを（hfで終わらないもの）を選ぶ必要がある。<br>生成物は<code>cargo build --release</code>の後、<code>target/thumbv7em-none-eabi/release</code>にできる。以下のようなシェルスクリプトを用意してQEMUを実行した。</p>
+<figure class="highlight sh"><figcaption><span>qemu-system-gnuarmeclipse.sh</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line">qemu_command=<span class="variable">$HOME</span>/opt/xPacks/@gnu-mcu-eclipse/qemu/2.8.0-3.1/.content/bin/qemu-system-gnuarmeclipse</span><br><span class="line">board_name=NUCLEO-F411RE</span><br><span class="line">mcu_name=STM32F411RE</span><br><span class="line"></span><br><span class="line"><span class="variable">$qemu_command</span> \</span><br><span class="line">--verbose --verbose --board <span class="variable">$board_name</span> --gdb tcp::3333 \</span><br><span class="line">    --mcu <span class="variable">$mcu_name</span> -d unimp,guest_errors  \</span><br><span class="line">    --image <span class="variable">$1</span> \</span><br><span class="line">    --semihosting-config <span class="built_in">enable</span>=on,target=native \</span><br><span class="line">    --semihosting-cmdline <span class="variable">$1</span></span><br></pre></td></tr></table></figure>
+<p>gdbのポートはcortex-m-quickstartの<code>.gdbinit</code>で3333になっているので3333を指定した。<br>実行結果は以下の通り。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">$ .<span class="regexp">/qemu-system-gnuarmeclipse.sh target/</span>thumbv7em-none-eabi<span class="regexp">/release/</span>cortex-m-quickstart</span><br><span class="line"></span><br><span class="line">GNU MCU Eclipse <span class="number">64</span>-bits QEMU v2<span class="number">.8</span><span class="number">.0</span><span class="number">-3</span> (qemu-system-gnuarmeclipse).</span><br><span class="line"><span class="string">Board:</span> <span class="string">'NUCLEO-F411RE'</span> (ST Nucleo Development Board <span class="keyword">for</span> STM32 F4 series).</span><br><span class="line">Board <span class="string">picture:</span> <span class="string">'/home/garasubo/opt/xPacks/@gnu-mcu-eclipse/qemu/2.8.0-3.1/.content/share/qemu/graphics/NUCLEO-F411RE.jpg'</span>.</span><br><span class="line">Device <span class="string">file:</span> <span class="string">'/home/garasubo/opt/xPacks/@gnu-mcu-eclipse/qemu/2.8.0-3.1/.content/share/qemu/devices/STM32F411xx-qemu.json'</span>.</span><br><span class="line"><span class="string">Device:</span> <span class="string">'STM32F411RE'</span> (Cortex-M4 r0p0, MPU, <span class="number">4</span> NVIC prio bits, <span class="number">86</span> IRQs), <span class="string">Flash:</span> <span class="number">512</span> kB, <span class="string">RAM:</span> <span class="number">128</span> kB.</span><br><span class="line"><span class="string">Image:</span> <span class="string">'target/thumbv7em-none-eabi/release/cortex-m-quickstart'</span>.</span><br><span class="line">Command <span class="string">line:</span> <span class="string">'target/thumbv7em-none-eabi/release/cortex-m-quickstart'</span> (<span class="number">54</span> bytes).</span><br><span class="line">Load  <span class="number">16028</span> bytes at <span class="number">0x08000000</span><span class="number">-0x08003E9B</span>.</span><br><span class="line">Cortex-M4 r0p0 core initialised.</span><br><span class="line"><span class="string">'/machine/mcu/stm32/RCC'</span>, <span class="string">address:</span> <span class="number">0x40023800</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/FLASH'</span>, <span class="string">address:</span> <span class="number">0x40023C00</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/PWR'</span>, <span class="string">address:</span> <span class="number">0x40007000</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/SYSCFG'</span>, <span class="string">address:</span> <span class="number">0x40013800</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/EXTI'</span>, <span class="string">address:</span> <span class="number">0x40013C00</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/GPIOA'</span>, <span class="string">address:</span> <span class="number">0x40020000</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/GPIOB'</span>, <span class="string">address:</span> <span class="number">0x40020400</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/GPIOC'</span>, <span class="string">address:</span> <span class="number">0x40020800</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/GPIOD'</span>, <span class="string">address:</span> <span class="number">0x40020C00</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/GPIOE'</span>, <span class="string">address:</span> <span class="number">0x40021000</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/GPIOH'</span>, <span class="string">address:</span> <span class="number">0x40021C00</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/USART1'</span>, <span class="string">address:</span> <span class="number">0x40011000</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/USART2'</span>, <span class="string">address:</span> <span class="number">0x40004400</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/USART6'</span>, <span class="string">address:</span> <span class="number">0x40011400</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/peripheral/led:green'</span> <span class="number">8</span>*<span class="number">6</span> @(<span class="number">316</span>,<span class="number">307</span>) active high <span class="string">'/machine/mcu/stm32/GPIOA'</span>,<span class="number">5</span></span><br><span class="line"><span class="string">'/peripheral/button:reset'</span> <span class="number">30</span>*<span class="number">30</span> @(<span class="number">312</span>,<span class="number">214</span>)</span><br><span class="line"><span class="string">'/peripheral/button:user'</span> <span class="number">30</span>*<span class="number">30</span> @(<span class="number">204</span>,<span class="number">219</span>) active low <span class="string">'/machine/mcu/stm32/GPIOC'</span>,<span class="number">13</span></span><br><span class="line">GDB Server listening <span class="string">on:</span> <span class="string">'tcp::3333'</span>...</span><br><span class="line">Cortex-M4 r0p0 core reset.</span><br><span class="line"></span><br><span class="line">Hello, world!</span><br><span class="line">^Cqemu-system-<span class="string">gnuarmeclipse:</span> terminating on signal <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Rust-on-baremetal-Armの現状"><a href="#Rust-on-baremetal-Armの現状" class="headerlink" title="Rust on baremetal Armの現状"></a>Rust on baremetal Armの現状</h2><p>cortex-m-quickstartの作者であるjapric氏はXargoをつくった人でもあり、かなり積極的にこの分野に貢献している人である。</p>
+
+<blockquote class="twitter-tweet" data-lang="ja"><p lang="en" dir="ltr"><a href="https://twitter.com/rustlang?ref_src=twsrc%5Etfw" target="_blank" rel="noopener">@rustlang</a>, stability without stagnation, taken to robotics<br><br>Probably the first WIP self-balancing robot coded in 100% Rust<a href="https://twitter.com/hashtag/RustyRobots?src=hash&amp;ref_src=twsrc%5Etfw" target="_blank" rel="noopener">#RustyRobots</a> 1/ <a href="https://t.co/MGRPgKVCsS" target="_blank" rel="noopener">pic.twitter.com/MGRPgKVCsS</a></p>&mdash; japaric @ Rustfest (@japaricious) <a href="https://twitter.com/japaricious/status/845697935572656128?ref_src=twsrc%5Etfw" target="_blank" rel="noopener">2017年3月25日</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>彼が今年初めに去年あったベアメタルArmのRustで起きたバグと今年の展望をまとめている。<br><a href="http://blog.japaric.io/embedded-rust-in-2018/" target="_blank" rel="noopener">Embedded Rust in 2018 | Embedded in Rust</a></p>
+<p>現状、ベアメタルArmでプログラミングするためにはunstableなfeatureを使わざるを得ないため、完全に安定とは言えないものの、かなり状況はよくなってきているようだ。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+<nav id="pagination">
+  
+    <a href="/hexo/page/2/" class="alignleft prev">前の投稿</a>
+  
+  
+    <a href="/hexo/page/4/" class="alignright next">次の投稿</a>
+  
+  <div class="clearfix"></div>
+</nav></div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2020/12/28/poem.html">2020年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2020/12/20/ether.html">RustのSTM32向けイーサネットドライバを解説する（受信編）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2020/10/04/isucon10-final.html">ISUCON10決勝に参加しました</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2020/09/13/isucon10-qual.html">ISUCON10 予選参加記（予選通過しました）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2020/05/06/rust-os.html">Rustで組込みプログラミングや自作OS作成をするには</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>14</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>4</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>4</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>9</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
