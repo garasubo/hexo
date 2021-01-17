@@ -27,7 +27,7 @@ RustでSTM32ボード用の自作OSをしていて、アプリケーションの
 <meta property="og:description" content="この記事は自作OS Advent Calendar 2020の20日目の記事です。 RustでSTM32ボード用の自作OSをしていて、アプリケーションの幅を増やしたくて、イーサネットドライバを組むことにしました。使用しているのはNucleo-429ZIボードで、イーサネットモジュールが付属しています。去年から取り組みはじめてはいたものの、今までのペリフェラルとは違い仕様が複雑で何度も挫折して中断し">
 <meta property="og:locale" content="ja">
 <meta property="og:image" content="https://avatars1.githubusercontent.com/u/44086113?s=400&v=4">
-<meta property="og:updated_time" content="2020-12-28T04:56:21.009Z">
+<meta property="og:updated_time" content="2021-01-17T08:22:22.782Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RustのSTM32向けイーサネットドライバを解説する（受信編）">
 <meta name="twitter:description" content="この記事は自作OS Advent Calendar 2020の20日目の記事です。 RustでSTM32ボード用の自作OSをしていて、アプリケーションの幅を増やしたくて、イーサネットドライバを組むことにしました。使用しているのはNucleo-429ZIボードで、イーサネットモジュールが付属しています。去年から取り組みはじめてはいたものの、今までのペリフェラルとは違い仕様が複雑で何度も挫折して中断し">
@@ -125,7 +125,7 @@ RustでSTM32ボード用の自作OSをしていて、アプリケーションの
 <li>RDES2にバッファのアドレスを登録</li>
 <li>RDES3に次のディスクリプタのアドレスを登録する。リングバッファの最後のエントリの場合、RDES3は設定せず、RDES1のRERビットを立てる</li>
 </ul>
-<p>です。まだディスクリプタは8バイトにアラインされている必要があります（ワードアライン）。</p>
+<p>です。またディスクリプタは8バイトにアラインされている必要があります（ワードアライン）。</p>
 <p>アラインメントを実現するために、stm32-ethでは<code>aligned</code>というクレートを使ってアラインメントを保証しています。<br>また、<code>RxRingEntry</code>にはバッファとディスクリプタが対となって格納されていますが、必ずしも対になっている必要はなく、RDES2にきちんとアドレスを格納しておけば基本的にRAMのどこでも構いません。</p>
 <p>DMARDLARレジスタに先頭のディスクリプタのアドレスをいれ、DMAOMRのSRビットを立てれば、受信用のDMAの設定は完了です。</p>
 <h2 id="DMAからデータを受信する"><a href="#DMAからデータを受信する" class="headerlink" title="DMAからデータを受信する"></a>DMAからデータを受信する</h2><p>DMAからデータを受信してみましょう。本来は正しく設定して、データが来る毎に割り込みを発生させて処理させるのがいいのでしょうが、今回はポーリングで行きます。<br><code>RxRing::recv_next</code>を見てみましょう。</p>
@@ -203,6 +203,10 @@ RustでSTM32ボード用の自作OSをしていて、アプリケーションの
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2020/12/28/poem.html">2020年の振り返り</a>
       </li>
     
@@ -216,10 +220,6 @@ RustでSTM32ボード用の自作OSをしていて、アプリケーションの
     
       <li>
         <a href="/hexo/2020/09/13/isucon10-qual.html">ISUCON10 予選参加記（予選通過しました）</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2020/05/06/rust-os.html">Rustで組込みプログラミングや自作OS作成をするには</a>
       </li>
     
   </ul>
@@ -248,13 +248,13 @@ RustでSTM32ボード用の自作OSをしていて、アプリケーションの
   
     <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
   
-    <li><a href="/hexo/tags/Rust/">Rust</a><small>14</small></li>
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>15</small></li>
   
     <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
   
     <li><a href="/hexo/tags/isucon/">isucon</a><small>4</small></li>
   
-    <li><a href="/hexo/tags/osdev/">osdev</a><small>4</small></li>
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>5</small></li>
   
     <li><a href="/hexo/tags/paper/">paper</a><small>9</small></li>
   
@@ -274,7 +274,7 @@ RustでSTM32ボード用の自作OSをしていて、アプリケーションの
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2020 garasubo
+  &copy; 2021 garasubo
   
 </div>
 <div class="clearfix"></div>

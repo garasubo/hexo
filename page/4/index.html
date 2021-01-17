@@ -70,6 +70,65 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2018-05-28T09:12:46.000Z"><a href="/hexo/2018/05/28/rust-qemu.html">2018-05-28</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2018/05/28/rust-qemu.html">Arm Cortex-MのRustベアメタルをQEMUでデバッグ</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>前回記事で紹介したTockのように、RustでもArmでのベアメタルプログラムができるようになってきた。<br>ベアメタルプログラミングで複雑なことをやろうとするとやはりエミュレータが欲しいな（以前、ハイパーバイザをつくった時はエミュレータなしでつらかった）、と思ったのでやってみた。</p>
+<h2 id="STM32-Nucleo"><a href="#STM32-Nucleo" class="headerlink" title="STM32 Nucleo"></a>STM32 Nucleo</h2><p>省電力な組込み向けのアーキテクチャのCortex-MシリーズのMCU評価ボードは様々あるのだが、今回は<a href="http://www.st.com/ja/evaluation-tools/stm32-mcu-nucleo.html?querycriteria=productId=LN1847" target="_blank" rel="noopener">STM32 Nucleo</a>をターゲットとすることとした。<br>理由としては</p>
+<ul>
+<li>以前、STM32 Discoveryを使用していたことがある</li>
+<li>日本でも比較的安価な評価ボードが購入できる（3000円くらい）</li>
+<li><a href="https://www.mbed.com/" target="_blank" rel="noopener">Mbed</a>に対応しているため、C/C++ベースではあるがサンプルコードが豊富なため</li>
+</ul>
+<p>なお、Tockは独自の評価ボードを提供し、それを利用している。</p>
+<h2 id="GNU-MCU-Eclipse-QEMU"><a href="#GNU-MCU-Eclipse-QEMU" class="headerlink" title="GNU MCU Eclipse QEMU"></a>GNU MCU Eclipse QEMU</h2><p>今回使うことにしたQEMUは本家のではなく、そのフォークである<a href="https://gnu-mcu-eclipse.github.io/qemu/" target="_blank" rel="noopener">GNU MCU Eclipse QEMU</a>を用いる。</p>
+<p>参考: <a href="https://tnishinaga.hatenablog.com/entry/2016/12/31/130000" target="_blank" rel="noopener">QEMUでCortex-M3/M4マイコンボードをエミュレーションしてLチカする話</a></p>
+<p>Eclipseのプラグインのためのものであるが、コマンドラインから直接叩いて動かすのも可能。<br>本家QEMUより多くのボードをサポートしており、ボードの画像を表示してLチカのデバッグも可能なようだ。<br><a href="https://www.npmjs.com/package/xpm" target="_blank" rel="noopener">xpm</a>を用いて簡単に導入することができる。</p>
+<p>詳しい導入は<a href="https://gnu-mcu-eclipse.github.io/qemu/install/" target="_blank" rel="noopener">公式ドキュメント</a>に従えば良い。</p>
+<h2 id="サンプルコードの入手"><a href="#サンプルコードの入手" class="headerlink" title="サンプルコードの入手"></a>サンプルコードの入手</h2><p>参考: <a href="https://qiita.com/tatsuya6502/items/7d8aaf3792bdb5b66f93" target="_blank" rel="noopener">ARM Cortex-M 32ビットマイコンでベアメタル “Safe” Rust</a></p>
+<p>今回動かしたコードはjaparic氏が提供している<a href="https://github.com/japaric/cortex-m-quickstart" target="_blank" rel="noopener">cortex-m-quickstart</a>を用いた。<br>参考にしたブログ記事は微妙に古いので<a href="https://docs.rs/cortex-m-quickstart/0.3.1/cortex_m_quickstart/" target="_blank" rel="noopener">こちらのcrateのドキュメント</a>を参照した。</p>
+<h2 id="実行"><a href="#実行" class="headerlink" title="実行"></a>実行</h2><p>cortex-m-quickstartをドキュメント通りにビルドする。ただし、このQEMUはFPUのサポートがないため、targetはFPUなしのものを（hfで終わらないもの）を選ぶ必要がある。<br>生成物は<code>cargo build --release</code>の後、<code>target/thumbv7em-none-eabi/release</code>にできる。以下のようなシェルスクリプトを用意してQEMUを実行した。</p>
+<figure class="highlight sh"><figcaption><span>qemu-system-gnuarmeclipse.sh</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line">qemu_command=<span class="variable">$HOME</span>/opt/xPacks/@gnu-mcu-eclipse/qemu/2.8.0-3.1/.content/bin/qemu-system-gnuarmeclipse</span><br><span class="line">board_name=NUCLEO-F411RE</span><br><span class="line">mcu_name=STM32F411RE</span><br><span class="line"></span><br><span class="line"><span class="variable">$qemu_command</span> \</span><br><span class="line">--verbose --verbose --board <span class="variable">$board_name</span> --gdb tcp::3333 \</span><br><span class="line">    --mcu <span class="variable">$mcu_name</span> -d unimp,guest_errors  \</span><br><span class="line">    --image <span class="variable">$1</span> \</span><br><span class="line">    --semihosting-config <span class="built_in">enable</span>=on,target=native \</span><br><span class="line">    --semihosting-cmdline <span class="variable">$1</span></span><br></pre></td></tr></table></figure>
+<p>gdbのポートはcortex-m-quickstartの<code>.gdbinit</code>で3333になっているので3333を指定した。<br>実行結果は以下の通り。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">$ .<span class="regexp">/qemu-system-gnuarmeclipse.sh target/</span>thumbv7em-none-eabi<span class="regexp">/release/</span>cortex-m-quickstart</span><br><span class="line"></span><br><span class="line">GNU MCU Eclipse <span class="number">64</span>-bits QEMU v2<span class="number">.8</span><span class="number">.0</span><span class="number">-3</span> (qemu-system-gnuarmeclipse).</span><br><span class="line"><span class="string">Board:</span> <span class="string">'NUCLEO-F411RE'</span> (ST Nucleo Development Board <span class="keyword">for</span> STM32 F4 series).</span><br><span class="line">Board <span class="string">picture:</span> <span class="string">'/home/garasubo/opt/xPacks/@gnu-mcu-eclipse/qemu/2.8.0-3.1/.content/share/qemu/graphics/NUCLEO-F411RE.jpg'</span>.</span><br><span class="line">Device <span class="string">file:</span> <span class="string">'/home/garasubo/opt/xPacks/@gnu-mcu-eclipse/qemu/2.8.0-3.1/.content/share/qemu/devices/STM32F411xx-qemu.json'</span>.</span><br><span class="line"><span class="string">Device:</span> <span class="string">'STM32F411RE'</span> (Cortex-M4 r0p0, MPU, <span class="number">4</span> NVIC prio bits, <span class="number">86</span> IRQs), <span class="string">Flash:</span> <span class="number">512</span> kB, <span class="string">RAM:</span> <span class="number">128</span> kB.</span><br><span class="line"><span class="string">Image:</span> <span class="string">'target/thumbv7em-none-eabi/release/cortex-m-quickstart'</span>.</span><br><span class="line">Command <span class="string">line:</span> <span class="string">'target/thumbv7em-none-eabi/release/cortex-m-quickstart'</span> (<span class="number">54</span> bytes).</span><br><span class="line">Load  <span class="number">16028</span> bytes at <span class="number">0x08000000</span><span class="number">-0x08003E9B</span>.</span><br><span class="line">Cortex-M4 r0p0 core initialised.</span><br><span class="line"><span class="string">'/machine/mcu/stm32/RCC'</span>, <span class="string">address:</span> <span class="number">0x40023800</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/FLASH'</span>, <span class="string">address:</span> <span class="number">0x40023C00</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/PWR'</span>, <span class="string">address:</span> <span class="number">0x40007000</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/SYSCFG'</span>, <span class="string">address:</span> <span class="number">0x40013800</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/EXTI'</span>, <span class="string">address:</span> <span class="number">0x40013C00</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/GPIOA'</span>, <span class="string">address:</span> <span class="number">0x40020000</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/GPIOB'</span>, <span class="string">address:</span> <span class="number">0x40020400</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/GPIOC'</span>, <span class="string">address:</span> <span class="number">0x40020800</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/GPIOD'</span>, <span class="string">address:</span> <span class="number">0x40020C00</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/GPIOE'</span>, <span class="string">address:</span> <span class="number">0x40021000</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/GPIOH'</span>, <span class="string">address:</span> <span class="number">0x40021C00</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/USART1'</span>, <span class="string">address:</span> <span class="number">0x40011000</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/USART2'</span>, <span class="string">address:</span> <span class="number">0x40004400</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/USART6'</span>, <span class="string">address:</span> <span class="number">0x40011400</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/peripheral/led:green'</span> <span class="number">8</span>*<span class="number">6</span> @(<span class="number">316</span>,<span class="number">307</span>) active high <span class="string">'/machine/mcu/stm32/GPIOA'</span>,<span class="number">5</span></span><br><span class="line"><span class="string">'/peripheral/button:reset'</span> <span class="number">30</span>*<span class="number">30</span> @(<span class="number">312</span>,<span class="number">214</span>)</span><br><span class="line"><span class="string">'/peripheral/button:user'</span> <span class="number">30</span>*<span class="number">30</span> @(<span class="number">204</span>,<span class="number">219</span>) active low <span class="string">'/machine/mcu/stm32/GPIOC'</span>,<span class="number">13</span></span><br><span class="line">GDB Server listening <span class="string">on:</span> <span class="string">'tcp::3333'</span>...</span><br><span class="line">Cortex-M4 r0p0 core reset.</span><br><span class="line"></span><br><span class="line">Hello, world!</span><br><span class="line">^Cqemu-system-<span class="string">gnuarmeclipse:</span> terminating on signal <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Rust-on-baremetal-Armの現状"><a href="#Rust-on-baremetal-Armの現状" class="headerlink" title="Rust on baremetal Armの現状"></a>Rust on baremetal Armの現状</h2><p>cortex-m-quickstartの作者であるjapric氏はXargoをつくった人でもあり、かなり積極的にこの分野に貢献している人である。</p>
+
+<blockquote class="twitter-tweet" data-lang="ja"><p lang="en" dir="ltr"><a href="https://twitter.com/rustlang?ref_src=twsrc%5Etfw" target="_blank" rel="noopener">@rustlang</a>, stability without stagnation, taken to robotics<br><br>Probably the first WIP self-balancing robot coded in 100% Rust<a href="https://twitter.com/hashtag/RustyRobots?src=hash&amp;ref_src=twsrc%5Etfw" target="_blank" rel="noopener">#RustyRobots</a> 1/ <a href="https://t.co/MGRPgKVCsS" target="_blank" rel="noopener">pic.twitter.com/MGRPgKVCsS</a></p>&mdash; japaric @ Rustfest (@japaricious) <a href="https://twitter.com/japaricious/status/845697935572656128?ref_src=twsrc%5Etfw" target="_blank" rel="noopener">2017年3月25日</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>彼が今年初めに去年あったベアメタルArmのRustで起きたバグと今年の展望をまとめている。<br><a href="http://blog.japaric.io/embedded-rust-in-2018/" target="_blank" rel="noopener">Embedded Rust in 2018 | Embedded in Rust</a></p>
+<p>現状、ベアメタルArmでプログラミングするためにはunstableなfeatureを使わざるを得ないため、完全に安定とは言えないものの、かなり状況はよくなってきているようだ。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2018-05-23T12:37:37.000Z"><a href="/hexo/2018/05/23/tock.html">2018-05-23</a></time>
       
       
@@ -556,50 +615,6 @@
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2015-02-25T05:09:10.000Z"><a href="/hexo/2015/02/25/virt.html">2015-02-25</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/hexo/2015/02/25/virt.html">Xenで使っているディスクイメージの容量拡張</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>Ubuntu 14.04にXenを入れてその上でArch Linux(2015-01版）を動かしている。<br>ディスク容量が足りなくなったので増やそうと思ったのだが、virt-managerあたりからはいけそうな雰囲気がなかったので、<br>適当に調べた方法を試したら上手くいった。</p>
-<p>念の為、ディスクイメージのバックアップをとっておくことを推薦</p>
-<ol>
-<li><p>Ubuntu上でディスクイメージの後ろにほしい長さ分だけ追加<br> ディスクイメージは<code>/var/lib/libvirt/images</code>の中とかにある。</p>
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd <span class="attribute">if</span>=/dev/zero <span class="attribute">bs</span>=512M <span class="attribute">count</span>=20 &gt;&gt; arch.img</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>ゲストOS上でパーティションを再構築<code>fdisk</code>とかで一番後ろのパーティションを一度<code>d</code>で破壊して、<code>n</code>でもう1回つくるとき後ろまで最大限まで伸ばす。<br> その後<code>w</code>で保存。自分の場合、マウントされているパーティションを伸ばしているので、認識させるには一度再起動する必要がある。</p>
-</li>
-<li><p>再起動後、<code>resize2fs</code>でパーティションを拡張、<code>df -h</code>でパーティションが拡張されていることを確認。</p>
-</li>
-</ol>
-<p>参考：<a href="https://mistymagich.wordpress.com/2014/08/16/xen%E3%81%A7%E4%BD%BF%E7%94%A8%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E3%83%87%E3%82%A3%E3%82%B9%E3%82%AF%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%E3%82%92%E6%8B%A1%E5%BC%B5%E3%81%99%E3%82%8B/" target="_blank" rel="noopener">Xenで使用しているディスクイメージを拡張する | misty-magic.h</a></p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
 
 <nav id="pagination">
   
@@ -624,6 +639,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2020/12/28/poem.html">2020年の振り返り</a>
       </li>
     
@@ -637,10 +656,6 @@
     
       <li>
         <a href="/hexo/2020/09/13/isucon10-qual.html">ISUCON10 予選参加記（予選通過しました）</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2020/05/06/rust-os.html">Rustで組込みプログラミングや自作OS作成をするには</a>
       </li>
     
   </ul>
@@ -669,13 +684,13 @@
   
     <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
   
-    <li><a href="/hexo/tags/Rust/">Rust</a><small>14</small></li>
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>15</small></li>
   
     <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
   
     <li><a href="/hexo/tags/isucon/">isucon</a><small>4</small></li>
   
-    <li><a href="/hexo/tags/osdev/">osdev</a><small>4</small></li>
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>5</small></li>
   
     <li><a href="/hexo/tags/paper/">paper</a><small>9</small></li>
   
@@ -695,7 +710,7 @@
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2020 garasubo
+  &copy; 2021 garasubo
   
 </div>
 <div class="clearfix"></div>

@@ -26,7 +26,7 @@
 <meta property="og:description" content="今年の成果まずはブログ記事だが、今年はこの記事を含めずに9本で去年より少なくなっている。一応、zenn.devにも記事を書いたが、それを含めても少ない。また、自作OSプロジェクトだが、今年は新しいモジュールはイーサネットドライバの受信部分のみであまり進捗は出ていない。 と去年やっていた分野では停滞気味になってしまったが、他の形での成果はいくつか上がった。1つはRustでの自作OS入門のドキュメント">
 <meta property="og:locale" content="ja">
 <meta property="og:image" content="https://japan.norton.com/blog/wp-content/uploads/2018/05/coinhive-00.jpg">
-<meta property="og:updated_time" content="2020-12-28T10:02:40.922Z">
+<meta property="og:updated_time" content="2020-12-28T11:39:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="2020年の振り返り">
 <meta name="twitter:description" content="今年の成果まずはブログ記事だが、今年はこの記事を含めずに9本で去年より少なくなっている。一応、zenn.devにも記事を書いたが、それを含めても少ない。また、自作OSプロジェクトだが、今年は新しいモジュールはイーサネットドライバの受信部分のみであまり進捗は出ていない。 と去年やっていた分野では停滞気味になってしまったが、他の形での成果はいくつか上がった。1つはRustでの自作OS入門のドキュメント">
@@ -102,7 +102,7 @@
 <h3 id="Coinhive裁判"><a href="#Coinhive裁判" class="headerlink" title="Coinhive裁判"></a>Coinhive裁判</h3><p>Coinhiveを設置したウェブアプリケーション製作者が逮捕され裁判になるという事件があり、地裁では無罪になったが今年2月の高裁判決では逆転有罪となってしまった。<br>自分はこのケースを無罪になるべきだと思っている。<br>詳しい説明は日本ハッカー協会の寄稿などがわかりやすいと思うので、ここでは詳しく解説しない。</p>
 <a href="https://www.hacker.or.jp/coinhiveopinion/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">【寄稿】コインハイブ事件　意見書ご協力のお願い - 一般社団法人日本ハッカー協会</div></div></div></a>
 
-<p>Coinhiveに関しては知り合いでも有罪になるべきではないか、という意見の人が少なからずいたりする。<br>そういう主張の背景にはCoinhiveを設置するのは金儲けのためで悪意に満ちたものという思い込みであったり、あるいは倫理観にかけた行為であるという点でそういう意見になっていると思っている。<br>しかしながら、ウェブアプリケーションを運営するにあたってなんらかの収益化は必要不可欠だし、倫理観にかける＝違法であるというのはやや論理の飛躍であると思う。<br>もうちょっと踏み込むと、そもそも倫理観にかけた行為であったのか、という点も議論の残る点ではある。<br>例えば有名なセキュリティソフトの開発元のNortonは、自社製品でこのようなマイニングスクリプトをブロックするようにしてはいるものの、100％悪として断罪はできないだろうとしている。</p>
+<p>Coinhiveに関しては知り合いでも有罪になるべきではないか、という意見の人が少なからずいたりする。<br>そういう主張の背景にはCoinhiveを設置するのは金儲けのためで悪意に満ちたものという思い込みであったり、あるいは倫理観にかけた行為であるという点でそういう意見になっていると思っている。<br>しかしながら、ウェブアプリケーションを運営するにあたってなんらかの収益化は必要不可欠だし、倫理観にかける＝違法であるわけではないしそこは議論をきちんと分けるべきと思う。<br>もうちょっと踏み込むと、そもそも倫理観にかけた行為であったのか、という点も議論の残る点ではある。<br>例えば有名なセキュリティソフトの開発元のNortonは、自社製品でこのようなマイニングスクリプトをブロックするようにしてはいるものの、100％悪として断罪はできないだろうとしている。</p>
 <a href="https://japan.norton.com/coinhive-9678" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://japan.norton.com/blog/wp-content/uploads/2018/05/coinhive-00.jpg"></div><div class="descriptions"><div class="og-title">自分のPCやスマホが使われるCoinhiveとは？その特徴と防衛策</div><div class="og-description">そもそもcoinhiveとは何かという基本の解説から、coinhiveがなぜ問題視されているのか、そしてcoinhiveに勝手なことをされたくないという方のための対処法などをまとめました。</div></div></div></a>
 
 <p>そもそもウェブ関連の倫理観というのはまだまだ成熟が甘く、どこからがアウトでどこまでがセーフかという線引きが難しい事案は多くあると思う。<br>他の産業の倫理観を引き合いに非難するというのも、ブラウザというサンドボックス内で実行されるアプリケーションという性質を考えると適当ではないだろう。<br>もっとも今ではブラウザ標準でこのようなスクリプトは弾かれるようになっているし、こういう手法は今なら倫理的ではないと言えるかもしれない。</p>
@@ -173,6 +173,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2020/12/28/poem.html">2020年の振り返り</a>
       </li>
     
@@ -186,10 +190,6 @@
     
       <li>
         <a href="/hexo/2020/09/13/isucon10-qual.html">ISUCON10 予選参加記（予選通過しました）</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2020/05/06/rust-os.html">Rustで組込みプログラミングや自作OS作成をするには</a>
       </li>
     
   </ul>
@@ -218,13 +218,13 @@
   
     <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
   
-    <li><a href="/hexo/tags/Rust/">Rust</a><small>14</small></li>
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>15</small></li>
   
     <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
   
     <li><a href="/hexo/tags/isucon/">isucon</a><small>4</small></li>
   
-    <li><a href="/hexo/tags/osdev/">osdev</a><small>4</small></li>
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>5</small></li>
   
     <li><a href="/hexo/tags/paper/">paper</a><small>9</small></li>
   
@@ -244,7 +244,7 @@
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2020 garasubo
+  &copy; 2021 garasubo
   
 </div>
 <div class="clearfix"></div>

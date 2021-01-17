@@ -70,6 +70,50 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2015-02-25T05:09:10.000Z"><a href="/hexo/2015/02/25/virt.html">2015-02-25</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2015/02/25/virt.html">Xenで使っているディスクイメージの容量拡張</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Ubuntu 14.04にXenを入れてその上でArch Linux(2015-01版）を動かしている。<br>ディスク容量が足りなくなったので増やそうと思ったのだが、virt-managerあたりからはいけそうな雰囲気がなかったので、<br>適当に調べた方法を試したら上手くいった。</p>
+<p>念の為、ディスクイメージのバックアップをとっておくことを推薦</p>
+<ol>
+<li><p>Ubuntu上でディスクイメージの後ろにほしい長さ分だけ追加<br> ディスクイメージは<code>/var/lib/libvirt/images</code>の中とかにある。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd <span class="attribute">if</span>=/dev/zero <span class="attribute">bs</span>=512M <span class="attribute">count</span>=20 &gt;&gt; arch.img</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ゲストOS上でパーティションを再構築<code>fdisk</code>とかで一番後ろのパーティションを一度<code>d</code>で破壊して、<code>n</code>でもう1回つくるとき後ろまで最大限まで伸ばす。<br> その後<code>w</code>で保存。自分の場合、マウントされているパーティションを伸ばしているので、認識させるには一度再起動する必要がある。</p>
+</li>
+<li><p>再起動後、<code>resize2fs</code>でパーティションを拡張、<code>df -h</code>でパーティションが拡張されていることを確認。</p>
+</li>
+</ol>
+<p>参考：<a href="https://mistymagich.wordpress.com/2014/08/16/xen%E3%81%A7%E4%BD%BF%E7%94%A8%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E3%83%87%E3%82%A3%E3%82%B9%E3%82%AF%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%E3%82%92%E6%8B%A1%E5%BC%B5%E3%81%99%E3%82%8B/" target="_blank" rel="noopener">Xenで使用しているディスクイメージを拡張する | misty-magic.h</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2014-12-24T13:44:26.000Z"><a href="/hexo/2014/12/24/hexo.html">2014-12-24</a></time>
       
       
@@ -477,48 +521,6 @@ let g:quickrun_config.mkd = {
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2013-03-03T11:59:00.000Z"><a href="/hexo/2013/03/03/title.html">2013-03-03</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/hexo/2013/03/03/title.html">VimShellを久々に使ってみたら便利だった</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>以前、VimShellを使おうとして入れてみたのだが、はっきりとした理由は忘れたが、いまいちなので使わなかった。<br>が、久々に使ってみると普通のシェルのように使えるようになっていた。</p>
-<p>##install<br><a href="https://github.com/Shougo/vimshell" target="_blank" rel="noopener">ここ</a>から  </p>
-<p>導入にはvimprocが必要で、加えてunite.vimとneocomplcacheがないと、一部の拡張機能が使えない。</p>
-<p>##使い方<br>:VimShellでshellになる<br>インサートモードで入力、コマンドモードでは普通にいつものvimみたいに動いて、<br>ヤンクとかもできる。<br>インサートモードではCtrl+lでコマンドの履歴表示、tabで補完がつかえる。<br>:VimShellPopで画面の一部でVimshellが起動するのでちょっとしたコマンドを起動するには便利。<br>    :VimShellInteractive [任意のインタプリタ]<br>はスクリプト言語を走らせるのにはかなり便利で、vimで編集しているテキストをそのインタプリタに送りつけるという事ができる。</p>
-<p>非同期でコマンドを実行してくれるので、<br>コンパイルしながらちょっとコードの確認とかいうこともできる。</p>
-<p>以前はインタプリタはiexeとかしないと動かなかったんだけど、そういうこともないみたい。</p>
-<p>##欠点<br>bashrcやzshrcとの連携機能は無いので、そっちで独自の設定をみっちりやっていると使いにくいかもしれない。<br>エイリアスくらいなら自動変換ツールくらい誰かつくっていそうなものだが。</p>
-<p>コマンドの補完はやはり賢くない気がする。加えて、個人的にneocomlcacheの動作がイマイチだと思ったので普段は使わないのだが、<br>これを使わないと、ファイル名補完くらいしか効かない。</p>
-<p>あと、gnuplot -persistでプロットしたグラフがgnuplot終了後消えてしまった。</p>
-<p>とかまあまあ、完全なシェルとしてはさすがに使えないにしても、十分に使う価値のあるツールだとは思う。<br>更新も活発だし、作者はzshを目標としているらしいので、これからもどんどん良くなっていくのではないでしょうか。</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
 
 <nav id="pagination">
   
@@ -543,6 +545,10 @@ let g:quickrun_config.mkd = {
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2020/12/28/poem.html">2020年の振り返り</a>
       </li>
     
@@ -556,10 +562,6 @@ let g:quickrun_config.mkd = {
     
       <li>
         <a href="/hexo/2020/09/13/isucon10-qual.html">ISUCON10 予選参加記（予選通過しました）</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2020/05/06/rust-os.html">Rustで組込みプログラミングや自作OS作成をするには</a>
       </li>
     
   </ul>
@@ -588,13 +590,13 @@ let g:quickrun_config.mkd = {
   
     <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
   
-    <li><a href="/hexo/tags/Rust/">Rust</a><small>14</small></li>
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>15</small></li>
   
     <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
   
     <li><a href="/hexo/tags/isucon/">isucon</a><small>4</small></li>
   
-    <li><a href="/hexo/tags/osdev/">osdev</a><small>4</small></li>
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>5</small></li>
   
     <li><a href="/hexo/tags/paper/">paper</a><small>9</small></li>
   
@@ -614,7 +616,7 @@ let g:quickrun_config.mkd = {
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2020 garasubo
+  &copy; 2021 garasubo
   
 </div>
 <div class="clearfix"></div>

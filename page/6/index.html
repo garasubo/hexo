@@ -70,6 +70,48 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2013-03-03T11:59:00.000Z"><a href="/hexo/2013/03/03/title.html">2013-03-03</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2013/03/03/title.html">VimShellを久々に使ってみたら便利だった</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>以前、VimShellを使おうとして入れてみたのだが、はっきりとした理由は忘れたが、いまいちなので使わなかった。<br>が、久々に使ってみると普通のシェルのように使えるようになっていた。</p>
+<p>##install<br><a href="https://github.com/Shougo/vimshell" target="_blank" rel="noopener">ここ</a>から  </p>
+<p>導入にはvimprocが必要で、加えてunite.vimとneocomplcacheがないと、一部の拡張機能が使えない。</p>
+<p>##使い方<br>:VimShellでshellになる<br>インサートモードで入力、コマンドモードでは普通にいつものvimみたいに動いて、<br>ヤンクとかもできる。<br>インサートモードではCtrl+lでコマンドの履歴表示、tabで補完がつかえる。<br>:VimShellPopで画面の一部でVimshellが起動するのでちょっとしたコマンドを起動するには便利。<br>    :VimShellInteractive [任意のインタプリタ]<br>はスクリプト言語を走らせるのにはかなり便利で、vimで編集しているテキストをそのインタプリタに送りつけるという事ができる。</p>
+<p>非同期でコマンドを実行してくれるので、<br>コンパイルしながらちょっとコードの確認とかいうこともできる。</p>
+<p>以前はインタプリタはiexeとかしないと動かなかったんだけど、そういうこともないみたい。</p>
+<p>##欠点<br>bashrcやzshrcとの連携機能は無いので、そっちで独自の設定をみっちりやっていると使いにくいかもしれない。<br>エイリアスくらいなら自動変換ツールくらい誰かつくっていそうなものだが。</p>
+<p>コマンドの補完はやはり賢くない気がする。加えて、個人的にneocomlcacheの動作がイマイチだと思ったので普段は使わないのだが、<br>これを使わないと、ファイル名補完くらいしか効かない。</p>
+<p>あと、gnuplot -persistでプロットしたグラフがgnuplot終了後消えてしまった。</p>
+<p>とかまあまあ、完全なシェルとしてはさすがに使えないにしても、十分に使う価値のあるツールだとは思う。<br>更新も活発だし、作者はzshを目標としているらしいので、これからもどんどん良くなっていくのではないでしょうか。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2013-02-22T05:52:00.000Z"><a href="/hexo/2013/02/22/new-post.html">2013-02-22</a></time>
       
       
@@ -355,6 +397,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2020/12/28/poem.html">2020年の振り返り</a>
       </li>
     
@@ -368,10 +414,6 @@
     
       <li>
         <a href="/hexo/2020/09/13/isucon10-qual.html">ISUCON10 予選参加記（予選通過しました）</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2020/05/06/rust-os.html">Rustで組込みプログラミングや自作OS作成をするには</a>
       </li>
     
   </ul>
@@ -400,13 +442,13 @@
   
     <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
   
-    <li><a href="/hexo/tags/Rust/">Rust</a><small>14</small></li>
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>15</small></li>
   
     <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
   
     <li><a href="/hexo/tags/isucon/">isucon</a><small>4</small></li>
   
-    <li><a href="/hexo/tags/osdev/">osdev</a><small>4</small></li>
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>5</small></li>
   
     <li><a href="/hexo/tags/paper/">paper</a><small>9</small></li>
   
@@ -426,7 +468,7 @@
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2020 garasubo
+  &copy; 2021 garasubo
   
 </div>
 <div class="clearfix"></div>

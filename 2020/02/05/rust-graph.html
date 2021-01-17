@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://ogimage.blog.st-hatena.com/13208692334729897634/10328749687239599894/1493330425">
 <meta property="og:image" content="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-1.2.2&w=1200&mark=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D380%26txt%3DRust%25E3%2581%25AE%2520%2560Arc%2560%2520%25E3%2582%2592%25E8%25AA%25AD%25E3%2582%2580%25281%2529%253A%2520Arc%252FRc%25E3%2581%25AE%25E5%259F%25BA%25E6%259C%25AC%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D878a984f4b14b5b63484cc820ccfa75c&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D500%26txt%3D%2540qnighy%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3De5eed2af6b804ddd7ff5bc03fd5c3f34&blend-align=center%2Cmiddle&blend-mode=normal&s=c06af829ae0a3e57cf72013d62543714">
 <meta property="og:image" content="https://github.githubassets.com/images/modules/gists/gist-og-image.png">
-<meta property="og:updated_time" content="2020-03-31T15:36:39.000Z">
+<meta property="og:updated_time" content="2020-03-31T15:36:39.821Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rustで循環参照を含むグラフをArc&#x2F;Rcを使ってつくる">
 <meta name="twitter:description" content="Rustで循環参照を含む場合の処理はかなり面倒くさい。基本的にミュータブルな参照は同時に1つしか持てないのだが、例えば双方向連結リストの場合、あるノードに対してその前のノードとその後ろのノードから参照される必要があるので、この場合どうにかしてミュータブルな参照以外の方法で前後のノードへのアクセス方法を確保する必要がある。 ということで、前回のRust LT会でそのテーマで発表した方がいらっしゃった">
@@ -194,6 +194,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2020/12/28/poem.html">2020年の振り返り</a>
       </li>
     
@@ -207,10 +211,6 @@
     
       <li>
         <a href="/hexo/2020/09/13/isucon10-qual.html">ISUCON10 予選参加記（予選通過しました）</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2020/05/06/rust-os.html">Rustで組込みプログラミングや自作OS作成をするには</a>
       </li>
     
   </ul>
@@ -239,13 +239,13 @@
   
     <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
   
-    <li><a href="/hexo/tags/Rust/">Rust</a><small>14</small></li>
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>15</small></li>
   
     <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
   
     <li><a href="/hexo/tags/isucon/">isucon</a><small>4</small></li>
   
-    <li><a href="/hexo/tags/osdev/">osdev</a><small>4</small></li>
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>5</small></li>
   
     <li><a href="/hexo/tags/paper/">paper</a><small>9</small></li>
   
@@ -265,7 +265,7 @@
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2020 garasubo
+  &copy; 2021 garasubo
   
 </div>
 <div class="clearfix"></div>
