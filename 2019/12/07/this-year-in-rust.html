@@ -27,7 +27,6 @@ This Week in RustThis Week in Rust">
 <meta property="og:description" content="これはRustその2 Advent Calendar 20197日目の記事です。去年も参加したRust Advent Calendarなのですが、今年はその3まであるようですね。Rustの人気が年々盛り上がっている証拠でしょうか。 This Week in RustThis Week in Rustとは、毎週Rust関連のブログ記事やRustコンパイラへの変更などを紹介してくれるニュースレターです">
 <meta property="og:locale" content="ja">
 <meta property="og:image" content="https://miro.medium.com/max/1200/1*qVIA9q5OBKlDQPsZ2efZFg.jpeg">
-<meta property="og:image" content="https://miro.medium.com/max/1200/1*fyYjlV_EPqraAEYuRbst1A.png">
 <meta property="og:updated_time" content="2019-12-07T09:29:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="This Week in Rustで振り返る今年のRust">
@@ -100,7 +99,7 @@ This Week in RustThis Week in Rust">
 <a href="https://about.houqp.me/posts/rusty-c/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">How to make your C codebase rusty: rewriting keyboard firmware keymap in Rust</div><div class="og-description">Recently, my colleague introduced me to QMK 1, an open-source keyboard firmware. Like many non-trivia C projects, macro is heavily used ever…</div></div></div></a>
 <p>自作キーボードでおなじみのキーボード用ファームウェアのQMKをRustで書き直す話です。<br>C言語で書かれたものをどうRustで表現するか、RustとC言語を連携させるテクニックがまとまっていていいと思いました。</p>
 <h2 id="組込み分野での応用"><a href="#組込み分野での応用" class="headerlink" title="組込み分野での応用"></a>組込み分野での応用</h2><p>Rust Embeddedグループが去年発足したように、組込み分野への応用はRustの用途として注目されている分野のひとつです。</p>
-<a href="https://medium.com/@ly.lee/hosting-embedded-rust-apps-on-apache-mynewt-with-stm32-blue-pill-c86b119fe5f" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://miro.medium.com/max/1200/1*fyYjlV_EPqraAEYuRbst1A.png"></div><div class="descriptions"><div class="og-title">Hosting Embedded Rust apps on Apache Mynewt with STM32 Blue Pill</div><div class="og-description">Build IoT devices the smarter, safer way with Rust and Apache Mynewt</div></div></div></a>
+
 <p>Apache MynewtというリアルタイムOSを用いて、STM32 Blue Pillというマイクロコントローラ上でRustのアプリを動かす話です。<br>なぜC言語ではなくRustがいいのかというところから、実際にどのようにしてプロジェクトに組み込むのかまで詳しく説明されています。</p>
 <h2 id="C言語のとの併用"><a href="#C言語のとの併用" class="headerlink" title="C言語のとの併用"></a>C言語のとの併用</h2><p>Rustの魅力のひとつはC言語と互換性をもたせることができるため、Cで書かれたライブラリを呼び出したり、逆にC言語側からRustのライブラリを呼び出すこともできます。</p>
 <a href="http://hotforknowledge.com/2019/07/14/6-rust-the-new-c/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Rust as the new C. Part 1: building and combining native libs into C API</div><div class="og-description">Evaluating Rust as the common denominator of modern development</div></div></div></a>
@@ -109,7 +108,7 @@ This Week in RustThis Week in Rust">
 <a href="https://msrc-blog.microsoft.com/2019/07/16/a-proactive-approach-to-more-secure-code/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">A proactive approach to more secure code – Microsoft Security Response Center</div></div></div></a>
 
 <p>続くブログでは、なぜRustがC/C++の代わりとして注目しているかが説明されています。</p>
-<a href="https://msrc-blog.microsoft.com/2019/07/22/why-rust-for-safe-systems-programming/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Why Rust for safe systems programming – Microsoft Security Response Center</div></div></div></a>
+
 <p>C/C++のように低レベルでのパフォーマンスコントロールができる一方で、C/C++より強力な安全性の保証をしてくれます。<br>また、メモリ関連の安全性を犯しにくい、型システムも強力で表現力が高いことなども理由に挙げられています。</p>
 <p>Amazonも去年、<a href="https://github.com/firecracker-microvm/firecracker" target="_blank" rel="noopener">Firecracker</a>というRust製のVMMをオープンソースプロジェクトとして公開し注目されましたが、様々な大企業がRustに注目しだしている、ということがわかります。</p>
 <h2 id="async-await"><a href="#async-await" class="headerlink" title="async/await"></a>async/await</h2><p>今年のRustの変更で一番大きな注目を集めたのはasync/awaitの追加でしょう。それに関連する記事もいくつか紹介はされていました。<br>が、自分自身がasync/awaitの仕様をまったく追えていないので、今回は紹介しないでおきます。</p>
@@ -174,6 +173,10 @@ This Week in RustThis Week in Rust">
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
@@ -187,10 +190,6 @@ This Week in RustThis Week in Rust">
     
       <li>
         <a href="/hexo/2020/10/04/isucon10-final.html">ISUCON10決勝に参加しました</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2020/09/13/isucon10-qual.html">ISUCON10 予選参加記（予選通過しました）</a>
       </li>
     
   </ul>
@@ -225,9 +224,9 @@ This Week in RustThis Week in Rust">
   
     <li><a href="/hexo/tags/isucon/">isucon</a><small>4</small></li>
   
-    <li><a href="/hexo/tags/osdev/">osdev</a><small>5</small></li>
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
-    <li><a href="/hexo/tags/paper/">paper</a><small>9</small></li>
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
   

@@ -70,6 +70,74 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2019-04-16T15:00:00.000Z"><a href="/hexo/2019/04/17/cortexm-mode.html">2019-04-17</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2019/04/17/cortexm-mode.html">ARMv7-Mで動作モードを利用してコンテキストスイッチ</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Cortex-M4のボードで自作OSに挑戦している。<br>Cortex-M4の準拠するARMv7-Mアーキテクチャでは２つの「動作モード」（Operating Mode）が存在する。</p>
+<ul>
+<li>スレッドモード</li>
+<li>ハンドラモード</li>
+</ul>
+<p>リセット状態ではスレッドモードで、割り込みが発生するとハンドラモードに移行して割り込みハンドラが実行される。<br>スレッドモードは特権が存在し、特権・非特権の２つの状態があり、リセット状態では特権状態である。ハンドラモードでは常に特権状態となる。<br>特権の状態を切り替えるにはハンドラモードに突入してから切り替える、もしくは特権状態ならばCONTROLレジスタに書き込むことで非特権状態になれる。</p>
+<p>この特権の状態を利用することで、カーネル（スケジューラ）部分は特権状態で動かして、通常のプロセスに相当する部分は非特権状態で動かすということができる。<br>では、どうやってリセット状態からプロセスを起動するか。<br>ARMv7-Mでは割り込みが発生するとスタックポインタに自動的に一部のレジスタ状態をプッシュし、<br>ハンドラモードからの復帰時にスタックポインタに保存されたレジスタを復元する。<br>スタックポインタはメインとプロセスの2種類あり、通常のスレッドモードでは、特権状態ではメインを、非特権状態ではプロセスを使う。<br>つまりプロセスを初期状態から起動させるには</p>
+<ol>
+<li>プロセススタックポインタにプロセスの初期状態をプッシュしておく</li>
+<li>svc命令でSVCの割り込みハンドラをハンドラモードで実行</li>
+<li>ハンドラから非特権状態のスレッドモードに復帰</li>
+<li>プロセスが起動される</li>
+</ol>
+<p>という流れになる。</p>
+<p>注意するべき点としては</p>
+<ul>
+<li>浮動小数点の機能が有効化されている場合はより多くの状態を保存するため、スタックのフレームサイズが代わる</li>
+<li>スタックはCCR.STKALIGNがセットされていない場合は4バイトに、セットされている場合は8バイトにアラインされている必要がある</li>
+<li>xPSRレジスタのうちThumbモードを有効にするビットは立てる必要がある（ARMv7-Mでは常にThumbモードで実行されなければならない）。よって初期値は0x01000000である必要がある</li>
+<li>スタックに保存されないレジスタに関しては別途なんらかの手段で保存しておかないと複数プロセス間の切り替えができない</li>
+</ul>
+<p>細かい動作はリファレンスマニュアルを参照すること。以下に自分が参考にした章を示す（マニュアルのバージョンはE.b）</p>
+<ul>
+<li>B1.3 Overview of system level terminology and operation<ul>
+<li>動作モードの定義</li>
+</ul>
+</li>
+<li>B1.4.2 The special-purpose program status registers, xPSR<ul>
+<li>xPSRレジスタの詳細</li>
+</ul>
+</li>
+<li>B1.5.6 Exception entry behavior<ul>
+<li>例外発生時の動作について。スタックのレイアウトについても書かれている</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2019-03-30T12:48:35.000Z"><a href="/hexo/2019/03/30/rust-uefi.html">2019-03-30</a></time>
       
       
@@ -621,48 +689,6 @@ allocクレートの中にはBoxやArcなど、所有権周りの問題を解決
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2018-09-02T11:08:20.000Z"><a href="/hexo/2018/09/02/vietnam.html">2018-09-02</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/hexo/2018/09/02/vietnam.html">ベトナム旅行記</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>ベトナムのハノイに2泊3日に行ってきた</p>
-<h2 id="ホテル"><a href="#ホテル" class="headerlink" title="ホテル"></a>ホテル</h2><p><a href="http://www.littlehanoideluxehotel.com/" target="_blank" rel="noopener">Little Hanoi Deluxe Hotel</a>に宿泊した。かなり狭めのホテル。日本のビジネスホテル程度のクオリティ。<br>しかし、値段はその分安いし、英語も通じる。特にスタッフの対応はすごく親切で、外出する際の注意事項（道の渡り方とか）をアドバイスしてくれたり、チェックアウト時にはコーヒー粉とそれを淹れるためのフィルターをお土産としてくれたりしてくれた。</p>
-<h2 id="ネット環境"><a href="#ネット環境" class="headerlink" title="ネット環境"></a>ネット環境</h2><p>一応、FreeのWi-fiはいろいろなところで使えるようなのだが、かなり不安定でつらい。<br>SIMフリーの端末を持っていたので、格安のSIMカードが空港で買えるので、今回はそれを利用した。Viettelという会社でデータ通信のみ30日間で3.5GB利用可能のプランで、正確な値段は忘れてしまったが日本円で600円程度だったと思う。<br>電波の範囲もかなり広く届いていた印象。</p>
-<p>また、SIMカードはamazonで日本からでも購入可能なようだ。信頼性は分からないが、万が一ダメでも1000円もしないので、こっちで思い切って買ってしまうのも手であろう。</p>
-<h2 id="通貨"><a href="#通貨" class="headerlink" title="通貨"></a>通貨</h2><p>ベトナムドン（VDN）が使われている。1円≒210VDNとかなりインフレしている。1000ドン以下は切り捨てされるし、場合によっては1000ドンすらお釣りとして出すのを躊躇されることもある。<br>物価は全体的にかなり安い。ホテル代を除いて15000円両替したが、かなり良いレストランとかに入ったりしたが、ちょうど使い切るくらいだった。</p>
-<h2 id="交通"><a href="#交通" class="headerlink" title="交通"></a>交通</h2><p>車社会。バイクも車も多く、交通ルールもめちゃくちゃ。スピードは出しまくるし、信号も少なく、前の車を追い越すには対向車線にでることも厭わず進んでいく。<br>バスや電車は安いがそこまで多くはないので、タクシーを使うことになる。ただし、タクシーのボッタクリ業者には要注意。<br>また、Grabという配車アプリを使う手もある。こちらは信頼性も高く安いのだが、ベトナムで有効な電話番号が必要なのと、運転手にはベトナム語しか通じないことも多いのに要注意。</p>
-<p>歩道は狭く、バイクに占拠されていたり、なぜか道端でものを燃やしていたりして、横断歩道も少なく車も割と容赦してくれないので、歩き回るのには苦労した。</p>
-<h2 id="お土産"><a href="#お土産" class="headerlink" title="お土産"></a>お土産</h2><p>ハノイタワー1階にあるイオンシティマートで買った。お土産専門店ではないので輸入品も多い点には注意。<br>コーヒー（ベトナムは輸出量世界一らしい）やお菓子類、インスタントラーメン系などいろいろ買える。</p>
-<p>空港で買おうとするとここの3倍近い値段で買う羽目になるので注意。</p>
-<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>ひさびさの海外旅行で楽しかったのだが、もうしばらくはベトナム行きたくない</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
 
 <nav id="pagination">
   
@@ -687,6 +713,10 @@ allocクレートの中にはBoxやArcなど、所有権周りの問題を解決
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
@@ -700,10 +730,6 @@ allocクレートの中にはBoxやArcなど、所有権周りの問題を解決
     
       <li>
         <a href="/hexo/2020/10/04/isucon10-final.html">ISUCON10決勝に参加しました</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2020/09/13/isucon10-qual.html">ISUCON10 予選参加記（予選通過しました）</a>
       </li>
     
   </ul>
@@ -738,9 +764,9 @@ allocクレートの中にはBoxやArcなど、所有権周りの問題を解決
   
     <li><a href="/hexo/tags/isucon/">isucon</a><small>4</small></li>
   
-    <li><a href="/hexo/tags/osdev/">osdev</a><small>5</small></li>
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
-    <li><a href="/hexo/tags/paper/">paper</a><small>9</small></li>
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
   

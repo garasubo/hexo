@@ -26,12 +26,12 @@ Linuxアプリケーションをそのまま動かせるバイナリコンパチ
 <meta property="og:site_name" content="己の不学を恥じる">
 <meta property="og:description" content="元論文：https://dl.acm.org/citation.cfm?id=3313817 Linuxアプリケーションをそのまま動かせるバイナリコンパチブルなUnikernelを構築しました、という話です。前回の記事に引き続きUnikernel関連な話題ですが、意外と自分のブログではUnikernelについての話題を触れていなかったので関連論文も合わせて紹介したいと思います。 論文概要 タイトル">
 <meta property="og:locale" content="ja">
-<meta property="og:image" content="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-1.2.2&w=1200&mark=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D380%26txt%3DUnikernel%25E3%2581%25AA%25E6%2583%2585%25E5%25A0%25B1%2520%2528in%2520Japanese%2529%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D4a806f7f7e2996f551aad62081186119&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D500%26txt%3D%2540t-imada%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3D714050784f34339c36ebb33928ff3133&blend-align=center%2Cmiddle&blend-mode=normal&s=ecb6ecdfd51a87c9532c4b3124d4c0c0">
+<meta property="og:image" content="https://staging-qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-4.0.0&w=1200&mark=https%3A%2F%2Fstaging-qiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-4.0.0%26w%3D840%26h%3D380%26txt%3DUnikernel%25E3%2581%25AA%25E6%2583%2585%25E5%25A0%25B1%2520%2528in%2520Japanese%2529%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3De9f3923eec7d2b96c746316393752e95&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fstaging-qiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-4.0.0%26w%3D840%26h%3D500%26txt%3D%2540t-imada%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3D923b267a3f52bf7f544093d040595ed3&blend-align=center%2Cmiddle&blend-mode=normal&s=922e372392bc3e366784fb080e526aa6">
 <meta property="og:updated_time" content="2019-12-30T09:17:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="論文紹介：A Binary-Compatible Unikernel ー Unikernelの解説も添えて">
 <meta name="twitter:description" content="元論文：https://dl.acm.org/citation.cfm?id=3313817 Linuxアプリケーションをそのまま動かせるバイナリコンパチブルなUnikernelを構築しました、という話です。前回の記事に引き続きUnikernel関連な話題ですが、意外と自分のブログではUnikernelについての話題を触れていなかったので関連論文も合わせて紹介したいと思います。 論文概要 タイトル">
-<meta name="twitter:image" content="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-1.2.2&w=1200&mark=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D380%26txt%3DUnikernel%25E3%2581%25AA%25E6%2583%2585%25E5%25A0%25B1%2520%2528in%2520Japanese%2529%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D4a806f7f7e2996f551aad62081186119&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D500%26txt%3D%2540t-imada%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3D714050784f34339c36ebb33928ff3133&blend-align=center%2Cmiddle&blend-mode=normal&s=ecb6ecdfd51a87c9532c4b3124d4c0c0">
+<meta name="twitter:image" content="https://staging-qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-4.0.0&w=1200&mark=https%3A%2F%2Fstaging-qiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-4.0.0%26w%3D840%26h%3D380%26txt%3DUnikernel%25E3%2581%25AA%25E6%2583%2585%25E5%25A0%25B1%2520%2528in%2520Japanese%2529%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3De9f3923eec7d2b96c746316393752e95&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fstaging-qiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-4.0.0%26w%3D840%26h%3D500%26txt%3D%2540t-imada%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3D923b267a3f52bf7f544093d040595ed3&blend-align=center%2Cmiddle&blend-mode=normal&s=922e372392bc3e366784fb080e526aa6">
 <meta name="twitter:creator" content="@garasubo">
 
   <link href="/hexo/favicon.png" rel="icon">
@@ -111,7 +111,7 @@ Linuxアプリケーションをそのまま動かせるバイナリコンパチ
 <h2 id="まとめ・感想"><a href="#まとめ・感想" class="headerlink" title="まとめ・感想"></a>まとめ・感想</h2><p>Linuxアプリケーションをバイナリコンパチブルで動かせるHermiTuxの手法について解説しました。</p>
 <p>Unikernelはかなり攻めた手法でなかなか実運用されているケースは聞かないですが、段々とその活用の仕方と移植コストの軽減策が出てきていて非常におもしろいですね。<br>将来、コンテナ型仮想化に代わる選択肢として広く使われることになるのか楽しみです。</p>
 <p>Unikernelについてもっと掘り下げて知りたい方は、<a href="https://en.wikipedia.org/wiki/Unikernel" target="_blank" rel="noopener">Wikipedia（英語）</a>でも記事になっている他、こちらのQitta記事とかがいいかもしれません。</p>
-<a href="https://qiita.com/t-imada/items/ed6a76f5b257f5608ad0" class="link-preview" target="_blank" rel="nofollow"><div class="link-area"><div class="og-image"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-1.2.2&w=1200&mark=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D380%26txt%3DUnikernel%25E3%2581%25AA%25E6%2583%2585%25E5%25A0%25B1%2520%2528in%2520Japanese%2529%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D4a806f7f7e2996f551aad62081186119&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D500%26txt%3D%2540t-imada%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3D714050784f34339c36ebb33928ff3133&blend-align=center%2Cmiddle&blend-mode=normal&s=ecb6ecdfd51a87c9532c4b3124d4c0c0"></div><div class="descriptions"><div class="og-title">Unikernelな情報 (in Japanese) - Qiita</div><div class="og-description">
+<a href="https://qiita.com/t-imada/items/ed6a76f5b257f5608ad0" class="link-preview" target="_blank" rel="nofollow"><div class="link-area"><div class="og-image"><img src="https://staging-qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-4.0.0&w=1200&mark=https%3A%2F%2Fstaging-qiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-4.0.0%26w%3D840%26h%3D380%26txt%3DUnikernel%25E3%2581%25AA%25E6%2583%2585%25E5%25A0%25B1%2520%2528in%2520Japanese%2529%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3De9f3923eec7d2b96c746316393752e95&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fstaging-qiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-4.0.0%26w%3D840%26h%3D500%26txt%3D%2540t-imada%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3D923b267a3f52bf7f544093d040595ed3&blend-align=center%2Cmiddle&blend-mode=normal&s=922e372392bc3e366784fb080e526aa6"></div><div class="descriptions"><div class="og-title">Unikernelな情報 (in Japanese) - Qiita</div><div class="og-description">
 
 はじめに
 
@@ -178,6 +178,10 @@ Linuxアプリケーションをそのまま動かせるバイナリコンパチ
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
@@ -191,10 +195,6 @@ Linuxアプリケーションをそのまま動かせるバイナリコンパチ
     
       <li>
         <a href="/hexo/2020/10/04/isucon10-final.html">ISUCON10決勝に参加しました</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2020/09/13/isucon10-qual.html">ISUCON10 予選参加記（予選通過しました）</a>
       </li>
     
   </ul>
@@ -229,9 +229,9 @@ Linuxアプリケーションをそのまま動かせるバイナリコンパチ
   
     <li><a href="/hexo/tags/isucon/">isucon</a><small>4</small></li>
   
-    <li><a href="/hexo/tags/osdev/">osdev</a><small>5</small></li>
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
-    <li><a href="/hexo/tags/paper/">paper</a><small>9</small></li>
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
   

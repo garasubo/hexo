@@ -26,12 +26,12 @@ stm32-rs/stm32-ethEmbedded Ethernet driver in Rust. Contribute to stm32-rs/stm32
 <meta property="og:site_name" content="己の不学を恥じる">
 <meta property="og:description" content="STM32ボードのイーサネットドライバのRust実装であるstm32-ethクレートの送信部分のロジックの解説をしていきます。 stm32-rs/stm32-ethEmbedded Ethernet driver in Rust. Contribute to stm32-rs/stm32-eth development by creating an account on GitHub.  前回の記">
 <meta property="og:locale" content="ja">
-<meta property="og:image" content="https://avatars1.githubusercontent.com/u/44086113?s=400&v=4">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/44086113?s=400&v=4">
 <meta property="og:updated_time" content="2021-01-17T12:27:17.881Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RustのSTM32向けイーサネットドライバを解説する（送信編）">
 <meta name="twitter:description" content="STM32ボードのイーサネットドライバのRust実装であるstm32-ethクレートの送信部分のロジックの解説をしていきます。 stm32-rs/stm32-ethEmbedded Ethernet driver in Rust. Contribute to stm32-rs/stm32-eth development by creating an account on GitHub.  前回の記">
-<meta name="twitter:image" content="https://avatars1.githubusercontent.com/u/44086113?s=400&v=4">
+<meta name="twitter:image" content="https://avatars.githubusercontent.com/u/44086113?s=400&v=4">
 <meta name="twitter:creator" content="@garasubo">
 
   <link href="/hexo/favicon.png" rel="icon">
@@ -90,7 +90,7 @@ stm32-rs/stm32-ethEmbedded Ethernet driver in Rust. Contribute to stm32-rs/stm32
     <div class="entry">
       
         <p>STM32ボードのイーサネットドライバのRust実装である<code>stm32-eth</code>クレートの送信部分のロジックの解説をしていきます。</p>
-<a href="https://github.com/stm32-rs/stm32-eth/tree/v0.1.2" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://avatars1.githubusercontent.com/u/44086113?s=400&v=4"></div><div class="descriptions"><div class="og-title">stm32-rs/stm32-eth</div><div class="og-description">Embedded Ethernet driver in Rust. Contribute to stm32-rs/stm32-eth development by creating an account on GitHub.</div></div></div></a>
+<a href="https://github.com/stm32-rs/stm32-eth/tree/v0.1.2" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://avatars.githubusercontent.com/u/44086113?s=400&v=4"></div><div class="descriptions"><div class="og-title">stm32-rs/stm32-eth</div><div class="og-description">Embedded Ethernet driver in Rust. Contribute to stm32-rs/stm32-eth development by creating an account on GitHub.</div></div></div></a>
 
 <p><a href="/hexo/2020/12/20/ether.html">前回の記事</a>では受信部分を解説しました。<br>そのときは、自分のOS用のドライバでの送信が成功していなかったため、受信のみの解説になってしまったのですが、<br>今回晴れて送信部分のバグがとれたので、安心して記事を書けるようになりました。</p>
 <p>イーサネットモジュールの初期化部分のロジックは受信とかぶっているので省略していきます。<br>仕様書も前回記事で用いたものを使います。</p>
@@ -181,6 +181,10 @@ stm32-rs/stm32-ethEmbedded Ethernet driver in Rust. Contribute to stm32-rs/stm32
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
@@ -194,10 +198,6 @@ stm32-rs/stm32-ethEmbedded Ethernet driver in Rust. Contribute to stm32-rs/stm32
     
       <li>
         <a href="/hexo/2020/10/04/isucon10-final.html">ISUCON10決勝に参加しました</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2020/09/13/isucon10-qual.html">ISUCON10 予選参加記（予選通過しました）</a>
       </li>
     
   </ul>
@@ -232,9 +232,9 @@ stm32-rs/stm32-ethEmbedded Ethernet driver in Rust. Contribute to stm32-rs/stm32
   
     <li><a href="/hexo/tags/isucon/">isucon</a><small>4</small></li>
   
-    <li><a href="/hexo/tags/osdev/">osdev</a><small>5</small></li>
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
-    <li><a href="/hexo/tags/paper/">paper</a><small>9</small></li>
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
   

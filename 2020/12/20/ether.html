@@ -26,12 +26,12 @@ RustでSTM32ボード用の自作OSをしていて、アプリケーションの
 <meta property="og:site_name" content="己の不学を恥じる">
 <meta property="og:description" content="この記事は自作OS Advent Calendar 2020の20日目の記事です。 RustでSTM32ボード用の自作OSをしていて、アプリケーションの幅を増やしたくて、イーサネットドライバを組むことにしました。使用しているのはNucleo-429ZIボードで、イーサネットモジュールが付属しています。去年から取り組みはじめてはいたものの、今までのペリフェラルとは違い仕様が複雑で何度も挫折して中断し">
 <meta property="og:locale" content="ja">
-<meta property="og:image" content="https://avatars1.githubusercontent.com/u/44086113?s=400&v=4">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/44086113?s=400&v=4">
 <meta property="og:updated_time" content="2021-01-17T08:22:22.782Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RustのSTM32向けイーサネットドライバを解説する（受信編）">
 <meta name="twitter:description" content="この記事は自作OS Advent Calendar 2020の20日目の記事です。 RustでSTM32ボード用の自作OSをしていて、アプリケーションの幅を増やしたくて、イーサネットドライバを組むことにしました。使用しているのはNucleo-429ZIボードで、イーサネットモジュールが付属しています。去年から取り組みはじめてはいたものの、今までのペリフェラルとは違い仕様が複雑で何度も挫折して中断し">
-<meta name="twitter:image" content="https://avatars1.githubusercontent.com/u/44086113?s=400&v=4">
+<meta name="twitter:image" content="https://avatars.githubusercontent.com/u/44086113?s=400&v=4">
 <meta name="twitter:creator" content="@garasubo">
 
   <link href="/hexo/favicon.png" rel="icon">
@@ -92,7 +92,7 @@ RustでSTM32ボード用の自作OSをしていて、アプリケーションの
         <p>この記事は<a href="https://adventar.org/calendars/4954" target="_blank" rel="noopener">自作OS Advent Calendar 2020</a>の20日目の記事です。</p>
 <p><a href="/hexo/2019/05/15/erkos.html">RustでSTM32ボード用の自作OS</a>をしていて、アプリケーションの幅を増やしたくて、イーサネットドライバを組むことにしました。<br>使用しているのはNucleo-429ZIボードで、イーサネットモジュールが付属しています。<br>去年から取り組みはじめてはいたものの、今までのペリフェラルとは違い仕様が複雑で何度も挫折して中断しまくったのですが、ようやく受信部分だけ完成したので解説していきたいと思います。</p>
 <p>参照するコードは自分が組んだコードでもよかったのですが、送信部分がバグっているのと、参考にしてきた<code>stm32-eth</code>クレートのほうがずっと出来が良いのでそちらを使います。<br>なお、バージョンはv0.1.2とちょっと古いバージョンです。なお、<code>stm32-eth</code>のこのバージョンではいくつか立てる必要のないと思われるビットを立てていたりするので、実際に参考にする場合はちゃんと仕様書で確認しながら見ることをおすすめします。</p>
-<a href="https://github.com/stm32-rs/stm32-eth/tree/v0.1.2" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://avatars1.githubusercontent.com/u/44086113?s=400&v=4"></div><div class="descriptions"><div class="og-title">stm32-rs/stm32-eth</div><div class="og-description">Embedded Ethernet driver in Rust. Contribute to stm32-rs/stm32-eth development by creating an account on GitHub.</div></div></div></a>
+<a href="https://github.com/stm32-rs/stm32-eth/tree/v0.1.2" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://avatars.githubusercontent.com/u/44086113?s=400&v=4"></div><div class="descriptions"><div class="og-title">stm32-rs/stm32-eth</div><div class="og-description">Embedded Ethernet driver in Rust. Contribute to stm32-rs/stm32-eth development by creating an account on GitHub.</div></div></div></a>
 
 <h2 id="仕様書を入手する"><a href="#仕様書を入手する" class="headerlink" title="仕様書を入手する"></a>仕様書を入手する</h2><p>仕様書なくしてドライバはつくれません。今回はCPUのリファレンスマニュアルとデータシート、ボードのユーザーマニュアルがまず必要です。<br>更に、イーサネット通信は外部物理層(PHY)に対してIEEE 802.3で定義されているインターフェスを介してCPUのイーサーネットモジュールと通信することで実現されています。<br>このPHYに関するマニュアルも必要です。ユーザーマニュアルによるとこのボードではLAN8742A-CZ-TRを使っているとのことなので、これの仕様書も入手しましょう。</p>
 <ul>
@@ -203,6 +203,10 @@ RustでSTM32ボード用の自作OSをしていて、アプリケーションの
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
@@ -216,10 +220,6 @@ RustでSTM32ボード用の自作OSをしていて、アプリケーションの
     
       <li>
         <a href="/hexo/2020/10/04/isucon10-final.html">ISUCON10決勝に参加しました</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2020/09/13/isucon10-qual.html">ISUCON10 予選参加記（予選通過しました）</a>
       </li>
     
   </ul>
@@ -254,9 +254,9 @@ RustでSTM32ボード用の自作OSをしていて、アプリケーションの
   
     <li><a href="/hexo/tags/isucon/">isucon</a><small>4</small></li>
   
-    <li><a href="/hexo/tags/osdev/">osdev</a><small>5</small></li>
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
-    <li><a href="/hexo/tags/paper/">paper</a><small>9</small></li>
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
   

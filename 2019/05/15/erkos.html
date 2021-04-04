@@ -26,12 +26,12 @@ garasubo/erkosA prototype embedded operating system written in Rust - ga">
 <meta property="og:site_name" content="己の不学を恥じる">
 <meta property="og:description" content="だいぶ前からRustでOSを書こうとしていて、ようやく一山越えて形になってきたのでレポジトリを公開しました（気まぐれでまた非公開にするかもしれませんが）。 garasubo/erkosA prototype embedded operating system written in Rust - garasubo/erkos  構造appディレクトリに実際のボードで動かしているデモが入っています。ボ">
 <meta property="og:locale" content="ja">
-<meta property="og:image" content="https://avatars1.githubusercontent.com/u/2667091?s=400&v=4">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/2667091?s=400&v=4">
 <meta property="og:updated_time" content="2019-12-30T09:22:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rustで自作組込みOSを書くプロジェクト「ErkOS」を公開しました">
 <meta name="twitter:description" content="だいぶ前からRustでOSを書こうとしていて、ようやく一山越えて形になってきたのでレポジトリを公開しました（気まぐれでまた非公開にするかもしれませんが）。 garasubo/erkosA prototype embedded operating system written in Rust - garasubo/erkos  構造appディレクトリに実際のボードで動かしているデモが入っています。ボ">
-<meta name="twitter:image" content="https://avatars1.githubusercontent.com/u/2667091?s=400&v=4">
+<meta name="twitter:image" content="https://avatars.githubusercontent.com/u/2667091?s=400&v=4">
 <meta name="twitter:creator" content="@garasubo">
 
   <link href="/hexo/favicon.png" rel="icon">
@@ -90,7 +90,7 @@ garasubo/erkosA prototype embedded operating system written in Rust - ga">
     <div class="entry">
       
         <p>だいぶ前からRustでOSを書こうとしていて、ようやく一山越えて形になってきたのでレポジトリを公開しました（気まぐれでまた非公開にするかもしれませんが）。</p>
-<a href="https://github.com/garasubo/erkos" class="link-preview" target="_blank" rel="nofollow"><div class="link-area"><div class="og-image"><img src="https://avatars1.githubusercontent.com/u/2667091?s=400&v=4"></div><div class="descriptions"><div class="og-title">garasubo/erkos</div><div class="og-description">A prototype embedded operating system written in Rust - garasubo/erkos</div></div></div></a>
+<a href="https://github.com/garasubo/erkos" class="link-preview" target="_blank" rel="nofollow"><div class="link-area"><div class="og-image"><img src="https://avatars.githubusercontent.com/u/2667091?s=400&v=4"></div><div class="descriptions"><div class="og-title">garasubo/erkos</div><div class="og-description">A prototype embedded operating system written in Rust - garasubo/erkos</div></div></div></a>
 
 <h2 id="構造"><a href="#構造" class="headerlink" title="構造"></a>構造</h2><p><code>app</code>ディレクトリに実際のボードで動かしているデモが入っています。ボードはNucleo-F429ZIを利用しています。<br><code>qemu_app</code>はqemu用のデモです。<br>nightlyコンパイラと必要なツールチェーンをインストールすれば<code>cargo build</code>でコンパイルでき、qemuのデモは<code>cargo run</code>とすれば動くと思います。</p>
 <p><code>kernel</code>モジュールがスケジューラだったり、プロセスなどのOSの機能を実装したものになっています、<br><code>arch</code>がARMv7-M固有の機能のためのライブラリ（NVICやSystickなどもこちら）、<code>device</code>はボード固有のペリフェラルドライバとなっています。<br><code>rt</code>と<code>log</code>は<a href="https://docs.rust-embedded.org/embedonomicon/" target="_blank" rel="noopener">The Embedonomicon</a>のチュートリアルでつくったモジュールに手を加えたものです。<br><code>util</code>はアーキテクチャやボードに依存しない機能を入れるためのモジュールです。</p>
@@ -178,6 +178,10 @@ garasubo/erkosA prototype embedded operating system written in Rust - ga">
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
@@ -191,10 +195,6 @@ garasubo/erkosA prototype embedded operating system written in Rust - ga">
     
       <li>
         <a href="/hexo/2020/10/04/isucon10-final.html">ISUCON10決勝に参加しました</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2020/09/13/isucon10-qual.html">ISUCON10 予選参加記（予選通過しました）</a>
       </li>
     
   </ul>
@@ -229,9 +229,9 @@ garasubo/erkosA prototype embedded operating system written in Rust - ga">
   
     <li><a href="/hexo/tags/isucon/">isucon</a><small>4</small></li>
   
-    <li><a href="/hexo/tags/osdev/">osdev</a><small>5</small></li>
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
-    <li><a href="/hexo/tags/paper/">paper</a><small>9</small></li>
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
   

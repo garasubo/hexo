@@ -27,7 +27,7 @@
 <meta property="og:locale" content="ja">
 <meta property="og:image" content="https://files.speakerdeck.com/presentations/5b1f84e27cf84cb38a2f682f9e01a029/slide_0.jpg?14736342">
 <meta property="og:image" content="https://ogimage.blog.st-hatena.com/13208692334729897634/10328749687239599894/1493330425">
-<meta property="og:image" content="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-1.2.2&w=1200&mark=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D380%26txt%3DRust%25E3%2581%25AE%2520%2560Arc%2560%2520%25E3%2582%2592%25E8%25AA%25AD%25E3%2582%2580%25281%2529%253A%2520Arc%252FRc%25E3%2581%25AE%25E5%259F%25BA%25E6%259C%25AC%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D878a984f4b14b5b63484cc820ccfa75c&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D500%26txt%3D%2540qnighy%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3De5eed2af6b804ddd7ff5bc03fd5c3f34&blend-align=center%2Cmiddle&blend-mode=normal&s=c06af829ae0a3e57cf72013d62543714">
+<meta property="og:image" content="https://staging-qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-4.0.0&w=1200&mark=https%3A%2F%2Fstaging-qiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-4.0.0%26w%3D840%26h%3D380%26txt%3DRust%25E3%2581%25AE%2520%2560Arc%2560%2520%25E3%2582%2592%25E8%25AA%25AD%25E3%2582%2580%25281%2529%253A%2520Arc%252FRc%25E3%2581%25AE%25E5%259F%25BA%25E6%259C%25AC%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D45e6d662ab142f7295f5cce5f0edeeac&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fstaging-qiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-4.0.0%26w%3D840%26h%3D500%26txt%3D%2540qnighy%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3D64580f201d0d2b157a3baa9538750b0a&blend-align=center%2Cmiddle&blend-mode=normal&s=3dce77f1baa87f2d43e65f1c0e12d2be">
 <meta property="og:image" content="https://github.githubassets.com/images/modules/gists/gist-og-image.png">
 <meta property="og:updated_time" content="2020-03-31T15:36:39.821Z">
 <meta name="twitter:card" content="summary">
@@ -103,7 +103,7 @@
 <a href="https://qnighy.hatenablog.com/entry/2017/04/28/070000" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://ogimage.blog.st-hatena.com/13208692334729897634/10328749687239599894/1493330425"></div><div class="descriptions"><div class="og-title">Rustでグラフを表現するにはTyped Arenaが便利 - 簡潔なQ</div><div class="og-description">概要: Rustでグラフのように相互参照を含むデータ構造を表現するには、Typed Arenaという方法が適している。これについて説明する 整数による表現 グラフの表現方法で、最も簡単なのは、ノードを整数で表し、グラフのデータを別に持つ方法である。 fn main() { let…</div></div></div></a>
 <p>ただし、この方法の弱点はメモリを開放する手段がないので、一度ノードをつくってしまうとグラフ全体が生存している間は削除してもメモリが開放されない。<br>ライフタイムの管理も難しく、設計をうまくしてあげる必要もある。</p>
 <p>他の方法としては<code>Rc</code>/<code>Arc</code>を使う方法がある。</p>
-<a href="https://qiita.com/qnighy/items/4bbbb20e71cf4ae527b9#%E5%AF%BE%E7%A7%B0%E3%81%AA%E5%BE%AA%E7%92%B0%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E8%A1%A8%E7%8F%BE%E3%81%99%E3%82%8B" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-1.2.2&w=1200&mark=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D380%26txt%3DRust%25E3%2581%25AE%2520%2560Arc%2560%2520%25E3%2582%2592%25E8%25AA%25AD%25E3%2582%2580%25281%2529%253A%2520Arc%252FRc%25E3%2581%25AE%25E5%259F%25BA%25E6%259C%25AC%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D878a984f4b14b5b63484cc820ccfa75c&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D500%26txt%3D%2540qnighy%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3De5eed2af6b804ddd7ff5bc03fd5c3f34&blend-align=center%2Cmiddle&blend-mode=normal&s=c06af829ae0a3e57cf72013d62543714"></div><div class="descriptions"><div class="og-title">Rustの `Arc` を読む(1): Arc/Rcの基本 - Qiita</div><div class="og-description">概要: Rustの Arc 型の実装は宝の宝庫です。そこで、これを隅から隅まで解説してみます。
+<a href="https://qiita.com/qnighy/items/4bbbb20e71cf4ae527b9#%E5%AF%BE%E7%A7%B0%E3%81%AA%E5%BE%AA%E7%92%B0%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E8%A1%A8%E7%8F%BE%E3%81%99%E3%82%8B" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://staging-qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-4.0.0&w=1200&mark=https%3A%2F%2Fstaging-qiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-4.0.0%26w%3D840%26h%3D380%26txt%3DRust%25E3%2581%25AE%2520%2560Arc%2560%2520%25E3%2582%2592%25E8%25AA%25AD%25E3%2582%2580%25281%2529%253A%2520Arc%252FRc%25E3%2581%25AE%25E5%259F%25BA%25E6%259C%25AC%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D45e6d662ab142f7295f5cce5f0edeeac&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fstaging-qiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-4.0.0%26w%3D840%26h%3D500%26txt%3D%2540qnighy%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3D64580f201d0d2b157a3baa9538750b0a&blend-align=center%2Cmiddle&blend-mode=normal&s=3dce77f1baa87f2d43e65f1c0e12d2be"></div><div class="descriptions"><div class="og-title">Rustの `Arc` を読む(1): Arc/Rcの基本 - Qiita</div><div class="og-description">概要: Rustの Arc 型の実装は宝の宝庫です。そこで、これを隅から隅まで解説してみます。
 
 第1回「Arc/Rcの基本」では、実際に Arc のソースを読む前に Arc/Rc の使い方を解説します。
 
@@ -194,6 +194,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
@@ -207,10 +211,6 @@
     
       <li>
         <a href="/hexo/2020/10/04/isucon10-final.html">ISUCON10決勝に参加しました</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2020/09/13/isucon10-qual.html">ISUCON10 予選参加記（予選通過しました）</a>
       </li>
     
   </ul>
@@ -245,9 +245,9 @@
   
     <li><a href="/hexo/tags/isucon/">isucon</a><small>4</small></li>
   
-    <li><a href="/hexo/tags/osdev/">osdev</a><small>5</small></li>
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
-    <li><a href="/hexo/tags/paper/">paper</a><small>9</small></li>
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
   

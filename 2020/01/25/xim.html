@@ -25,7 +25,7 @@
 <meta property="og:site_name" content="己の不学を恥じる">
 <meta property="og:description" content="LinuxのX11向けのGUIアプリケーションでテキスト入力を扱いたい場合、IMEの存在を意識しなければならない（特に日本人ならば）。IMEなしならば、キーボードイベントを見て、そのキーのアルファベットをプリントするだけで済むが、IMEが存在する場合、IMEから送られてくる文字列をきちんと処理する必要がある。そのためには、X11のIMEフレームワークであるXIMの仕様を知る必要がある。 これらの仕">
 <meta property="og:locale" content="ja">
-<meta property="og:image" content="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-1.2.2&w=1200&mark=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D380%26txt%3DXIM%2528X%2520Input%2520Method%2529%25E6%2597%25A5%25E6%259C%25AC%25E8%25AA%259E%25E5%2585%25A5%25E5%258A%259B%25E3%2581%25AE%25E6%25B5%2581%25E3%2582%258C%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D9b71caf0b9c103036f0dec50532fb9a2&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D500%26txt%3D%2540ai56go%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3Ddf812f52f2c5ff4eb5064c0db0b5646b&blend-align=center%2Cmiddle&blend-mode=normal&s=70a4572dd6a3e5eefb7e9d53e6a702c5">
+<meta property="og:image" content="https://staging-qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-4.0.0&w=1200&mark=https%3A%2F%2Fstaging-qiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-4.0.0%26w%3D840%26h%3D380%26txt%3DXIM%2528X%2520Input%2520Method%2529%25E6%2597%25A5%25E6%259C%25AC%25E8%25AA%259E%25E5%2585%25A5%25E5%258A%259B%25E3%2581%25AE%25E6%25B5%2581%25E3%2582%258C%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D770398faf54ab429e5e3708408f2f57f&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fstaging-qiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-4.0.0%26w%3D840%26h%3D500%26txt%3D%2540ai56go%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3D34f99bb97c4b8319baebfbaa47dffaaa&blend-align=center%2Cmiddle&blend-mode=normal&s=cc6d98cd30035a7b391262635518ff96">
 <meta property="og:image" content="https://github.githubassets.com/images/modules/gists/gist-og-image.png">
 <meta property="og:image" content="https://gitlab.gnome.org/uploads/-/system/project/avatar/665/gtk-logo.png">
 <meta property="og:image" content="https://gitlab.gnome.org/uploads/-/system/project/avatar/665/gtk-logo.png">
@@ -33,7 +33,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="X11環境でIMEの仮入力の情報を取得する">
 <meta name="twitter:description" content="LinuxのX11向けのGUIアプリケーションでテキスト入力を扱いたい場合、IMEの存在を意識しなければならない（特に日本人ならば）。IMEなしならば、キーボードイベントを見て、そのキーのアルファベットをプリントするだけで済むが、IMEが存在する場合、IMEから送られてくる文字列をきちんと処理する必要がある。そのためには、X11のIMEフレームワークであるXIMの仕様を知る必要がある。 これらの仕">
-<meta name="twitter:image" content="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-1.2.2&w=1200&mark=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D380%26txt%3DXIM%2528X%2520Input%2520Method%2529%25E6%2597%25A5%25E6%259C%25AC%25E8%25AA%259E%25E5%2585%25A5%25E5%258A%259B%25E3%2581%25AE%25E6%25B5%2581%25E3%2582%258C%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D9b71caf0b9c103036f0dec50532fb9a2&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D500%26txt%3D%2540ai56go%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3Ddf812f52f2c5ff4eb5064c0db0b5646b&blend-align=center%2Cmiddle&blend-mode=normal&s=70a4572dd6a3e5eefb7e9d53e6a702c5">
+<meta name="twitter:image" content="https://staging-qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-4.0.0&w=1200&mark=https%3A%2F%2Fstaging-qiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-4.0.0%26w%3D840%26h%3D380%26txt%3DXIM%2528X%2520Input%2520Method%2529%25E6%2597%25A5%25E6%259C%25AC%25E8%25AA%259E%25E5%2585%25A5%25E5%258A%259B%25E3%2581%25AE%25E6%25B5%2581%25E3%2582%258C%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D770398faf54ab429e5e3708408f2f57f&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fstaging-qiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-4.0.0%26w%3D840%26h%3D500%26txt%3D%2540ai56go%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3D34f99bb97c4b8319baebfbaa47dffaaa&blend-align=center%2Cmiddle&blend-mode=normal&s=cc6d98cd30035a7b391262635518ff96">
 <meta name="twitter:creator" content="@garasubo">
 
   <link href="/hexo/favicon.png" rel="icon">
@@ -98,7 +98,7 @@
     </div></div></div></a>
 
 <p>上記の記事を参考にしたと思われる日本語の記事もある。</p>
-<a href="https://qiita.com/ai56go/items/63abe54f2504ecc940cd" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-1.2.2&w=1200&mark=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D380%26txt%3DXIM%2528X%2520Input%2520Method%2529%25E6%2597%25A5%25E6%259C%25AC%25E8%25AA%259E%25E5%2585%25A5%25E5%258A%259B%25E3%2581%25AE%25E6%25B5%2581%25E3%2582%258C%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D9b71caf0b9c103036f0dec50532fb9a2&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fqiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-1.2.2%26w%3D840%26h%3D500%26txt%3D%2540ai56go%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3Ddf812f52f2c5ff4eb5064c0db0b5646b&blend-align=center%2Cmiddle&blend-mode=normal&s=70a4572dd6a3e5eefb7e9d53e6a702c5"></div><div class="descriptions"><div class="og-title">XIM(X Input Method)日本語入力の流れ - Qiita</div><div class="og-description">2018年3月 作成
+<a href="https://qiita.com/ai56go/items/63abe54f2504ecc940cd" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://staging-qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-1150d8b18a7c15795b701a55ae908f94.png?ixlib=rb-4.0.0&w=1200&mark=https%3A%2F%2Fstaging-qiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-4.0.0%26w%3D840%26h%3D380%26txt%3DXIM%2528X%2520Input%2520Method%2529%25E6%2597%25A5%25E6%259C%25AC%25E8%25AA%259E%25E5%2585%25A5%25E5%258A%259B%25E3%2581%25AE%25E6%25B5%2581%25E3%2582%258C%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D54%26txt-clip%3Dellipsis%26txt-align%3Dcenter%252Cmiddle%26s%3D770398faf54ab429e5e3708408f2f57f&mark-align=center%2Cmiddle&blend=https%3A%2F%2Fstaging-qiita-user-contents.imgix.net%2F~text%3Fixlib%3Drb-4.0.0%26w%3D840%26h%3D500%26txt%3D%2540ai56go%26txt-color%3D%2523333%26txt-font%3DHiragino%2520Sans%2520W6%26txt-size%3D45%26txt-align%3Dright%252Cbottom%26s%3D34f99bb97c4b8319baebfbaa47dffaaa&blend-align=center%2Cmiddle&blend-mode=normal&s=cc6d98cd30035a7b391262635518ff96"></div><div class="descriptions"><div class="og-title">XIM(X Input Method)日本語入力の流れ - Qiita</div><div class="og-description">2018年3月 作成
 
 「X Window Systemの日本語入力はどうなっているんだろう？」
 そう考えた筆者が、日本語入力の流れを調べてみました。
@@ -227,6 +227,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
@@ -240,10 +244,6 @@
     
       <li>
         <a href="/hexo/2020/10/04/isucon10-final.html">ISUCON10決勝に参加しました</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2020/09/13/isucon10-qual.html">ISUCON10 予選参加記（予選通過しました）</a>
       </li>
     
   </ul>
@@ -278,9 +278,9 @@
   
     <li><a href="/hexo/tags/isucon/">isucon</a><small>4</small></li>
   
-    <li><a href="/hexo/tags/osdev/">osdev</a><small>5</small></li>
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
-    <li><a href="/hexo/tags/paper/">paper</a><small>9</small></li>
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
   

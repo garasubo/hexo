@@ -26,12 +26,12 @@
 <meta property="og:site_name" content="己の不学を恥じる">
 <meta property="og:description" content="元論文: https://dl.acm.org/doi/10.1145/3341301.3359638 並行システムをテストし、スレッド安全性の違反を効率よく見つけるという論文です。並行システムの検証・テストというトピック自体はかなり有名で様々な方法がすでに提唱はされています。しかし、この論文のポイントは実際のMicrosoft製品のビルドシステムの過程にこのテストシステムを実際に組込み、いくつも">
 <meta property="og:locale" content="ja">
-<meta property="og:image" content="https://avatars2.githubusercontent.com/u/6154722?s=400&v=4">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/6154722?s=400&v=4">
 <meta property="og:updated_time" content="2020-01-02T12:34:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="論文紹介：Efficient scalable thread-safety-violation detection: finding thousands of concurrency bugs during testing">
 <meta name="twitter:description" content="元論文: https://dl.acm.org/doi/10.1145/3341301.3359638 並行システムをテストし、スレッド安全性の違反を効率よく見つけるという論文です。並行システムの検証・テストというトピック自体はかなり有名で様々な方法がすでに提唱はされています。しかし、この論文のポイントは実際のMicrosoft製品のビルドシステムの過程にこのテストシステムを実際に組込み、いくつも">
-<meta name="twitter:image" content="https://avatars2.githubusercontent.com/u/6154722?s=400&v=4">
+<meta name="twitter:image" content="https://avatars.githubusercontent.com/u/6154722?s=400&v=4">
 <meta name="twitter:creator" content="@garasubo">
 
   <link href="/hexo/favicon.png" rel="icon">
@@ -114,7 +114,7 @@
 <p>また、各pair毎にprobabilityを設定しておき、遅延を挟むごとにprobabilityを下げる、とすることで、同一箇所に過剰に遅延を設定するということを防ぎます。</p>
 <p>これらの遅延挿入アルゴリズムはテストを実行しながら同時に実行できる、というのがポイントのひとつです。<br>これにより、遅延挿入箇所の決定のための独立したテスト実行は不要なので、テスト時間の短縮になります。<br>もちろん、複数回テストを実行させ、前回のテスト情報を次回に引き継ぐこともできます。</p>
 <p>実装については、.NETアプリケーション（C#やF#のプログラム）に限定されますが、理論的には他のタイプのアプリケーションにも使えるとしています。<br>また、実装はGithub上で公開されています。</p>
-<a href="https://github.com/microsoft/TSVD" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://avatars2.githubusercontent.com/u/6154722?s=400&v=4"></div><div class="descriptions"><div class="og-title">microsoft/TSVD</div><div class="og-description">TSVD is a tool for quickly finding thread-safety violations (e.g., data races) in .NET applications. - microsoft/TSVD</div></div></div></a>
+<a href="https://github.com/microsoft/TSVD" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://avatars.githubusercontent.com/u/6154722?s=400&v=4"></div><div class="descriptions"><div class="og-title">microsoft/TSVD</div><div class="og-description">TSVD is a tool for quickly finding thread-safety violations (e.g., data races) in .NET applications. - microsoft/TSVD</div></div></div></a>
 
 <h2 id="評価"><a href="#評価" class="headerlink" title="評価"></a>評価</h2><p>1,657のMicrosoftで実際に開発しているアプリケーションのビルドプロセスに組込み、1,134箇所のバグを発見できたとしています。<br>false-positiveは存在しなく、いくつかのバグは実際のプロダクション環境で問題を引き起こしているものであったとしています。</p>
 <p>これらのバグの見つかったアプリケーションの内1000のモジュールとスモールベンチマークを用いて、他の手法とのパフォーマンスの比較も行っています。<br>実行時のオーバーヘッドは平均で33％ほどで、既存手法と比べてもかなり少なく、発見できたバグの数も上でした。</p>
@@ -182,6 +182,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
@@ -195,10 +199,6 @@
     
       <li>
         <a href="/hexo/2020/10/04/isucon10-final.html">ISUCON10決勝に参加しました</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2020/09/13/isucon10-qual.html">ISUCON10 予選参加記（予選通過しました）</a>
       </li>
     
   </ul>
@@ -233,9 +233,9 @@
   
     <li><a href="/hexo/tags/isucon/">isucon</a><small>4</small></li>
   
-    <li><a href="/hexo/tags/osdev/">osdev</a><small>5</small></li>
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
-    <li><a href="/hexo/tags/paper/">paper</a><small>9</small></li>
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
   
