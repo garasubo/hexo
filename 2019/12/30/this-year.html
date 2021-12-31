@@ -1,0 +1,274 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>2019年の振り返り | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="今年は以前より取り組んできた組込みシステム上でのRustプログラミングで一定の成果が出せた。他、ブログも去年より色々書けたし、Twitterのフォロワー数も伸びてきた。
+今年の成果ブログ記事今年はこの記事を除いて12本のブログ記事を書いた。内2本は英語版をMediumに投稿した。去年は9本だったので">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="2019年の振り返り">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="今年は以前より取り組んできた組込みシステム上でのRustプログラミングで一定の成果が出せた。他、ブログも去年より色々書けたし、Twitterのフォロワー数も伸びてきた。 今年の成果ブログ記事今年はこの記事を除いて12本のブログ記事を書いた。内2本は英語版をMediumに投稿した。去年は9本だったので、アウトプットの数は増えてきている。また、その関連で各種LT会などに参加して、何回か発表もした。 自">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2019年の振り返り">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2019/12/30/this-year.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="今年は以前より取り組んできた組込みシステム上でのRustプログラミングで一定の成果が出せた。他、ブログも去年より色々書けたし、Twitterのフォロワー数も伸びてきた。 今年の成果ブログ記事今年はこの記事を除いて12本のブログ記事を書いた。内2本は英語版をMediumに投稿した。去年は9本だったので、アウトプットの数は増えてきている。また、その関連で各種LT会などに参加して、何回か発表もした。 自">
+<meta property="og:locale" content="ja">
+<meta property="og:image" content="https://opengraph.githubassets.com/e34e8c013ec2175cbacac0f0691aa48c8d422c648caf296e9d775fdcc6b78c0c/servo/servo">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/2667091?s=400&v=4">
+<meta property="og:updated_time" content="2019-12-30T09:25:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2019年の振り返り">
+<meta name="twitter:description" content="今年は以前より取り組んできた組込みシステム上でのRustプログラミングで一定の成果が出せた。他、ブログも去年より色々書けたし、Twitterのフォロワー数も伸びてきた。 今年の成果ブログ記事今年はこの記事を除いて12本のブログ記事を書いた。内2本は英語版をMediumに投稿した。去年は9本だったので、アウトプットの数は増えてきている。また、その関連で各種LT会などに参加して、何回か発表もした。 自">
+<meta name="twitter:image" content="https://opengraph.githubassets.com/e34e8c013ec2175cbacac0f0691aa48c8d422c648caf296e9d775fdcc6b78c0c/servo/servo">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-12-29T15:00:00.000Z"><a href="/hexo/2019/12/30/this-year.html">2019-12-30</a></time>
+      
+      
+  
+    <h1 class="title">2019年の振り返り</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>今年は以前より取り組んできた組込みシステム上でのRustプログラミングで一定の成果が出せた。<br>他、ブログも去年より色々書けたし、Twitterのフォロワー数も伸びてきた。</p>
+<h2 id="今年の成果"><a href="#今年の成果" class="headerlink" title="今年の成果"></a>今年の成果</h2><h3 id="ブログ記事"><a href="#ブログ記事" class="headerlink" title="ブログ記事"></a>ブログ記事</h3><p>今年はこの記事を除いて12本のブログ記事を書いた。内2本は英語版を<a href="https://medium.com/@garasubo" target="_blank" rel="noopener">Medium</a>に投稿した。<br>去年は9本だったので、アウトプットの数は増えてきている。<br>また、その関連で各種LT会などに参加して、何回か発表もした。</p>
+<h3 id="自作OSプロジェクト"><a href="#自作OSプロジェクト" class="headerlink" title="自作OSプロジェクト"></a>自作OSプロジェクト</h3><p>今年、一番の成果はRustで組込みOSを書くという個人プロジェクトでとりあえず基本的な形が出来上がり、それを公開できたことだ。</p>
+
+<p>一応、今も機能追加を進めていて、<a href="/hexo/2019/05/15/erkos.html">以前のブログ</a>からだと簡易的なプロセス間通信が実装できた。<br>今はイーサーネットドライバの実装に着手し始めているが、まだ基本的なデバイスの初期化をようやく理解し始めたところなので、まだまだ時間はかかりそう。<br><a href="/hexo/2018/12/30/this-year.html">去年のまとめ</a>ではOLEDモジュールドライバの実装をしたいと言っていたが、それは流れてしまった。<br>正直、この先どういう機能を実装すべきか、というのは結構悩んでいて、というのは自分があまり実際の組込みOSに深く触れたことがないので、どういう機能がどういう構造であるべきなのか、というのがいまいち実感がわかない。<br>一旦、自作OSから離れて、既存の組込みOSで遊んでみる、というのはありなのかなあとぼんやりと計画はしている。</p>
+<h3 id="OSS活動"><a href="#OSS活動" class="headerlink" title="OSS活動"></a>OSS活動</h3><p>OSSのコントリビュートもちょくちょく始めるようにした。<br>組込みRust関連で気がついたことがあったときにPRを送った他、仕事でOSSのコントリビューションを業務時間内にやってもよい、と言われたのでRust製のブラウザエンジンのServoを触り始めている。</p>
+<a href="https://github.com/servo/servo" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://opengraph.githubassets.com/e34e8c013ec2175cbacac0f0691aa48c8d422c648caf296e9d775fdcc6b78c0c/servo/servo"></div><div class="descriptions"><div class="og-title">GitHub - servo/servo: The Servo Browser Engine</div><div class="og-description">The Servo Browser Engine. Contribute to servo/servo development by creating an account on GitHub.</div></div></div></a>
+<p>ブラウザエンジン開発はもちろん、デスクトップのGUIアプリの開発自体ほとんど経験がないので、学ぶべき内容は多い。<br>そのため、現状だと仕様書とにらめっこする時間の方が圧倒的に長く、今年は数行程度の簡単な修正しかできてないが、来年はもうちょっと大きめの変更もできるようになりたい。<br>今はIME周りの実装がまだまだ甘い、ということに気がついたのだが、これを修正するのはかなり大変そうで困っている。</p>
+<h3 id="競技プログラミング"><a href="#競技プログラミング" class="headerlink" title="競技プログラミング"></a>競技プログラミング</h3><p>競技プログラミングもちょくちょく参加するようにした。<br>AtCoderのBeginner Contestをメインで参加するほか、AtCoder Problemsという外部サービスに問題のおすすめ機能がついたので、そのオススメ問題を単体で解く、ということをした。</p>
+<a href="https://kenkoooo.com/atcoder" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">AtCoder Problems</div></div></div></a>
+<p>この推薦システムは結構優秀で頭の体操にはちょうどいいレベルの問題をちゃんと出してくれて、とても重宝している。<br>このサイトを運営してくださっている<a href="https://twitter.com/kenkoooo" target="_blank" rel="noopener">@kenkoooo</a>さんと、この推薦アルゴリズムを実装してくれた<a href="https://twitter.com/pepsin_amylase" target="_blank" rel="noopener">@pepsin_amylase</a>に圧倒的感謝。<br>その他、チームnegainoidoとして<a href="https://icfpcontest2019.github.io/" target="_blank" rel="noopener">ICFPC</a>に出て、一人チームとして<a href="/hexo/2019/09/26/isucon9.html">ISUCON</a>に出場した。<br>前者は去年と比べメンバーが一人欠けた状態だったものの、去年レベルの順位をとれたのでトータルとしてはよかったのかなあと思ったが、ISUCONは惨敗だったので悔しい。<br><a href="https://www.seccon.jp/2019/" target="_blank" rel="noopener">SECCON</a>はそもそも予選があることに気がつかず、参加できなかったという大失態を犯した。</p>
+<h2 id="心がけてたこと"><a href="#心がけてたこと" class="headerlink" title="心がけてたこと"></a>心がけてたこと</h2><p>仕事外でのインプット・アウトプットを増やす、というのが去年からの継続してきた目標なのだが、それに加えて心がけていたこととして</p>
+<ul>
+<li>SNS等での反応を必要以上に狙わない</li>
+<li>「精進」はしない<br>ということに実は気を配っていた。</li>
+</ul>
+<p>これは仕事以外のこういう活動というのをどうしてやっているか、というと一番の理由は自分がやりたいと思った分野であるわけで、それを見失ってしまうと精神衛生上よくないと思ったから。<br>そう考えると、SNS等で反応を貰いたい、という気持ち自体があるのはいいのだが、その優先順位があがりすぎると、そもそもマイナーな低レイヤー系のことをやめろ、という話になりかねないし、そもそも目立つ記事を書くみたいな分野は僕が得意な分野ではない。<br>「精進」という言葉については、なんとなく「つらいことに耐え抜いて努力する」という感じがして、楽しくないならやめればいいわけだし、自分は「精進」といえるほど努力するタイプでもない。<br>あと、つらいことに耐えるというのが目的になり始めると、その先の見返りへの欲求みたいなのも自然と大きくなる気がしたので、あまりにも気がすすまないときは素直に休むことにした。なので今年は「精進」していません。<br>とはいっても、もうちょっと生産ペースは上げていきたいなあ。</p>
+<h2 id="来年について"><a href="#来年について" class="headerlink" title="来年について"></a>来年について</h2><p>Rustでの組込み自作OSは一定の成果は上げられたので、これについてはまとまったドキュメントを書いて、機会があれば製本して技術書典あたりで販売したいと思っている。<br>自作OS作成そのものについては、イーサーネットドライバ周りをある程度作り込んだら、先述のとおり一回戦略を立て直すために別の既存のプロジェクトを触るという方向になると思う。</p>
+<p>ブログ記事も平均月一ペースで書けたので、来年はこれに加えて英語版も増やしていきたい。</p>
+<p>なお、今年から始まったGithub Sponsoredに登録成功したので、もし自分の活動を支援してくださる方がいらっしゃるならば是非お願いします。</p>
+<a href="https://github.com/sponsors/garasubo" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://avatars.githubusercontent.com/u/2667091?s=400&v=4"></div><div class="descriptions"><div class="og-title">Sponsor @garasubo on GitHub Sponsors</div><div class="og-description">Support garasubo’s open source work</div></div></div></a>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

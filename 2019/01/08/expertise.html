@@ -1,0 +1,303 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>論文紹介： Towards a Theory of Software Development Expertise | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="Twitterで見かけたどうやったらソフトウェア開発のプロになれるかの理論を構築したという論文。ソフトウェアエンジニアにはもちろん、その上司だったり経営者とかにも参考になると思う
+論文概要
+タイトル：Towards a Theory of Software Development Expertise">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="論文紹介： Towards a Theory of Software Development Expertise">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="Twitterで見かけたどうやったらソフトウェア開発のプロになれるかの理論を構築したという論文。ソフトウェアエンジニアにはもちろん、その上司だったり経営者とかにも参考になると思う 論文概要 タイトル：Towards a Theory of Software Development Expertise 著者：Sebastian Baltes　(University of Trier) et al.">
+<meta name="keywords" content="paper">
+<meta property="og:type" content="article">
+<meta property="og:title" content="論文紹介： Towards a Theory of Software Development Expertise">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2019/01/08/expertise.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="Twitterで見かけたどうやったらソフトウェア開発のプロになれるかの理論を構築したという論文。ソフトウェアエンジニアにはもちろん、その上司だったり経営者とかにも参考になると思う 論文概要 タイトル：Towards a Theory of Software Development Expertise 著者：Sebastian Baltes　(University of Trier) et al.">
+<meta property="og:locale" content="ja">
+<meta property="og:image" content="http://garasubo.github.io/hexo/images/fse18figure4.png">
+<meta property="og:updated_time" content="2019-01-08T14:17:27.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="論文紹介： Towards a Theory of Software Development Expertise">
+<meta name="twitter:description" content="Twitterで見かけたどうやったらソフトウェア開発のプロになれるかの理論を構築したという論文。ソフトウェアエンジニアにはもちろん、その上司だったり経営者とかにも参考になると思う 論文概要 タイトル：Towards a Theory of Software Development Expertise 著者：Sebastian Baltes　(University of Trier) et al.">
+<meta name="twitter:image" content="http://garasubo.github.io/hexo/images/fse18figure4.png">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-01-07T15:00:00.000Z"><a href="/hexo/2019/01/08/expertise.html">2019-01-08</a></time>
+      
+      
+  
+    <h1 class="title">論文紹介： Towards a Theory of Software Development Expertise</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Twitterで見かけたどうやったらソフトウェア開発のプロになれるかの理論を構築したという論文。<br>ソフトウェアエンジニアにはもちろん、その上司だったり経営者とかにも参考になると思う</p>
+<h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
+<li>タイトル：Towards a Theory of Software Development Expertise</li>
+<li>著者：Sebastian Baltes　(University of Trier) et al.</li>
+<li>会議：Engineering Conference and Symposium on the Foundations of Software Engineering (ESEC/FSE ’18)</li>
+</ul>
+<p>FSEというのはソフトウェア工学のトップカンファレンスの1つ。<br>どうすればソフトウェアエンジニアとして成長できるか、という話は本であったりブログであったりとそこらじゅうに溢れているが、このような論文となっているのはなかなかないのではなかろうか。<br>この論文で示されている著者らの構築したソフトウェアエンジニアのプロ（以下、原文に習いSDExp）になるための理論はもちろんのこと、その理論の構築過程もとてもおもしろい。<br>今回のブログでは理論の構築過程については自分の前提知識が足りなくまだ十分に理解できていないので、彼らの導いた理論の要旨、というよりも自分が印象に残った部分だけを紹介する。</p>
+<p>元の論文はarXivで誰でも見られるので、詳しくはそちらへ<br><a href="https://arxiv.org/abs/1807.06087" target="_blank" rel="noopener">https://arxiv.org/abs/1807.06087</a></p>
+<h2 id="手法"><a href="#手法" class="headerlink" title="手法"></a>手法</h2><p>彼らの理論はどのようなコンセプトがSDExpになるためには必要で、そのコンセプトがどのように関係しあっているか、というものをモデル化したものである。<br>この論文では３つのフェーズを経てそのモデルを構築している。</p>
+<p>フェーズ１ではGithubとStack Overflowのアクティブなユーザーをサンプリングしてアンケートを取り、<br>その結果をベースに理論のベースとなるgrounded theory (GT)を構築している。<br>フェーズ２では既存の文献を用いて、GTに対してそれらの理論を埋め込んでいく形で発展させたモデルを構築する。<br>フェーズ３ではフェーズ２までの結果を踏まえて、フェーズ１よりも踏み込んだ形のアンケートをつくり、アクティブなJava開発者と長い開発経験を持つ開発者それぞれを対象として回答を得た。<br>Javaにターゲットを絞ったのは、対象をわかりやすくるため、研究開始時最もメジャーな言語であったJavaを選んだとのこと。<br>その結果を元に彼らの理論を完成させた。</p>
+<h2 id="SDExpになるには"><a href="#SDExpになるには" class="headerlink" title="SDExpになるには"></a>SDExpになるには</h2><p>では、フェーズ３で構築した理論の図を論文から引用して見てみる</p>
+<img src="/hexo/images/fse18figure4.png" title="figure 4">
+
+<p>この巨大な図だけでは意味がわからないので、いくつか印象に残った部分だけを説明する。<br>このモデルはconcepts（コンセプト）とrelationship（関係）の２つからなる。<br>今回はコンセプトと関係の中からいくつか重要なものあるいは印象的だったものについて見ていく。</p>
+<h3 id="Tasks"><a href="#Tasks" class="headerlink" title="Tasks"></a>Tasks</h3><p>このモデルはTaskを中心に据えている。ここでいうTaskというのは要件定義であったりリファクタリングであったりするわけだが、それぞれのTaskには専用の知識であったり経験がある。<br>ソフトウェア開発には人が関わってくるので、人の関わり（Work Context）というのも重要な要素であるが、これもTask毎に違う。</p>
+<p>フェーズ３にて最も重要だと思うTaskはという質問に対して、</p>
+<ol>
+<li>ソフトウェアアーキテクチャのデザイン</li>
+<li>ソースコードを書く</li>
+<li>要求を分析・理解する<br>が最も多い回答だった。</li>
+</ol>
+<h3 id="deliberate-practice"><a href="#deliberate-practice" class="headerlink" title="deliberate practice"></a>deliberate practice</h3><p>この論文でかなり強調されていた関係の１つにdeliberate practice（訳すとすれば計画的実践？）というのがある。<br>単に同じような経験をたくさん積む、というのはパフォーマンスを向上させるのには貢献しない、むしろ逆効果にすらなり得る。<br>経験の年数が能力に比例するのは最初の２年程度なので、その後はタスクの難易度を上げていくことでパフォーマンスをあげていくことが必要になる。これがdeliberate practiceである。<br>このdeliberate practiceにはパフォーマンスをモニターし、フィードバックを与えてあげるメンターなどの存在も必要になる。<br>また、自分の強みや弱みを把握する自己反省の資質も大事である。</p>
+<h3 id="Work-Context-Task-Context"><a href="#Work-Context-Task-Context" class="headerlink" title="Work Context (Task Context)"></a>Work Context (Task Context)</h3><p>ソフトウェア開発にはマネージャーに相談したり、客からの要望に答えたりといったWork Contextが存在する。<br>フェーズ３で経営者が従業員の開発スキルを向上させるためにするべきことという質問に対する答えをカテゴライズすると</p>
+<ol>
+<li>学習を奨励する</li>
+<li>実験することを奨励する</li>
+<li>情報交換をしやすくする</li>
+<li>自由を認める<br>というのが最も多い回答であった。<br>具体的には</li>
+</ol>
+<ul>
+<li>外部のトレーニングコースの受講を勧める</li>
+<li>カンファレンスの参加費を負担する</li>
+<li>“Self-improvement Friday”、”lunch-and-learn session”などのミーティングやイベントで情報交換や学習の機会をつくる</li>
+</ul>
+<h3 id="Performance-Decline"><a href="#Performance-Decline" class="headerlink" title="Performance Decline"></a>Performance Decline</h3><p>年を経るごとにパフォーマンスが落ちていくということがあるが、これについても分析している。<br>フェーズ３での回答をカテゴライズすると</p>
+<ol>
+<li>モチベーションの低下</li>
+<li>仕事の環境の変化</li>
+<li>年齢による衰え</li>
+<li>態度の変化</li>
+<li>他のTaskへの移動<br>となった。<br>同じような仕事をやらされ続けてモチベーションを失う、きつい締切へのプレッシャー、マネージャーのコミュニケーション不足などなどが具体例として挙げられている。</li>
+</ol>
+<p>年齢による衰えについてはいくつかの実際の回答を引用している。例えば、「50代のころから新しい言語やフレームワークについていけなくなった」、「物忘れがひどくなってプログラムを書く速度が落ちた」、といったものであるが、<br>「40歳からritalinのような薬を飲むようにした。これは年老いたプログラマーの間では極めて一般的」などという回答まであった。<br>ritalinとは、どうやら多動性障害（ADHD）のための向精神剤らしいが（参考：<a href="https://ja.wikipedia.org/wiki/%E3%83%A1%E3%83%81%E3%83%AB%E3%83%95%E3%82%A7%E3%83%8B%E3%83%87%E3%83%BC%E3%83%88" target="_blank" rel="noopener">メチルフェニデール</a>）本当に広く使われていたりするのだろうか…</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>SDExpになるための理論を構築したという論文から、構築した理論についてその要素部分をかいつまんで紹介した。<br>紹介しきれなかったところ、また構築するまでの過程も非常におもしろかったので、興味があれば是非元論文を読んでもらいたい。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/paper/">paper</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

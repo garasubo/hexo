@@ -1,0 +1,301 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>ARM向け自作ハイパーバイザーT-Visorを公開しました | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="修士の研究としてつくったARM用ハイパーバイザ「T-Visor」を公開しました。https://github.com/garasubo/T-Visor
+(2016/05/24 ちょっと加筆しました）
+背景組み込みの世界でもLinuxのような汎用システム向けOSが使われるようになる一方、リアルタイム性">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="ARM向け自作ハイパーバイザーT-Visorを公開しました">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="修士の研究としてつくったARM用ハイパーバイザ「T-Visor」を公開しました。https://github.com/garasubo/T-Visor (2016/05/24 ちょっと加筆しました） 背景組み込みの世界でもLinuxのような汎用システム向けOSが使われるようになる一方、リアルタイム性の保障やセキュリティ等の観点からリアルタイムOSの需要も高い。そこで、ハイパーバイザを使って汎用OS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ARM向け自作ハイパーバイザーT-Visorを公開しました">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2016/05/23/t-visor.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="修士の研究としてつくったARM用ハイパーバイザ「T-Visor」を公開しました。https://github.com/garasubo/T-Visor (2016/05/24 ちょっと加筆しました） 背景組み込みの世界でもLinuxのような汎用システム向けOSが使われるようになる一方、リアルタイム性の保障やセキュリティ等の観点からリアルタイムOSの需要も高い。そこで、ハイパーバイザを使って汎用OS">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2016-05-24T13:14:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ARM向け自作ハイパーバイザーT-Visorを公開しました">
+<meta name="twitter:description" content="修士の研究としてつくったARM用ハイパーバイザ「T-Visor」を公開しました。https://github.com/garasubo/T-Visor (2016/05/24 ちょっと加筆しました） 背景組み込みの世界でもLinuxのような汎用システム向けOSが使われるようになる一方、リアルタイム性の保障やセキュリティ等の観点からリアルタイムOSの需要も高い。そこで、ハイパーバイザを使って汎用OS">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-05-23T12:19:59.000Z"><a href="/hexo/2016/05/23/t-visor.html">2016-05-23</a></time>
+      
+      
+  
+    <h1 class="title">ARM向け自作ハイパーバイザーT-Visorを公開しました</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>修士の研究としてつくったARM用ハイパーバイザ「T-Visor」を公開しました。<br><a href="https://github.com/garasubo/T-Visor" target="_blank" rel="noopener">https://github.com/garasubo/T-Visor</a></p>
+<p>(2016/05/24 ちょっと加筆しました）</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>組み込みの世界でもLinuxのような汎用システム向けOSが使われるようになる一方、<br>リアルタイム性の保障やセキュリティ等の観点からリアルタイムOSの需要も高い。<br>そこで、ハイパーバイザを使って汎用OSとリアルタイムOSを同時に動かす、というような研究や製品が結構あります。<br>具体例を上げれば、ロボットの姿勢制御などをリアルタイムOSできっちりとやる一方、<br>画像処理やネットワーク機能とかを使ってクールな機能だけど最悪バグっても安全には支障がないといったものをLinux側で、といった感じです。<br>実際にARMの一部シリーズではIntel VT-xのような仮想化支援のハードウェア機構が備わっていて、<br>KVMやXenはこれらに対応してARM上でも動くようになっています。</p>
+<p>しかし、XenやKVMはLinuxをベースにしていてシステム全体が重い、リアルタイムでないなどの問題点があります。<br>Linuxなどのスケジューラは短い一定周期ごとに確実にこれこれをしなければいけない、といったような要請（ハードリアルタイム）を満たしにくいことが知られています。<br>リアルタイム性や組み込み用途というものを重視しようということで開発したのがT-Visorです。<br>このT-Visorは動作にLinuxやその他標準ライブラリを要さず、Cortex-A7/A15での動作が可能です。<br>方式としてはハードウェア上で直接動くType-1型で、仮想マシン上で動くOSをに対して変更がいらない完全仮想化をおこなっています。</p>
+<h2 id="ざっくりとした技術的な説明"><a href="#ざっくりとした技術的な説明" class="headerlink" title="ざっくりとした技術的な説明"></a>ざっくりとした技術的な説明</h2><p>このT-VisorはARMv7-Aの拡張のひとつである<a href="https://www.arm.com/ja/products/processors/technologies/virtualization-extensions.php" target="_blank" rel="noopener">Virtualization Extensions</a>を利用することで、<br>完全仮想化Type-1型のハイパーバイザを実現しています。<br>この拡張でHypモードというプロセッサモードが追加され、プロセッサ全体に影響を与えるような命令に対してトラップをかけてこのHypモードにさせる、ということが可能です。</p>
+<p>メモリアクセスですが、通常のMMUに加えてStage-2のMMUというものがあり、これは仮想マシン上での物理アドレスを中間物理アドレスとして受け取り、<br>実物理アドレスに変換させたうえでメモリアクセスをさせると言うものです。<br>これにより、仮想マシンは自由にMMUを使うことができる一方、ハイパーバイザ側でアクセスできるメモリ領域を制限することができます。</p>
+<p>仮想デバイスドライバは基本的には実装していません。ARMのIOはすべてMMIOなので、アクセスできるメモリ領域を制限することで、<br>仮想マシンから触れるデバイスは制限されています。<br>また、外部からの割り込みも一度ハイパーバイザにトラップされるので、割り込みについてもどの仮想マシンが受け取るかを制御できます。</p>
+<p>割り込みに関してはGICという割り込みコントローラで管理されています。<br>ゲストOSもこのGICを使って割り込みをコントロールするので、競合が起きないよう対応が必要です。<br>このGICはある程度の部分が仮想化対応されているのですが、ある程度の部分に関してはなされていないので、<br>先述のStage-2 MMUを使うことで、アクセスをコントロールすることで仮想割り込みコントローラを実装して対応します。</p>
+<p>リアルタイム性を保障するためスケジューリング方式が重要になってきますが、ユーザーが設定しやすいようにということを意識してフレームワークが設計されています。<br>具体的には実装すべき関数をいくつか定め、その中ではあくまでスケジューリングに関することのみを行い、<br>仮想マシン内部などには干渉する必要がないようにされています。<br>サンプルとして固定優先度式とEDF方式のスケジューラが実装されていますが、設定により静的にひとつのスケジューラのみが組み込まれるようになっています。</p>
+<p>仮想マシンの数やそのメモリ割当等の設定はコンパイル時に決定されます。<br>現状はソースコードにベタ書きしていく感じになっているので、まともなconfigureについてはfuture workのひとつです。</p>
+<p>起動に関してですが、ブートローダはU-Bootを使って動作させていました。<br>ただし、U-Boot固有の機能に何か依存していたわけではなく、メモリ上に外部からハイパーバイザとゲストOSが展開できるようなものならなんでもよいです。</p>
+<p>動作確認として無修正のLinuxを動かし、各種ベンチマークの動作を確認しました。<br>また、複数のリアルタイムOSを動かして、OS間通信ができることも確認しています。<br>Xen4.4とも比較実験をおこなっていて、詳細は省きますが、基本的にポジティブな結果が出ました。<br>ただし、Xen4.5で割り込みに関して性能改善がなされたらしく、そちらとはまだ比べられていません。</p>
+<h2 id="主要なソースコードの中身"><a href="#主要なソースコードの中身" class="headerlink" title="主要なソースコードの中身"></a>主要なソースコードの中身</h2><p>ソースコード読みたい人向けに簡単に説明しておきます。</p>
+<ul>
+<li>vcpu.c<ul>
+<li>仮想CPUの状態管理を行う</li>
+</ul>
+</li>
+<li>hyp_call.c<ul>
+<li>仮想マシンからのhyp例外を管理する</li>
+</ul>
+</li>
+<li>virtual_gic.c<ul>
+<li>割り込みコントローラについての仮想化を担っている</li>
+</ul>
+</li>
+<li>schedulers/<ul>
+<li>各種スケジューラの実装</li>
+</ul>
+</li>
+<li>users/<ul>
+<li>この以下のディレクトリのうちひとつを選択することで、ハイパーバイザ上でどのようなアプリケーションを使うかを決定する</li>
+</ul>
+</li>
+<li>boards/<ul>
+<li>ハードウェア依存部分を置くところ。</li>
+</ul>
+</li>
+</ul>
+<h2 id="課題と今後やりたいこと"><a href="#課題と今後やりたいこと" class="headerlink" title="課題と今後やりたいこと"></a>課題と今後やりたいこと</h2><p>まず第一に、複数OSは動かせることは確認しているものの、ひとつのVMに対して仮想CPUを複数提供することには失敗しています。<br>また、このハイパーバイザはコアをひとつしか使うことができません。<br>前者に対してはPSCIというコアを管理するためのインターフェースがARM側では定義されているので、<br>それに乗っ取り、仮想CPUを操作するインターフェースを実装済みではあるのですが、いざLinuxを動かしてみると起動途中で止まってしまいます。<br>どうも２つのコアとも処理できるスレッドがなくなってスリープしているようなのですが、はっきりとした原因がわかっていません。<br>原因として考えられるのは</p>
+<ul>
+<li>割り込みコントローラの仮想化部分がバグっていてハードウェアからの信号待ちのようになってしまって動かなくなっている</li>
+<li>コア間の状態保存・復帰がバグっている</li>
+<li>キャッシュ・TLBなどが適切にcleanできていない<br>などなのですが、未だにはっきりとつかめていません。</li>
+</ul>
+<p>また、仮想マシンの管理のconfigがよくない感じなのは前述のとおりなのですが、それ以外にもコードの構造がひどいことは重々承知していて、<br>そこをまず叩き直さなければならないという話もあります。<br>そもそも一人で書いているはずなのに気分でコード規約が変わって名前の付け方が色々おかしいとか、もしかしたらインデントも統一されていない部分もあるかも…<br>あとは今のところ全部C言語とアセンブラで書かれているのですが、C++で書くともっとすっきりするかもしれませんね。</p>
+<p>OSや組み込み開発に対してほとんど知識がない状態ではじめたため、かなり拙い部分もありますが、まあなんとか動作することができたのはよかったかなっと</p>
+<h2 id="補足"><a href="#補足" class="headerlink" title="補足"></a>補足</h2><p>現在、動作確認は<a href="http://www.zuiki.co.jp/products/cubieboard2/" target="_blank" rel="noopener">Cubieboard 2</a>で行っています。<br>Raspberry Pi2だと割り込みコントローラの関係上、動かすのに大変な労力が必要となります。</p>
+<p>あと、課題とかいろいろ書きましたが、現在は基本的に開発止まっています。<br>私の能力では解決が難しいというのがひとつ、つくったとしてもそれを使ったアプリケーションをつくる機会がないといったモチベーションの問題がひとつです。<br>ただ、興味ある人がいれば連絡くれると幸いです。ある程度協力できると思います。</p>
+<p>ちなみにこのタイミングで公開したのは、ソースコードを多少はマシにしたかったというのもそうなのですが、<br>これについて書いた論文がリジェクトされたからです。<br>評価が甘かったりアプリケーションが見えにくかったというのが主な原因なのだろうか、アカデミアの道は厳しいですね。<br>この手の分野はクローズドソースなものが多すぎたり、ハードウェア依存な部分が多かったりで、実装までこぎつけても評価が…ってなるのは悲しい</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

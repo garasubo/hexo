@@ -1,0 +1,296 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>ARMv7-Mで動作モードを利用してコンテキストスイッチ | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="Cortex-M4のボードで自作OSに挑戦している。Cortex-M4の準拠するARMv7-Mアーキテクチャでは２つの「動作モード」（Operating Mode）が存在する。
+
+スレッドモード
+ハンドラモード
+
+リセット状態ではスレッドモードで、割り込みが発生するとハンドラモードに移行して割り込み">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="ARMv7-Mで動作モードを利用してコンテキストスイッチ">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="Cortex-M4のボードで自作OSに挑戦している。Cortex-M4の準拠するARMv7-Mアーキテクチャでは２つの「動作モード」（Operating Mode）が存在する。  スレッドモード ハンドラモード  リセット状態ではスレッドモードで、割り込みが発生するとハンドラモードに移行して割り込みハンドラが実行される。スレッドモードは特権が存在し、特権・非特権の２つの状態があり、リセット状態では">
+<meta name="keywords" content="embedded,Arm,Cortex-M">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ARMv7-Mで動作モードを利用してコンテキストスイッチ">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2019/04/17/cortexm-mode.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="Cortex-M4のボードで自作OSに挑戦している。Cortex-M4の準拠するARMv7-Mアーキテクチャでは２つの「動作モード」（Operating Mode）が存在する。  スレッドモード ハンドラモード  リセット状態ではスレッドモードで、割り込みが発生するとハンドラモードに移行して割り込みハンドラが実行される。スレッドモードは特権が存在し、特権・非特権の２つの状態があり、リセット状態では">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2019-04-17T14:00:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ARMv7-Mで動作モードを利用してコンテキストスイッチ">
+<meta name="twitter:description" content="Cortex-M4のボードで自作OSに挑戦している。Cortex-M4の準拠するARMv7-Mアーキテクチャでは２つの「動作モード」（Operating Mode）が存在する。  スレッドモード ハンドラモード  リセット状態ではスレッドモードで、割り込みが発生するとハンドラモードに移行して割り込みハンドラが実行される。スレッドモードは特権が存在し、特権・非特権の２つの状態があり、リセット状態では">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-04-16T15:00:00.000Z"><a href="/hexo/2019/04/17/cortexm-mode.html">2019-04-17</a></time>
+      
+      
+  
+    <h1 class="title">ARMv7-Mで動作モードを利用してコンテキストスイッチ</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Cortex-M4のボードで自作OSに挑戦している。<br>Cortex-M4の準拠するARMv7-Mアーキテクチャでは２つの「動作モード」（Operating Mode）が存在する。</p>
+<ul>
+<li>スレッドモード</li>
+<li>ハンドラモード</li>
+</ul>
+<p>リセット状態ではスレッドモードで、割り込みが発生するとハンドラモードに移行して割り込みハンドラが実行される。<br>スレッドモードは特権が存在し、特権・非特権の２つの状態があり、リセット状態では特権状態である。ハンドラモードでは常に特権状態となる。<br>特権の状態を切り替えるにはハンドラモードに突入してから切り替える、もしくは特権状態ならばCONTROLレジスタに書き込むことで非特権状態になれる。</p>
+<p>この特権の状態を利用することで、カーネル（スケジューラ）部分は特権状態で動かして、通常のプロセスに相当する部分は非特権状態で動かすということができる。<br>では、どうやってリセット状態からプロセスを起動するか。<br>ARMv7-Mでは割り込みが発生するとスタックポインタに自動的に一部のレジスタ状態をプッシュし、<br>ハンドラモードからの復帰時にスタックポインタに保存されたレジスタを復元する。<br>スタックポインタはメインとプロセスの2種類あり、通常のスレッドモードでは、特権状態ではメインを、非特権状態ではプロセスを使う。<br>つまりプロセスを初期状態から起動させるには</p>
+<ol>
+<li>プロセススタックポインタにプロセスの初期状態をプッシュしておく</li>
+<li>svc命令でSVCの割り込みハンドラをハンドラモードで実行</li>
+<li>ハンドラから非特権状態のスレッドモードに復帰</li>
+<li>プロセスが起動される</li>
+</ol>
+<p>という流れになる。</p>
+<p>注意するべき点としては</p>
+<ul>
+<li>浮動小数点の機能が有効化されている場合はより多くの状態を保存するため、スタックのフレームサイズが代わる</li>
+<li>スタックはCCR.STKALIGNがセットされていない場合は4バイトに、セットされている場合は8バイトにアラインされている必要がある</li>
+<li>xPSRレジスタのうちThumbモードを有効にするビットは立てる必要がある（ARMv7-Mでは常にThumbモードで実行されなければならない）。よって初期値は0x01000000である必要がある</li>
+<li>スタックに保存されないレジスタに関しては別途なんらかの手段で保存しておかないと複数プロセス間の切り替えができない</li>
+</ul>
+<p>細かい動作はリファレンスマニュアルを参照すること。以下に自分が参考にした章を示す（マニュアルのバージョンはE.b）</p>
+<ul>
+<li>B1.3 Overview of system level terminology and operation<ul>
+<li>動作モードの定義</li>
+</ul>
+</li>
+<li>B1.4.2 The special-purpose program status registers, xPSR<ul>
+<li>xPSRレジスタの詳細</li>
+</ul>
+</li>
+<li>B1.5.6 Exception entry behavior<ul>
+<li>例外発生時の動作について。スタックのレイアウトについても書かれている</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/embedded/">embedded</a>, <a href="/hexo/tags/Arm/">Arm</a>, <a href="/hexo/tags/Cortex-M/">Cortex-M</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

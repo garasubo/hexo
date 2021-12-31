@@ -1,0 +1,267 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Rustでコマンドラインツールを開発する | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="コマンドラインツールをつくる際、今まではPythonやRubyなどのスクリプト言語をつかうことが多かった。スクリプト言語はコンパイルする必要がなく、普通のシェルスクリプトよりかは書きやすいし、外部のライブラリも組込みやすい。Java・ScalaなどのJVM系言語はC言語系よりかは書きやすいが、JVM">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Rustでコマンドラインツールを開発する">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="コマンドラインツールをつくる際、今まではPythonやRubyなどのスクリプト言語をつかうことが多かった。スクリプト言語はコンパイルする必要がなく、普通のシェルスクリプトよりかは書きやすいし、外部のライブラリも組込みやすい。Java・ScalaなどのJVM系言語はC言語系よりかは書きやすいが、JVMの起動の時間が気になってしまいあまり向いていないように思われる。 しかしながら、スクリプト言語での開">
+<meta name="keywords" content="Rust,CLI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rustでコマンドラインツールを開発する">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2020/02/26/rust-cli.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="コマンドラインツールをつくる際、今まではPythonやRubyなどのスクリプト言語をつかうことが多かった。スクリプト言語はコンパイルする必要がなく、普通のシェルスクリプトよりかは書きやすいし、外部のライブラリも組込みやすい。Java・ScalaなどのJVM系言語はC言語系よりかは書きやすいが、JVMの起動の時間が気になってしまいあまり向いていないように思われる。 しかしながら、スクリプト言語での開">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2020-02-26T13:30:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rustでコマンドラインツールを開発する">
+<meta name="twitter:description" content="コマンドラインツールをつくる際、今まではPythonやRubyなどのスクリプト言語をつかうことが多かった。スクリプト言語はコンパイルする必要がなく、普通のシェルスクリプトよりかは書きやすいし、外部のライブラリも組込みやすい。Java・ScalaなどのJVM系言語はC言語系よりかは書きやすいが、JVMの起動の時間が気になってしまいあまり向いていないように思われる。 しかしながら、スクリプト言語での開">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2020-02-26T12:02:23.000Z"><a href="/hexo/2020/02/26/rust-cli.html">2020-02-26</a></time>
+      
+      
+  
+    <h1 class="title">Rustでコマンドラインツールを開発する</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>コマンドラインツールをつくる際、今まではPythonやRubyなどのスクリプト言語をつかうことが多かった。<br>スクリプト言語はコンパイルする必要がなく、普通のシェルスクリプトよりかは書きやすいし、外部のライブラリも組込みやすい。<br>Java・ScalaなどのJVM系言語はC言語系よりかは書きやすいが、JVMの起動の時間が気になってしまいあまり向いていないように思われる。</p>
+<p>しかしながら、スクリプト言語での開発にも問題はある。<br>動的に型がついて危ない、というのは小さくなりがちなちょっとしたツールでは比較的無視しやすいのでいいとする。<br>一番厄介なのは、実行環境のバージョン違いである。特にプロセス呼び出しで、同じ言語の他のツールを呼び出したりすると突然エラーを吐いたりすることがあった。</p>
+<p>この前、社内でコマンドラインツールを書く機会があり、試しにRustで書いてみることにした。<br>一度コンパイルしてしまいバイナリにしてしまえば、バージョンの違いに苦しむことはないであろう。<br>変更のたびコンパイルする必要があるとはいえ、一度コンパイルさえしてしまえば高速に動作する。<br>実はRustの公式ワーキンググループの中にコマンドラインインターフェース（CLI）のためのチームがあり、ドキュメント・ライブラリが整備されている。</p>
+
+
+<p>ドキュメントは優秀で、コマンドライン引数の処理やエラーハンドリングなどでどういうクレートを使えばいいかを紹介してくれている。</p>
+<a href="https://rust-cli.github.io/book/index.html" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Getting started - Command Line Applications in Rust</div></div></div></a>
+<p>特に<a href="https://docs.rs/structopt/0.3.9/structopt/" target="_blank" rel="noopener"><code>structopt</code></a>をつかったコマンドライン引数の処理は非常に簡単。シリアライズでお馴染みの<code>serde</code>みたいに構造体にアトリビュートをつけていくと、コマンドライン引数を構造体に簡単に落とし込める。ヘルプメッセージなども簡単につくれるし、サブコマンドの定義なども柔軟に対応可能。</p>
+<p>変更のたびコンパイルする手間であるが、<code>cargo run</code>コマンドを使うことである程度緩和できる。<code>cargo run</code>は変更がない限りは特にはコンパイル処理を行わないのでオーバーヘッドは小さい。<br>ただし、生で叩くのは面倒なので、以下のようなシェルスクリプトのラッパーを経由して呼び出すことにした。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">script_path</span>=$(readlink -f <span class="string">"<span class="variable">$0</span>"</span>)</span><br><span class="line"><span class="attribute">manifest_path</span>=<span class="string">"<span class="variable">$(dirname "$script_path")</span>/Cargo.toml"</span></span><br><span class="line"></span><br><span class="line"><span class="attribute">RUSTFLAGS</span>=-Awarnings cargo <span class="builtin-name">run</span> -q --release <span class="attribute">--manifest-path</span>=<span class="variable">$manifest_path</span> -- <span class="string">"<span class="variable">$@</span>"</span></span><br></pre></td></tr></table></figure>
+
+<p><code>RUSTFLAGS</code>はコンパイル時の警告を消すためにつけている。これをプロジェクトのルートディレクトリにおいておき、このスクリプトへのシンボリックリンクをパスの通っているところに配置すればコマンドラインから簡単に実行できる。<br>初回時のみ無言でコンパイルを行うが、その後はインクリメンタルにビルドしてくれるので、無言の期間は比較的短くてすむはずである。<br>もちろん、このようなスクリプトを使わずともバイナリのシンボリックリンクを置くとかでもよいが、そこはお好みで。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/Rust/">Rust</a>, <a href="/hexo/tags/CLI/">CLI</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

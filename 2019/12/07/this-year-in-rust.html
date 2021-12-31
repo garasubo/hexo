@@ -1,0 +1,280 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>This Week in Rustで振り返る今年のRust | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="これはRustその2 Advent Calendar 20197日目の記事です。去年も参加したRust Advent Calendarなのですが、今年はその3まであるようですね。Rustの人気が年々盛り上がっている証拠でしょうか。
+This Week in RustThis Week in Rust">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="This Week in Rustで振り返る今年のRust">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="これはRustその2 Advent Calendar 20197日目の記事です。去年も参加したRust Advent Calendarなのですが、今年はその3まであるようですね。Rustの人気が年々盛り上がっている証拠でしょうか。 This Week in RustThis Week in Rustとは、毎週Rust関連のブログ記事やRustコンパイラへの変更などを紹介してくれるニュースレターです">
+<meta name="keywords" content="Rust">
+<meta property="og:type" content="article">
+<meta property="og:title" content="This Week in Rustで振り返る今年のRust">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2019/12/07/this-year-in-rust.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="これはRustその2 Advent Calendar 20197日目の記事です。去年も参加したRust Advent Calendarなのですが、今年はその3まであるようですね。Rustの人気が年々盛り上がっている証拠でしょうか。 This Week in RustThis Week in Rustとは、毎週Rust関連のブログ記事やRustコンパイラへの変更などを紹介してくれるニュースレターです">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2019-12-07T09:29:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="This Week in Rustで振り返る今年のRust">
+<meta name="twitter:description" content="これはRustその2 Advent Calendar 20197日目の記事です。去年も参加したRust Advent Calendarなのですが、今年はその3まであるようですね。Rustの人気が年々盛り上がっている証拠でしょうか。 This Week in RustThis Week in Rustとは、毎週Rust関連のブログ記事やRustコンパイラへの変更などを紹介してくれるニュースレターです">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-12-06T15:00:00.000Z"><a href="/hexo/2019/12/07/this-year-in-rust.html">2019-12-07</a></time>
+      
+      
+  
+    <h1 class="title">This Week in Rustで振り返る今年のRust</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>これは<a href="https://qiita.com/advent-calendar/2019/rust2" target="_blank" rel="noopener">Rustその2 Advent Calendar 2019</a>7日目の記事です。<br>去年も参加したRust Advent Calendarなのですが、今年は<a href="https://qiita.com/advent-calendar/2019/rust3" target="_blank" rel="noopener">その3</a>まであるようですね。Rustの人気が年々盛り上がっている証拠でしょうか。</p>
+<h2 id="This-Week-in-Rust"><a href="#This-Week-in-Rust" class="headerlink" title="This Week in Rust"></a>This Week in Rust</h2><p><a href="https://this-week-in-rust.org/" target="_blank" rel="noopener">This Week in Rust</a>とは、毎週Rust関連のブログ記事やRustコンパイラへの変更などを紹介してくれるニュースレターです。<br>すべて英語の記事なので、正直読むのがしんどいのですが、気になったタイトルがあったら読むようにしています。<br>今回は今年のThis Week in Rustで紹介された記事からいくつかピックアップして紹介して、今年のRustコミュニティの動向を振り返ってみようと思います。<br>なお、選んだ記事は自分の興味にものすごく影響を受けているため分野は偏り気味です。</p>
+<h2 id="Rustで既存プロダクトを置き換える話"><a href="#Rustで既存プロダクトを置き換える話" class="headerlink" title="Rustで既存プロダクトを置き換える話"></a>Rustで既存プロダクトを置き換える話</h2><p>C/C++やPythonで書かれたプロジェクトをRustで置き換えるという話をかなり見るようになりました。</p>
+
+<p>Pythonで書かれていたIoTプラットフォームをRustで置き換えたという話です。<br>スケールさせるためにより高速な言語に置き換えねばならなかったこと、様々な技術的負債が溜まってしまったという状況で、Rustに置き換えるという選択をとったようです。<br>当然、C/C++も候補に入りましたが、nullポインタやキャストのバグなど、言語の性質上起こり得るバグを<a href="https://medium.com/dwelo-r-d/abusing-fire-for-light-a6e6774289fd" target="_blank" rel="noopener">Part2</a>で紹介し、<br><a href="https://medium.com/dwelo-r-d/designing-around-our-flaws-e0fccd7070af" target="_blank" rel="noopener">Part3</a>でRustならそれが起こらないことを説明しています。</p>
+<p><a href="https://osfc.io/uploads/talk/paper/23/Oreboot.pdf" target="_blank" rel="noopener">Oreboot (PDF)</a></p>
+<p>CorebootというオープンソースのブートローダーをRustで書き直すOrebootというプロジェクトの紹介です。<br>Rustを選んだ理由から現在のOrebootの設計・進捗状況を説明しています。現状はQEMUのArmやRISC-Vのボードで動いているようです。</p>
+<a href="https://about.houqp.me/posts/rusty-c/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">How to make your C codebase rusty: rewriting keyboard firmware keymap in Rust</div><div class="og-description">Recently, my colleague introduced me to QMK 1, an open-source keyboard firmware. Like many non-trivia C projects, macro is heavily used ever…</div></div></div></a>
+<p>自作キーボードでおなじみのキーボード用ファームウェアのQMKをRustで書き直す話です。<br>C言語で書かれたものをどうRustで表現するか、RustとC言語を連携させるテクニックがまとまっていていいと思いました。</p>
+<h2 id="組込み分野での応用"><a href="#組込み分野での応用" class="headerlink" title="組込み分野での応用"></a>組込み分野での応用</h2><p>Rust Embeddedグループが去年発足したように、組込み分野への応用はRustの用途として注目されている分野のひとつです。</p>
+
+<p>Apache MynewtというリアルタイムOSを用いて、STM32 Blue Pillというマイクロコントローラ上でRustのアプリを動かす話です。<br>なぜC言語ではなくRustがいいのかというところから、実際にどのようにしてプロジェクトに組み込むのかまで詳しく説明されています。</p>
+<h2 id="C言語のとの併用"><a href="#C言語のとの併用" class="headerlink" title="C言語のとの併用"></a>C言語のとの併用</h2><p>Rustの魅力のひとつはC言語と互換性をもたせることができるため、Cで書かれたライブラリを呼び出したり、逆にC言語側からRustのライブラリを呼び出すこともできます。</p>
+<a href="http://hotforknowledge.com/2019/07/14/6-rust-the-new-c/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Rust as the new C. Part 1: building and combining native libs into C API</div><div class="og-description">Evaluating Rust as the common denominator of modern development</div></div></div></a>
+<p>RustのプロジェクトにC言語のライブラリをどのように取り込むか、という話です。<br>LMDB、Blosc、SQLiteという現実のライブラリをプロジェクトに取り込んでみて、ビルドの設定の仕方、機能の呼び出し方などを解説しています。</p>
+<h2 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h2><p>Microsoftが、多くのバグがメモリの安全性の問題に由来しているため、その解決策のひとつとしてRustを提案しているというブログが公開されました。</p>
+<a href="https://msrc-blog.microsoft.com/2019/07/16/a-proactive-approach-to-more-secure-code/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">A proactive approach to more secure code – Microsoft Security Response Center</div></div></div></a>
+
+<p>続くブログでは、なぜRustがC/C++の代わりとして注目しているかが説明されています。</p>
+
+<p>C/C++のように低レベルでのパフォーマンスコントロールができる一方で、C/C++より強力な安全性の保証をしてくれます。<br>また、メモリ関連の安全性を犯しにくい、型システムも強力で表現力が高いことなども理由に挙げられています。</p>
+<p>Amazonも去年、<a href="https://github.com/firecracker-microvm/firecracker" target="_blank" rel="noopener">Firecracker</a>というRust製のVMMをオープンソースプロジェクトとして公開し注目されましたが、様々な大企業がRustに注目しだしている、ということがわかります。</p>
+<h2 id="async-await"><a href="#async-await" class="headerlink" title="async/await"></a>async/await</h2><p>今年のRustの変更で一番大きな注目を集めたのはasync/awaitの追加でしょう。それに関連する記事もいくつか紹介はされていました。<br>が、自分自身がasync/awaitの仕様をまったく追えていないので、今回は紹介しないでおきます。</p>
+<p>Rustは進歩が早く、まだまだ学ぶことが多いですが、来年もRustをやっていきたいと思います。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/Rust/">Rust</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

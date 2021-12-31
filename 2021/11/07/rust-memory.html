@@ -1,0 +1,356 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Rustのメモリ管理機能とその特徴 | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="初出：技術評論社刊「ソフトウェアデザイン 2021年9月号」
+先日、技術評論社よりRustのメモリ管理機能についての特集に寄稿させて頂きました。この記事は自分が寄稿させていただいた記事をブログ用に一部推敲・加筆を加えたものです。なお、ソフトウェアデザインでの特集ではより実践的な例でのメモリ管理につい">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Rustのメモリ管理機能とその特徴">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="初出：技術評論社刊「ソフトウェアデザイン 2021年9月号」 先日、技術評論社よりRustのメモリ管理機能についての特集に寄稿させて頂きました。この記事は自分が寄稿させていただいた記事をブログ用に一部推敲・加筆を加えたものです。なお、ソフトウェアデザインでの特集ではより実践的な例でのメモリ管理についての解説もあるので、興味のある方は本誌のほうも手にとっていただければと思います。 プログラム言語にお">
+<meta name="keywords" content="Rust">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rustのメモリ管理機能とその特徴">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2021/11/07/rust-memory.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="初出：技術評論社刊「ソフトウェアデザイン 2021年9月号」 先日、技術評論社よりRustのメモリ管理機能についての特集に寄稿させて頂きました。この記事は自分が寄稿させていただいた記事をブログ用に一部推敲・加筆を加えたものです。なお、ソフトウェアデザインでの特集ではより実践的な例でのメモリ管理についての解説もあるので、興味のある方は本誌のほうも手にとっていただければと思います。 プログラム言語にお">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2021-12-11T02:33:47.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rustのメモリ管理機能とその特徴">
+<meta name="twitter:description" content="初出：技術評論社刊「ソフトウェアデザイン 2021年9月号」 先日、技術評論社よりRustのメモリ管理機能についての特集に寄稿させて頂きました。この記事は自分が寄稿させていただいた記事をブログ用に一部推敲・加筆を加えたものです。なお、ソフトウェアデザインでの特集ではより実践的な例でのメモリ管理についての解説もあるので、興味のある方は本誌のほうも手にとっていただければと思います。 プログラム言語にお">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2021-11-06T15:00:00.000Z"><a href="/hexo/2021/11/07/rust-memory.html">2021-11-07</a></time>
+      
+      
+  
+    <h1 class="title">Rustのメモリ管理機能とその特徴</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>初出：<a href="https://gihyo.jp/magazine/SD/archive/2021/202109" target="_blank" rel="noopener">技術評論社刊「ソフトウェアデザイン 2021年9月号」</a></p>
+<p>先日、技術評論社よりRustのメモリ管理機能についての特集に寄稿させて頂きました。<br>この記事は自分が寄稿させていただいた記事をブログ用に一部推敲・加筆を加えたものです。<br>なお、ソフトウェアデザインでの特集ではより実践的な例でのメモリ管理についての解説もあるので、興味のある方は本誌のほうも手にとっていただければと思います。</p>
+<h2 id="プログラム言語におけるメモリ管理の課題"><a href="#プログラム言語におけるメモリ管理の課題" class="headerlink" title="プログラム言語におけるメモリ管理の課題"></a>プログラム言語におけるメモリ管理の課題</h2><p>プログラミングにおける課題の一つとしてどうやってメモリ領域（ヒープ領域）を管理するかというものがあります。</p>
+<p>C言語では<code>malloc</code>/<code>free</code>関数などを用いて手動でメモリを管理しています。<br>これらの関数はメモリアドレスを示すポインタを介してメモリ管理を行います。<br><code>malloc</code>関数は必要なメモリ領域を確保してその先頭番地のポインタを返し、プログラム内ではその番地のメモリを読み書きし、使い終わったら<code>free</code>関数にその番地を教えて解放する、という流れです。<br>この方式では、どのタイミングでメモリが操作されるかが明確なので実行時間やメモリ効率がいいのですが、人の手で毎回操作しないといけないので、プログラミングに複雑になりやすくミスを起こしやすいことが知られています。<br>例えば、ポインタの指し示す先のメモリがもう解放されていたり、他の用途で使われているのにもかかわらず値を読み書きしてしまうことがあります。<br>C++ではもう少し抽象化された形を用いていますが、基本的には自分で必要なタイミングでメモリの確保・解放を行う必要があり同様の課題を抱えています。</p>
+<p>一方、Python・Rubyなどのスクリプト言語を中心に用いられているのがガベージコレクション（GC）という仕組みです。<br>この方式では実行環境が適当なタイミングで現在使用中のメモリの内容をチェックして、もう必要のないメモリを自動で開放するというものです。<br>この方式では、プログラマがメモリ解放のタイミングを指定する必要がなく、メモリ解放に関わるミスを防ぐことができます。<br>その一方で、GCを実行する際にプログラムを一時的に止める必要があったり、GCを走らせるまでは必要のないメモリを確保し続けたままになってしまうなど、実行時の効率が問題になるケースがあります。</p>
+<p>Rustは所有権とライフタイムを利用することで、GCのような実行時のメモリ管理コストをなくし、かつ手動でのメモリ管理で起きがちなバグをコンパイラレベルで検知することができます。<br>この所有権とライフタイムがRustを学ぶ上での大きな壁の一つで完全に使いこなすのはかなり大変です。<br>かくいう筆者も、数年間Rustを書いていますが頻繁に頭を悩ませる問題であり、コンパイラに怒られながらなんとか直すということしながら書いています。<br>しかしながら、使いこなすことで安全性が高くかつ実行時コストが非常に少ないコードを書ける仕組みで、Rustが支持される理由の一つでもあります。</p>
+<p>今回は所有権・ライフタイムの大まかな概念を見たあと、簡単なリスト構造を題材にこのメモリ管理機能を見ていきます。</p>
+<h2 id="Rustは何を保証するか"><a href="#Rustは何を保証するか" class="headerlink" title="Rustは何を保証するか"></a>Rustは何を保証するか</h2><p>C言語などにおけるポインタをつかったメモリ管理は以下のような問題を引き起こすことが知られています。</p>
+<ul>
+<li>これからアクセスしようとしている領域がすでに解放済みだったり他のことに使われているなどの原因により不正なものになっている（ダングリングポインタ）</li>
+<li>すでに解放されているメモリ領域を誤ってもう一度解放してしまい未定義動作を引き起こす</li>
+<li>確保した領域がもう使われていないにもかかわらず解放されない（メモリリーク）</li>
+</ul>
+<p>Rustはガベージコレクションのような実行時でのメモリ管理ではない方法でこれらの問題を回避します。<br>Rustではポインタを使って値にアクセスすることは基本的にはありません（できないことはないのですが<code>unsafe</code>と呼ばれる特殊な操作になり、Rustが保証する安全性を損ないます）。<br>かわりに使うのが「参照」と「スマートポインタ」などの機能です。<br>これらがどのようにポインタで発生しうる問題を回避するかを見てみましょう</p>
+<h2 id="参照と借用"><a href="#参照と借用" class="headerlink" title="参照と借用"></a>参照と借用</h2><p>参照の概念を説明する前にまず「所有権（ownership）」の概念について簡単に見てみます。</p>
+<p>Rustのにおける値は唯一の所有者（owner）が存在します。変数に値を代入すると、その変数が値の所有者になります。<br>同じ値に対して複数の所有者が存在することはできません。<br>所有者である変数のスコープが終了すると、その値は解放されます。<br>簡単な例を挙げましょう。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> a = <span class="built_in">String</span>::from(<span class="string">"hello"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ブロックの外に出たことで、aにはアクセスできなくなりaの持っていた値は解放される</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"&#123;&#125;"</span>, a);  <span class="comment">// この文はコンパイルエラーになる</span></span><br></pre></td></tr></table></figure>
+
+<p>関数呼び出しや他の変数に値を渡すために所有権を渡す（ムーブ）こともできます。その場合、もともとの変数は所有権を失うので使えなくなります。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="built_in">String</span>::from(<span class="string">"hello"</span>);</span><br><span class="line"><span class="keyword">let</span> b = a;</span><br><span class="line"></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"&#123;&#125;"</span>, b);</span><br><span class="line"><span class="comment">// 下の文はもうaが使えないのでコンパイルエラーとなる</span></span><br><span class="line"><span class="comment">// println!("&#123;&#125;", a);</span></span><br></pre></td></tr></table></figure>
+
+<p>しかし、実際には関数呼び出しや構造体のメンバーとしてポインタのようなものを持ちたい場合など、所有権がまるまる渡ってしまうのは不都合な場面があります。<br>そこでRustでは一時的に値を「借用（borrow）」する、ということができます。このときできるのが「参照（reference）」です。<br>参照のイメージとしては制限付きのポインタのようなものです。<br>関数に参照を渡す例を下に示します。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 呼び出し元から値を借用する関数</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">print_string</span></span>(a: &amp;<span class="built_in">String</span>) &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"&#123;&#125;"</span>, a);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> a = <span class="built_in">String</span>::from(<span class="string">"hello world"</span>);</span><br><span class="line"></span><br><span class="line">    print_string(&amp;a);   <span class="comment">// aの参照を渡している</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> b = a;          <span class="comment">// 参照を渡すだけでは所有権は失われないので、bにムーブすることができる</span></span><br><span class="line">    </span><br><span class="line">    print_string(&amp;a);   <span class="comment">// aは所有権を失っているので参照はつくれず、コンパイルエラー</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>a</code>を借用することで所有権を失わずに関数を呼び出していますが、所有権を失っている変数への参照をつくるといったことをするとコンパイルエラーとなります。<br>このように、参照は普通のポインタとは違い、不正な値への参照がないようコンパイラが保証してます。<br>そこで登場するのが「ライフタイム（lifetime）」という概念です。<br>ライフタイムとはその参照が有効となる期間のことで、これをコンパイラがチェックすることでダングリングポインタや解放済みの領域へのアクセスというものを防いでいます。<br>他の例を見てみましょう。C言語でのダングリングポインタの例として、関数内のローカル変数へのポインタを関数の返り値にしてしまう、というものがあります。<br>以下にC言語での例を示します。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Point</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> x;</span><br><span class="line">    <span class="keyword">int</span> y;</span><br><span class="line">&#125; <span class="keyword">point_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">point_t</span>* get_point(<span class="keyword">void</span>) &#123;</span><br><span class="line">    <span class="keyword">point_t</span> p = &#123; <span class="number">0</span>, <span class="number">0</span> &#125;;</span><br><span class="line">    <span class="keyword">return</span> &amp;p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">point_t</span>* p = get_point();</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%d %d"</span>, p-&gt;x, p-&gt;y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>GCCを使いコンパイルすると、警告はでるもののコンパイルできてしまいます。<br>これを実行すると筆者の環境ではセグメンテーションフォルトになりました。ローカル変数はスタック上に確保されますが、関数が返るときに解放されてしまうので、呼び出し先（この例ではmain関数内）では使うことができません。</p>
+<p>Rustで同じようなコードを参照で書こうとするとコンパイルエラーになります。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Point</span></span> &#123;</span><br><span class="line">    x: <span class="built_in">i32</span>,</span><br><span class="line">    y: <span class="built_in">i32</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">get_point</span></span>&lt;<span class="symbol">'a</span>&gt;() -&gt; &amp;<span class="symbol">'a</span> Point &#123;</span><br><span class="line">    <span class="keyword">let</span> p = Point &#123;</span><br><span class="line">        x: <span class="number">0</span>,</span><br><span class="line">        y: <span class="number">0</span>,</span><br><span class="line">    &#125;;</span><br><span class="line">    &amp;p</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> p = get_point();</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"&#123;&#125; &#123;&#125;"</span>, p.x, p.y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>突然返り値に<code>&#39;a</code>というのが出てきましたが、これがライフタイムを表しています。今まではライフタイムを明示しなくてもコンパイラが自動的に判断できたのでつけなかったのですが、このように返り値として参照をつける場合は明示する必要があります。<br>同じライフタイムを持つ参照は同じ期間生存する必要があります。<br>コンパイラのエラーメッセージはこのようになります。</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">error</span>[E0515]: cannot <span class="literal">return</span> <span class="keyword">reference</span> <span class="keyword">to</span> <span class="keyword">local</span> variable `p`</span><br><span class="line">  <span class="comment">--&gt; src/main.rs:12:5</span></span><br><span class="line">   |</span><br><span class="line"><span class="number">12</span> |     &amp;p</span><br><span class="line">   |     ^^ returns <span class="keyword">a reference</span> <span class="keyword">to</span> data owned <span class="keyword">by</span> <span class="keyword">the</span> current function</span><br></pre></td></tr></table></figure>
+
+<p><code>p</code>はローカル変数なのでそこへの参照は返すことができない、と言われています。<br>つまり<code>get_point</code>関数の返り値の参照は関数外でも生存している必要がありますが、<br>ローカル変数はライフタイムが関数内で尽きてしまうため、関数外でも生きる参照にはなれない、ということです。</p>
+<h2 id="可変性"><a href="#可変性" class="headerlink" title="可変性"></a>可変性</h2><p>Rustの参照の他のおもしろい性質として、可変参照と普通の参照が区別されることでしょう。<br>実は今まで登場してきた普通の参照は参照先の値を変更することができません。<br>参照先の値を変更したい場合は<code>&amp;</code>ではなく<code>&amp;mut</code>とつけることで可変（mutable）参照を使う必要があります。<br>配列を使った例で見てみましょう。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 可変参照をとることで、配列の中身を変更する</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">add_one</span></span>(a: &amp;<span class="keyword">mut</span> <span class="built_in">Vec</span>&lt;<span class="built_in">i32</span>&gt;) &#123;</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">0</span>..a.len() &#123;</span><br><span class="line">        a[i] += <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> a = <span class="built_in">vec!</span>[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>];</span><br><span class="line">    add_one(&amp;<span class="keyword">mut</span> a);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"&#123;&#125; &#123;&#125; &#123;&#125;"</span>, a[<span class="number">0</span>], a[<span class="number">1</span>], a[<span class="number">2</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>vec!</code>マクロを使って<code>Vec</code>というRust標準の動的配列をつくり、その可変参照を関数に渡しています。この<code>&amp;mut</code>を<code>&amp;</code>にするとコンパイルが通りません。</p>
+<p>可変参照と通常の参照を分けることによって例えば以下のようなケースでダングリングポインタを防ぐことができます。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> a = <span class="built_in">vec!</span>[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>];</span><br><span class="line">    <span class="keyword">let</span> x = &amp;a[<span class="number">0</span>];</span><br><span class="line">    a.clear();  <span class="comment">// Vecのclear関数は可変参照をとる</span></span><br><span class="line">    </span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"&#123;&#125;"</span>, x); <span class="comment">// xの指す先はすでに解放されている</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>配列<code>a</code>の先頭要素への参照を<code>x</code>として、その後<code>clear</code>を呼ぶことで配列の中身をすべて消します。<br>その後、<code>x</code>を使い解放されたはずの先頭要素を出力しようとしています。これはコンパイルされてしまえばダングリングポインタということになってしまいます。<br>実際にはこのコードは以下のようなエラーが出てコンパイルが失敗します。</p>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">error[E0502]: cannot borrow `a` <span class="built_in">as</span> mutable because it is also borrowed <span class="built_in">as</span> immutable</span><br><span class="line"> --&gt; src/main.rs:<span class="number">5</span>:<span class="number">5</span></span><br><span class="line">  |<span class="type"></span></span><br><span class="line"><span class="type">4</span> |     <span class="type">let</span> x = &amp;a[<span class="number">0</span>];</span><br><span class="line">  |              <span class="type">- immutable</span> borrow occurs here</span><br><span class="line"><span class="number">5</span> |     <span class="type">a</span>.<span class="built_in">clear</span>();  // Vecの<span class="built_in">clear</span>関数は可変参照をとる</span><br><span class="line">  |     <span class="type">^^^^^^^^^ mutable</span> borrow occurs here</span><br><span class="line"><span class="number">6</span> |     <span class="type"></span></span><br><span class="line"><span class="type">7</span> |     <span class="type">println</span>!(<span class="string">"&#123;&#125;"</span>, x); // xの指す先はすでに解放されている</span><br><span class="line">  |                    <span class="type">- immutable</span> borrow later used here</span><br></pre></td></tr></table></figure>
+
+<p>実は可変な借用をする場合、その値に対する他の参照は存在できないというルールがあります。<br>今回の場合、<code>x</code>は<code>println!</code>で使われるあいだまでライフタイムがあるにもかかわらず、その間で可変参照をつくろとしています。<br><code>a.clear()</code>は一見するとよくわからないかもしれませんが、Rustのメソッド呼び出しをする場合、その値を借用することで呼び出されます。<br><code>clear</code>関数は以下のような定義になっています。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">clear</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>)</span><br></pre></td></tr></table></figure>
+
+<p><code>self</code>というのがそのメソッド呼び出しをしているインスタンスで、その可変参照をとるということです。</p>
+<h2 id="リスト構造を書いてみる"><a href="#リスト構造を書いてみる" class="headerlink" title="リスト構造を書いてみる"></a>リスト構造を書いてみる</h2><p>もう少し実践的な例としてリスト構造をRustで書くことを考えます<br>今回は関数型言語でよく見かけるconsを使ったリストというのを書いていきます。consとは２つの値のペアからつくられるリストで、関数型言語だとこういうような書き方をします。</p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">2</span>, (<span class="name">5</span>, (<span class="name">3</span>, nil)))</span><br></pre></td></tr></table></figure>
+
+<p>これは<code>[2, 5, 3]</code>という連結リストのようなものです。各ノードは左側を<code>car</code>、右側を<code>cdr</code>と呼びます。<br>リストは空の場合<code>nil</code>、そうでない場合先頭の値を<code>car</code>に持ち、先頭を除く残りのリストを<code>cdr</code>として持つ再帰的な構造になっています。</p>
+<p>これをRust風に書いていきたいと思います。なお、このようなリストをRustで使うことはあまりなく、<code>Vec</code>のような標準で備わっている型を通常は使います。<br>リストは空の場合は<code>nil</code>でそうでない場合はペアになっているという２つのパターンがあります。このような構造をあらわすには<code>enum</code>（列挙型）を使うと便利です。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">List</span></span> &#123;</span><br><span class="line">    Cons(<span class="built_in">i32</span>, List),</span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ただし、これはこのままだと定義できません。なぜなら<code>List</code>型がそのまま<code>List</code>内のメンバーに使われてしまっているからです。<br>こうしてしまうと<code>List</code>型が無限のサイズを持たなければなりません。C言語ではこういう場合はポインタを使うように、今回は参照を使って書き直してみます。<br>参照はポインタのようなもの、と先ほど説明しまいたが、コンパイルされると内部的には参照先の値へのアドレスとなります。<br>そのため、値の参照先の型によらずアドレス分のサイズしか必要ありません。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">List</span></span>&lt;<span class="symbol">'a</span>&gt; &#123;</span><br><span class="line">    Cons(<span class="built_in">i32</span>, &amp;<span class="symbol">'a</span> List&lt;<span class="symbol">'a</span>&gt;),</span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> crate::List::&#123;Cons, Nil&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> list = Cons(<span class="number">2</span>, &amp;Cons(<span class="number">5</span>, &amp;Cons(<span class="number">3</span>, &amp;Nil)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>参照に明示的にライフタイムを書かなければならないことに注意してください。<br>参照はポインタと同じように内部的にはその値の先のアドレスを持つだけなので、<code>List</code>型のサイズによらずアドレスの値の分で一定なので先ほどみたいに無限のサイズにならずにすみます。<br>また今回は簡単のためリストの中身を書き換えるということは考えないことにします。</p>
+<p>とりあえずリストは定義できました。次にいろいろな操作を書いてみましょう。<br>まずはリストの内容を全て出力する関数を書いてみます。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">print_list</span></span>(list: &amp;List) &#123;</span><br><span class="line">    <span class="keyword">match</span> list &#123;</span><br><span class="line">        Cons(val, ls) =&gt; &#123;</span><br><span class="line">            <span class="built_in">println!</span>(<span class="string">"val: &#123;&#125;"</span>, val);</span><br><span class="line">            print_list(ls);</span><br><span class="line">        &#125;</span><br><span class="line">        Nil =&gt; &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> list = Cons(<span class="number">2</span>, &amp;Cons(<span class="number">5</span>, &amp;Cons(<span class="number">3</span>, &amp;Nil)));</span><br><span class="line">    print_list(&amp;list);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>enum</code>に対してはこのようにパターンマッチを使った操作をすることができます。<br><code>cons</code>の場合はその値を出力して、残りのリストに対して再帰的に<code>print_list</code>を呼び出し、<code>nil</code>に到達したら終了します。</p>
+<p>出力結果は以下のようになります。</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">val:</span> <span class="number">2</span></span><br><span class="line"><span class="symbol">val:</span> <span class="number">5</span></span><br><span class="line"><span class="symbol">val:</span> <span class="number">3</span></span><br></pre></td></tr></table></figure>
+
+<p>さて、このリストを新たにつくる関数を考えてみましょう。<br>例えばこのリストの末尾に新たな要素を付け加えたリストを新たにつくりたいと思います。</p>
+<p>関数はリスト受け取って空リストならその新たな要素１つのみを含むリストを返し、<code>cons</code>なら残りのリストに対して関数を再帰的に呼び出し、<br>その結果を<code>cdr</code>にした新しい<code>cons</code>を返すことで実現できそうです。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">append</span></span>&lt;<span class="symbol">'a</span>&gt;(list: &amp;<span class="symbol">'a</span> List, val: <span class="built_in">i32</span>) -&gt; List&lt;<span class="symbol">'a</span>&gt; &#123;</span><br><span class="line">    <span class="keyword">match</span> list &#123;</span><br><span class="line">        Cons(x, ls) =&gt; &#123;</span><br><span class="line">            Cons(*x, &amp;append(ls, val))</span><br><span class="line">        &#125;,</span><br><span class="line">        Nil =&gt; &#123;</span><br><span class="line">            Cons(val, &amp;Nil)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> list = Cons(<span class="number">2</span>, &amp;Cons(<span class="number">5</span>, &amp;Cons(<span class="number">3</span>, &amp;Nil)));</span><br><span class="line">    <span class="keyword">let</span> list2 = append(&amp;list, <span class="number">7</span>);</span><br><span class="line">    print_list(&amp;list2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>しかし、これは以下のようなコンパイルエラーになってしまいます。</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">error[E0515]: cannot return value referencing temporary value</span><br><span class="line">  --&gt; src/main.rs:22:13</span><br><span class="line">   |</span><br><span class="line"><span class="string">22 </span>|<span class="string">             Cons(*x, &amp;append(ls, val))</span></span><br><span class="line"><span class="string">   </span>|<span class="string">             ^^^^^^^^^^---------------^</span></span><br><span class="line"><span class="string">   </span>|<span class="string">             </span>|<span class="string">         </span>|</span><br><span class="line">   |<span class="string">             </span>|<span class="string">         temporary value created here</span></span><br><span class="line"><span class="string">   </span>|<span class="string">             returns a value referencing data owned by the current function</span></span><br></pre></td></tr></table></figure>
+
+<p>再帰呼出ししてつくった値が関数内でしか生存しないので、ライフタイムが合わずエラーが出ています。<br>このように、参照のみをつかってデータ構造を定義しようとするのは非常に難しいです。どうしたらよいのでしょうか？</p>
+<p>C言語の経験がある方は、このような場合メンバーはポインタで持つと思うのですが、その値をつくるときに<code>malloc</code>関数などを使いヒープ領域から値をとってくると思います。<br>Rustでもヒープ領域を扱う方法はもちろんあります。例えば、<code>String</code>型は内部的にはヒープ領域を使っています。<br>C言語の場合、<code>malloc</code>関数などでヒープ領域に確保された領域をポインタで指し示しますが、Rustでは「スマートポインタ」と呼ばれるものを使い安全にヒープ領域を扱います。</p>
+<h2 id="スマートポインタを使ったヒープ領域の活用"><a href="#スマートポインタを使ったヒープ領域の活用" class="headerlink" title="スマートポインタを使ったヒープ領域の活用"></a>スマートポインタを使ったヒープ領域の活用</h2><p>スマートポインタという言葉はC++でも使われているので知っている方もいるかもしれません。<br>普通のポインタとは違い、参照のように不正な操作を防ぐための仕組みが備わっています。<br>スマートポインタといってもRustには何種類か備わっているのですが、まずは一番（？）スタンダートな<code>Box</code>というのを見てみましょう。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> x = <span class="number">5</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> boxed = <span class="built_in">Box</span>::new(x);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"boxed = &#123;&#125;"</span>, boxed);</span><br><span class="line">    *boxed += <span class="number">3</span>;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"x = &#123;&#125;, boxed = &#123;&#125;"</span>, x, boxed)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>x</code>をつかって<code>boxed</code>という値をつくりました。この値はヒープ上に確保されて、参照のように使うことができます（<code>Deref</code>と型強制という仕組みでおこなわれているのですが詳細は割愛します）。<br><code>x</code>の値はコピーされているので、<code>boxed</code>を変更しても<code>x</code>の値は変化しません。</p>
+<p>これを用いて先程の<code>List</code>の例を書き換えてみましょう。<code>Box</code>も内部的にはポインタと同じようにその先が指し示す構造によらず一定のサイズで済む型です。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">List</span></span> &#123;</span><br><span class="line">    Cons(<span class="built_in">i32</span>, <span class="built_in">Box</span>&lt;List&gt;),</span><br><span class="line">    Nil,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> crate::List::&#123;Cons, Nil&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">print_list</span></span>(list: &amp;List) &#123;</span><br><span class="line">    <span class="keyword">match</span> list &#123;</span><br><span class="line">        Cons(val, ls) =&gt; &#123;</span><br><span class="line">            <span class="built_in">println!</span>(<span class="string">"val: &#123;&#125;"</span>, val);</span><br><span class="line">            print_list(ls);</span><br><span class="line">        &#125;</span><br><span class="line">        Nil =&gt; &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> list = Cons(<span class="number">2</span>, <span class="built_in">Box</span>::new(Cons(<span class="number">5</span>, <span class="built_in">Box</span>::new(Cons(<span class="number">3</span>, <span class="built_in">Box</span>::new(Nil))))));</span><br><span class="line"></span><br><span class="line">    print_list(&amp;list);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>これは正しくコンパイルされ、先ほどと同じ出力結果を得られます。<br>先程断念した末尾に新たな要素を付け足したリストを返す、という関数も簡単に実現できるようになります。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">append</span></span>(list: &amp;List, val: <span class="built_in">i32</span>) -&gt; List &#123;</span><br><span class="line">    <span class="keyword">match</span> list &#123;</span><br><span class="line">        Cons(x, ls) =&gt; &#123;</span><br><span class="line">            Cons(*x, <span class="built_in">Box</span>::new(append(ls, val)))</span><br><span class="line">        &#125;,</span><br><span class="line">        Nil =&gt; &#123;</span><br><span class="line">            Cons(val, <span class="built_in">Box</span>::new(Nil))</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> list = Cons(<span class="number">2</span>, <span class="built_in">Box</span>::new(Cons(<span class="number">5</span>, <span class="built_in">Box</span>::new(Cons(<span class="number">3</span>, <span class="built_in">Box</span>::new(Nil))))));</span><br><span class="line">    <span class="keyword">let</span> list2 = append(&amp;list, <span class="number">7</span>);</span><br><span class="line"></span><br><span class="line">    print_list(&amp;list2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>今度はコンパイルできて以下のような出力結果が得られます。</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">val:</span> <span class="number">2</span></span><br><span class="line"><span class="symbol">val:</span> <span class="number">5</span></span><br><span class="line"><span class="symbol">val:</span> <span class="number">3</span></span><br><span class="line"><span class="symbol">val:</span> <span class="number">7</span></span><br></pre></td></tr></table></figure>
+
+<p>なぜ今回は問題がなかったかというと、<code>Box::new</code>でつくられた値を借用するのではなく、ムーブによって所有権ごと渡されているからです。<br>内部的にも値の中身はヒープ領域にあるので関数から出てしまっても保持されているので問題ありません。</p>
+<h2 id="メモリ解放について"><a href="#メモリ解放について" class="headerlink" title="メモリ解放について"></a>メモリ解放について</h2><p>関数内のローカル変数の場合、その関数が終わるときにスタックが破棄され値も解放されますが、<code>Box</code>のようにヒープを使う場合どのように解放されるのでしょうか。<br>実は<code>Box</code>には<code>Drop</code>というトレイト（C++のインターフェースのようなもの）が実装されていて、その値がスコープから出たときにメモリが解放されるような実装がされています。<br>所有権システムによりその値に紐付いている変数は複数存在することはできないので、<code>Drop</code>トレイトによって実装されたメモリ解放の動作が同じ<code>Box</code>のインスタンスに対して働くことはありません。<br>また、自分たちでわざわざどこでメモリを解放するかを明示する必要もありません。</p>
+<h2 id="Rustのメモリ管理の弱点"><a href="#Rustのメモリ管理の弱点" class="headerlink" title="Rustのメモリ管理の弱点"></a>Rustのメモリ管理の弱点</h2><p>ここまでRustでのメモリの扱いについて一通り見てきました。<br>Rustがこれらの仕組みを使いメモリを安全にアクセスできるというのがわかったと思います。</p>
+<p>一方で、いくつかの弱点もあります。まず、可変な参照を考慮すると問題が複雑になることです。<br>可変参照は複数つくれないことを説明しましたが、現実には複数の値に同じ値を操作するための参照を持ちたい場合というのは結構あります。<br>例えば可変な双方向連結リストがそれにあたります。リストの各ノードは前後の要素に対する参照をもつような実装になりますが、そうするとあるノードに対しての可変参照が前のノードと後ろのノードのそれぞれが持つことになってしまいます。<br>一応、そういうケースをなんとかする構造体もあるのですが、普通のポインタよりかはオーバーヘッドがつきます。</p>
+<p>またRustは実はメモリリークが起きない保証はしていません。<br>確かに<code>Box</code>などは自動的にメモリを開放する仕組みが備わっていますが、意図的にそういうものを無効にする関数があります（<code>std::mem::forget</code>）。<br>普通、Rustの安全性の保証を無視する関数は<code>unsafe</code>とマークされるのですが、そのような関数は<code>unsafe</code>とされていません。</p>
+<p>このように、Rustのメモリ管理も万能ではありません。しかしながら、生のポインタを使うよりかはずっと安全で、GCありの言語よりかは扱いにくいと思いますが、その分高いパフォーマンスを得ることができます。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a href="https://doc.rust-lang.org/book/" target="_blank" rel="noopener">The Rust Programming Language</a></li>
+<li><a href="https://doc.rust-lang.org/nomicon/" target="_blank" rel="noopener">The Rustonomicon</a></li>
+<li>「実践Rust入門」（技術評論社）</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/Rust/">Rust</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

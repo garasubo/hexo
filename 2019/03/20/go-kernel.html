@@ -1,0 +1,282 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>論文紹介：The benefits and costs of writing a POSIX kernel in a high-level language | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="元論文: https://www.usenix.org/conference/osdi18/presentation/cutler
+Go言語でPOSIXインターフェースを備えたカーネルを実装し、その利点と欠点を比較してみた、という論文です。
+論文概要
+タイトル：The benefits and co">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="論文紹介：The benefits and costs of writing a POSIX kernel in a high-level language">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="元論文: https://www.usenix.org/conference/osdi18/presentation/cutler Go言語でPOSIXインターフェースを備えたカーネルを実装し、その利点と欠点を比較してみた、という論文です。 論文概要 タイトル：The benefits and costs of writing a POSIX kernel in a high-level lang">
+<meta name="keywords" content="paper">
+<meta property="og:type" content="article">
+<meta property="og:title" content="論文紹介：The benefits and costs of writing a POSIX kernel in a high-level language">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2019/03/20/go-kernel.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="元論文: https://www.usenix.org/conference/osdi18/presentation/cutler Go言語でPOSIXインターフェースを備えたカーネルを実装し、その利点と欠点を比較してみた、という論文です。 論文概要 タイトル：The benefits and costs of writing a POSIX kernel in a high-level lang">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2019-03-20T14:12:39.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="論文紹介：The benefits and costs of writing a POSIX kernel in a high-level language">
+<meta name="twitter:description" content="元論文: https://www.usenix.org/conference/osdi18/presentation/cutler Go言語でPOSIXインターフェースを備えたカーネルを実装し、その利点と欠点を比較してみた、という論文です。 論文概要 タイトル：The benefits and costs of writing a POSIX kernel in a high-level lang">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-03-19T15:00:00.000Z"><a href="/hexo/2019/03/20/go-kernel.html">2019-03-20</a></time>
+      
+      
+  
+    <h1 class="title">論文紹介：The benefits and costs of writing a POSIX kernel in a high-level language</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>元論文: <a href="https://www.usenix.org/conference/osdi18/presentation/cutler" target="_blank" rel="noopener">https://www.usenix.org/conference/osdi18/presentation/cutler</a></p>
+<p>Go言語でPOSIXインターフェースを備えたカーネルを実装し、その利点と欠点を比較してみた、という論文です。</p>
+<h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
+<li>タイトル：The benefits and costs of writing a POSIX kernel in a high-level language</li>
+<li>著者：Cody Cutler, M. Frans Kaashoek, and Robert T. Morris (MIT CSAIL)</li>
+<li>会議：13th USENIX Symposium on Operating Systems Design and Implementation (OSDI ‘18)</li>
+</ul>
+<p>去年のUSENIX OSDIで発表された論文です。USENIXはハイレベルな低レイヤー関連の会議が多く、かつ論文をオープンアクセスで提供してくれるのはアカデミアから離れた身としてはうれしい限りです。</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>著名なOSのカーネルはC言語で書かれている。C言語は直接メモリを操作したり、デバイスのレジスタを操作したりできる。また、ランタイムを介さないためパフォーマンスも高い。一方、安全なコードを書くことが難しく、バッファーオーバーフローやuse-after-freeのようなバグの温床ともなりうる。<br>Go言語などの高級言語は、型検査やメモリの安全性がC言語よりも強く保証されるものの、多くの場合はランタイムを介しての実行となり、ガベージコレクション（GC)に頼るため、パフォーマンスへの懸念が生じる。<br>そこで彼らはBiscuitと名付けたPOSIXのサブセットを備えたカーネルをx86_64プロセッサ用に実装し、評価を行った。</p>
+<p>この論文はカーネルの実装にC言語が用いられるべきか、高級言語が用いられるか、という主張をするものではなく、あくまで高級言語を用いた実装がどのようなものかという指標を提供するものだと著者らは位置づけている</p>
+<h2 id="実装"><a href="#実装" class="headerlink" title="実装"></a>実装</h2><p>Go言語とアセンブラのみで書かれていて、C言語は全く用いていない。<br>Biscuitを動かすにはGo言語を動かすためのランタイムが必要で、通常であればランタイムはカーネルの機能を呼び出す。<br>今回は呼び出すカーネルがないので、代わりの機能を提供するShimというレイヤーを用意している。<br>Goのランタイムは標準のものにGCのタイミングを調整するなどの変更を加えたものを使用している。</p>
+<p>割り込み対応、マルチプロセス、ファイルシステム、ネットワークスタックなどPOSIXのカーネルなら備えている機能はおおよそされている。</p>
+<h2 id="GCとヒープ枯渇問題"><a href="#GCとヒープ枯渇問題" class="headerlink" title="GCとヒープ枯渇問題"></a>GCとヒープ枯渇問題</h2><p>Goはmark-and-sweep方式のGCを持っていて、確保していたメモリがある程度使われるとヒープ領域を適宜拡大していくということをしている。<br>Biscuitではこの通常のヒープ領域拡大を無効化して独自のタイミングでヒープ枯渇問題を回避している。<br>ヒープ領域が足りなくなったとき、Biscuitは</p>
+<ol>
+<li>キャッシュやソフトステイトのような保持する必要のないものを解放する</li>
+<li>システムコールが消費するであろうヒープ領域のサイズをあらかじめ確保しておく</li>
+<li>キラースレッドにより異常にヒープ領域を消費しているプロセスを殺す<br>ということをしている</li>
+</ol>
+<p>システムコールの消費するヒープの量を計算するためにMAXLIVEというツールを開発し、静的解析により事前に必要なヒープの量を計算している。<br>コールグラフからアロケーションの量を計算していくのが基本だが、ループによる繰り返し処理がからんでくるとアノテーションをつけることでヒントを与えたり、例外的な処理をして回避したりしている。</p>
+<h2 id="評価"><a href="#評価" class="headerlink" title="評価"></a>評価</h2><p>この研究では高級言語をカーネルの実装に用いることでの利点・欠点を具体化するのが目的なので、評価軸もそれに沿ったものになっている。</p>
+<p>まずそもそも高級言語の機能がどれくらい用いられているのか、というのを他のGoで書かれたソフトウェアとの比較を行っている。<br>GoのコンパイラとMoby（Dockerがつくったコンテナを用いたシステムのフレームワーク）と比較して同じくらいだとしている。<br>GCで管理されるオブジェクトが有用な場面とそうでない場面もある、と具体例も上げている。<br>有用な例としてはpollのシステムコールでは入力待ちのスレッドを起こすためのヘルパーオブジェクトのを挿入するが、そのヘルパーオブジェクトのフリーのタイミングを気にしなくても競合が起きないことをあげている。<br>一方、TCPのコネクションオブジェクトはTCPのシャットダウンプロトコルを実行することが必要だが、Goのfinalizerではオブジェクト間の循環ができないためそのままでは難しいので、そのようなオブジェクトに対してはBiscuit自身が参照カウントを管理している。<br>また、LinuxのCVEを参照し、Use-after-freeやOut-of-boundsなどのGoでは脆弱性になりえないものとそうでないものを分類している。65個の深刻な脆弱性のうち40個はGoなら防げるとしている。<br>一方、Goのランタイムやパッケージ自体にも14のCVEが報告されて、うち4つはカーネルにとって深刻な脆弱性になりうるとしている。</p>
+<p>アプリケーションベンチマークとしては、CMailbench（メールサーバーをモデルとしたforkとexecにより仮想メモリシステムへのストレス試験）、NGINX、Redisを実際に動かし、Linuxとの比較、ヒープサイズと使用メモリ割合に対するパフォーマンスなどの実験を行っている。</p>
+<h2 id="関連研究"><a href="#関連研究" class="headerlink" title="関連研究"></a>関連研究</h2><p>カーネルの実装に高級言語を用いる例は様々ある。<a href="2018/05/23/tock.html">以前ここでも紹介したRust製カーネルのTock</a>も一例として挙げられている。<br>しかし、これらの研究はC言語との比較というよりも、新しいコンセプトのOSということに重きを置いている。<br>カーネル用に既存の言語を改変して用いるというものもあるが、この研究ではGoそのものに大きな変更は加えないようにしている。</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>Go言語を用いてBiscuitと名付けたPOSIXカーネルを実装し、C言語を用いた場合との比較を行った。<br>高級言語のもたらすパフォーマンス低下は15％を下回るとした一方、だからといってGoを使うべきだと結論づけてはいない。<br>しかし、Go言語でカーネルを実装する際の恩恵やコストを明らかにし、Goのような高級言語を使うべきか否かの判断材料になるであろうとしている</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/paper/">paper</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

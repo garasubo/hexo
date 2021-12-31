@@ -1,0 +1,283 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Arm Cortex-MのRustベアメタルをQEMUでデバッグ | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="前回記事で紹介したTockのように、RustでもArmでのベアメタルプログラムができるようになってきた。ベアメタルプログラミングで複雑なことをやろうとするとやはりエミュレータが欲しいな（以前、ハイパーバイザをつくった時はエミュレータなしでつらかった）、と思ったのでやってみた。
+STM32 Nucle">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Arm Cortex-MのRustベアメタルをQEMUでデバッグ">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="前回記事で紹介したTockのように、RustでもArmでのベアメタルプログラムができるようになってきた。ベアメタルプログラミングで複雑なことをやろうとするとやはりエミュレータが欲しいな（以前、ハイパーバイザをつくった時はエミュレータなしでつらかった）、と思ったのでやってみた。 STM32 Nucleo省電力な組込み向けのアーキテクチャのCortex-MシリーズのMCU評価ボードは様々あるのだが、今">
+<meta name="keywords" content="Rust">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Arm Cortex-MのRustベアメタルをQEMUでデバッグ">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2018/05/28/rust-qemu.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="前回記事で紹介したTockのように、RustでもArmでのベアメタルプログラムができるようになってきた。ベアメタルプログラミングで複雑なことをやろうとするとやはりエミュレータが欲しいな（以前、ハイパーバイザをつくった時はエミュレータなしでつらかった）、と思ったのでやってみた。 STM32 Nucleo省電力な組込み向けのアーキテクチャのCortex-MシリーズのMCU評価ボードは様々あるのだが、今">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2018-12-05T14:36:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Arm Cortex-MのRustベアメタルをQEMUでデバッグ">
+<meta name="twitter:description" content="前回記事で紹介したTockのように、RustでもArmでのベアメタルプログラムができるようになってきた。ベアメタルプログラミングで複雑なことをやろうとするとやはりエミュレータが欲しいな（以前、ハイパーバイザをつくった時はエミュレータなしでつらかった）、と思ったのでやってみた。 STM32 Nucleo省電力な組込み向けのアーキテクチャのCortex-MシリーズのMCU評価ボードは様々あるのだが、今">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-05-28T09:12:46.000Z"><a href="/hexo/2018/05/28/rust-qemu.html">2018-05-28</a></time>
+      
+      
+  
+    <h1 class="title">Arm Cortex-MのRustベアメタルをQEMUでデバッグ</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>前回記事で紹介したTockのように、RustでもArmでのベアメタルプログラムができるようになってきた。<br>ベアメタルプログラミングで複雑なことをやろうとするとやはりエミュレータが欲しいな（以前、ハイパーバイザをつくった時はエミュレータなしでつらかった）、と思ったのでやってみた。</p>
+<h2 id="STM32-Nucleo"><a href="#STM32-Nucleo" class="headerlink" title="STM32 Nucleo"></a>STM32 Nucleo</h2><p>省電力な組込み向けのアーキテクチャのCortex-MシリーズのMCU評価ボードは様々あるのだが、今回は<a href="http://www.st.com/ja/evaluation-tools/stm32-mcu-nucleo.html?querycriteria=productId=LN1847" target="_blank" rel="noopener">STM32 Nucleo</a>をターゲットとすることとした。<br>理由としては</p>
+<ul>
+<li>以前、STM32 Discoveryを使用していたことがある</li>
+<li>日本でも比較的安価な評価ボードが購入できる（3000円くらい）</li>
+<li><a href="https://www.mbed.com/" target="_blank" rel="noopener">Mbed</a>に対応しているため、C/C++ベースではあるがサンプルコードが豊富なため</li>
+</ul>
+<p>なお、Tockは独自の評価ボードを提供し、それを利用している。</p>
+<h2 id="GNU-MCU-Eclipse-QEMU"><a href="#GNU-MCU-Eclipse-QEMU" class="headerlink" title="GNU MCU Eclipse QEMU"></a>GNU MCU Eclipse QEMU</h2><p>今回使うことにしたQEMUは本家のではなく、そのフォークである<a href="https://gnu-mcu-eclipse.github.io/qemu/" target="_blank" rel="noopener">GNU MCU Eclipse QEMU</a>を用いる。</p>
+<p>参考: <a href="https://tnishinaga.hatenablog.com/entry/2016/12/31/130000" target="_blank" rel="noopener">QEMUでCortex-M3/M4マイコンボードをエミュレーションしてLチカする話</a></p>
+<p>Eclipseのプラグインのためのものであるが、コマンドラインから直接叩いて動かすのも可能。<br>本家QEMUより多くのボードをサポートしており、ボードの画像を表示してLチカのデバッグも可能なようだ。<br><a href="https://www.npmjs.com/package/xpm" target="_blank" rel="noopener">xpm</a>を用いて簡単に導入することができる。</p>
+<p>詳しい導入は<a href="https://gnu-mcu-eclipse.github.io/qemu/install/" target="_blank" rel="noopener">公式ドキュメント</a>に従えば良い。</p>
+<h2 id="サンプルコードの入手"><a href="#サンプルコードの入手" class="headerlink" title="サンプルコードの入手"></a>サンプルコードの入手</h2><p>参考: <a href="https://qiita.com/tatsuya6502/items/7d8aaf3792bdb5b66f93" target="_blank" rel="noopener">ARM Cortex-M 32ビットマイコンでベアメタル “Safe” Rust</a></p>
+<p>今回動かしたコードはjaparic氏が提供している<a href="https://github.com/japaric/cortex-m-quickstart" target="_blank" rel="noopener">cortex-m-quickstart</a>を用いた。<br>参考にしたブログ記事は微妙に古いので<a href="https://docs.rs/cortex-m-quickstart/0.3.1/cortex_m_quickstart/" target="_blank" rel="noopener">こちらのcrateのドキュメント</a>を参照した。</p>
+<h2 id="実行"><a href="#実行" class="headerlink" title="実行"></a>実行</h2><p>cortex-m-quickstartをドキュメント通りにビルドする。ただし、このQEMUはFPUのサポートがないため、targetはFPUなしのものを（hfで終わらないもの）を選ぶ必要がある。<br>生成物は<code>cargo build --release</code>の後、<code>target/thumbv7em-none-eabi/release</code>にできる。以下のようなシェルスクリプトを用意してQEMUを実行した。</p>
+<figure class="highlight sh"><figcaption><span>qemu-system-gnuarmeclipse.sh</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line">qemu_command=<span class="variable">$HOME</span>/opt/xPacks/@gnu-mcu-eclipse/qemu/2.8.0-3.1/.content/bin/qemu-system-gnuarmeclipse</span><br><span class="line">board_name=NUCLEO-F411RE</span><br><span class="line">mcu_name=STM32F411RE</span><br><span class="line"></span><br><span class="line"><span class="variable">$qemu_command</span> \</span><br><span class="line">--verbose --verbose --board <span class="variable">$board_name</span> --gdb tcp::3333 \</span><br><span class="line">    --mcu <span class="variable">$mcu_name</span> -d unimp,guest_errors  \</span><br><span class="line">    --image <span class="variable">$1</span> \</span><br><span class="line">    --semihosting-config <span class="built_in">enable</span>=on,target=native \</span><br><span class="line">    --semihosting-cmdline <span class="variable">$1</span></span><br></pre></td></tr></table></figure>
+<p>gdbのポートはcortex-m-quickstartの<code>.gdbinit</code>で3333になっているので3333を指定した。<br>実行結果は以下の通り。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">$ .<span class="regexp">/qemu-system-gnuarmeclipse.sh target/</span>thumbv7em-none-eabi<span class="regexp">/release/</span>cortex-m-quickstart</span><br><span class="line"></span><br><span class="line">GNU MCU Eclipse <span class="number">64</span>-bits QEMU v2<span class="number">.8</span><span class="number">.0</span><span class="number">-3</span> (qemu-system-gnuarmeclipse).</span><br><span class="line"><span class="string">Board:</span> <span class="string">'NUCLEO-F411RE'</span> (ST Nucleo Development Board <span class="keyword">for</span> STM32 F4 series).</span><br><span class="line">Board <span class="string">picture:</span> <span class="string">'/home/garasubo/opt/xPacks/@gnu-mcu-eclipse/qemu/2.8.0-3.1/.content/share/qemu/graphics/NUCLEO-F411RE.jpg'</span>.</span><br><span class="line">Device <span class="string">file:</span> <span class="string">'/home/garasubo/opt/xPacks/@gnu-mcu-eclipse/qemu/2.8.0-3.1/.content/share/qemu/devices/STM32F411xx-qemu.json'</span>.</span><br><span class="line"><span class="string">Device:</span> <span class="string">'STM32F411RE'</span> (Cortex-M4 r0p0, MPU, <span class="number">4</span> NVIC prio bits, <span class="number">86</span> IRQs), <span class="string">Flash:</span> <span class="number">512</span> kB, <span class="string">RAM:</span> <span class="number">128</span> kB.</span><br><span class="line"><span class="string">Image:</span> <span class="string">'target/thumbv7em-none-eabi/release/cortex-m-quickstart'</span>.</span><br><span class="line">Command <span class="string">line:</span> <span class="string">'target/thumbv7em-none-eabi/release/cortex-m-quickstart'</span> (<span class="number">54</span> bytes).</span><br><span class="line">Load  <span class="number">16028</span> bytes at <span class="number">0x08000000</span><span class="number">-0x08003E9B</span>.</span><br><span class="line">Cortex-M4 r0p0 core initialised.</span><br><span class="line"><span class="string">'/machine/mcu/stm32/RCC'</span>, <span class="string">address:</span> <span class="number">0x40023800</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/FLASH'</span>, <span class="string">address:</span> <span class="number">0x40023C00</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/PWR'</span>, <span class="string">address:</span> <span class="number">0x40007000</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/SYSCFG'</span>, <span class="string">address:</span> <span class="number">0x40013800</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/EXTI'</span>, <span class="string">address:</span> <span class="number">0x40013C00</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/GPIOA'</span>, <span class="string">address:</span> <span class="number">0x40020000</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/GPIOB'</span>, <span class="string">address:</span> <span class="number">0x40020400</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/GPIOC'</span>, <span class="string">address:</span> <span class="number">0x40020800</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/GPIOD'</span>, <span class="string">address:</span> <span class="number">0x40020C00</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/GPIOE'</span>, <span class="string">address:</span> <span class="number">0x40021000</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/GPIOH'</span>, <span class="string">address:</span> <span class="number">0x40021C00</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/USART1'</span>, <span class="string">address:</span> <span class="number">0x40011000</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/USART2'</span>, <span class="string">address:</span> <span class="number">0x40004400</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/machine/mcu/stm32/USART6'</span>, <span class="string">address:</span> <span class="number">0x40011400</span>, <span class="string">size:</span> <span class="number">0x0400</span></span><br><span class="line"><span class="string">'/peripheral/led:green'</span> <span class="number">8</span>*<span class="number">6</span> @(<span class="number">316</span>,<span class="number">307</span>) active high <span class="string">'/machine/mcu/stm32/GPIOA'</span>,<span class="number">5</span></span><br><span class="line"><span class="string">'/peripheral/button:reset'</span> <span class="number">30</span>*<span class="number">30</span> @(<span class="number">312</span>,<span class="number">214</span>)</span><br><span class="line"><span class="string">'/peripheral/button:user'</span> <span class="number">30</span>*<span class="number">30</span> @(<span class="number">204</span>,<span class="number">219</span>) active low <span class="string">'/machine/mcu/stm32/GPIOC'</span>,<span class="number">13</span></span><br><span class="line">GDB Server listening <span class="string">on:</span> <span class="string">'tcp::3333'</span>...</span><br><span class="line">Cortex-M4 r0p0 core reset.</span><br><span class="line"></span><br><span class="line">Hello, world!</span><br><span class="line">^Cqemu-system-<span class="string">gnuarmeclipse:</span> terminating on signal <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Rust-on-baremetal-Armの現状"><a href="#Rust-on-baremetal-Armの現状" class="headerlink" title="Rust on baremetal Armの現状"></a>Rust on baremetal Armの現状</h2><p>cortex-m-quickstartの作者であるjapric氏はXargoをつくった人でもあり、かなり積極的にこの分野に貢献している人である。</p>
+
+<blockquote class="twitter-tweet" data-lang="ja"><p lang="en" dir="ltr"><a href="https://twitter.com/rustlang?ref_src=twsrc%5Etfw" target="_blank" rel="noopener">@rustlang</a>, stability without stagnation, taken to robotics<br><br>Probably the first WIP self-balancing robot coded in 100% Rust<a href="https://twitter.com/hashtag/RustyRobots?src=hash&amp;ref_src=twsrc%5Etfw" target="_blank" rel="noopener">#RustyRobots</a> 1/ <a href="https://t.co/MGRPgKVCsS" target="_blank" rel="noopener">pic.twitter.com/MGRPgKVCsS</a></p>&mdash; japaric @ Rustfest (@japaricious) <a href="https://twitter.com/japaricious/status/845697935572656128?ref_src=twsrc%5Etfw" target="_blank" rel="noopener">2017年3月25日</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>彼が今年初めに去年あったベアメタルArmのRustで起きたバグと今年の展望をまとめている。<br><a href="http://blog.japaric.io/embedded-rust-in-2018/" target="_blank" rel="noopener">Embedded Rust in 2018 | Embedded in Rust</a></p>
+<p>現状、ベアメタルArmでプログラミングするためにはunstableなfeatureを使わざるを得ないため、完全に安定とは言えないものの、かなり状況はよくなってきているようだ。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/Rust/">Rust</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

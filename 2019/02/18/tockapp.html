@@ -1,0 +1,281 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Rust製組込みOS TockでC言語アプリケーションを動かす | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="Tockとはこのブログでも何度か紹介したRust製組込みOSです。以前の記事ターゲットはCortex-MのようなCPUリソースが限られたようなプロセッサです。Rust Embeddedグループ発足前から公開されていて、Rust純粋でちゃんとしたOSを組む先駆けにもなっています。Rustで書かれている">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Rust製組込みOS TockでC言語アプリケーションを動かす">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="Tockとはこのブログでも何度か紹介したRust製組込みOSです。以前の記事ターゲットはCortex-MのようなCPUリソースが限られたようなプロセッサです。Rust Embeddedグループ発足前から公開されていて、Rust純粋でちゃんとしたOSを組む先駆けにもなっています。Rustで書かれているだけでなく、組込みOSの設計としてもおもしろいものになっています。以前は専用ボードへの実装しか公開さ">
+<meta name="keywords" content="Rust">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust製組込みOS TockでC言語アプリケーションを動かす">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2019/02/18/tockapp.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="Tockとはこのブログでも何度か紹介したRust製組込みOSです。以前の記事ターゲットはCortex-MのようなCPUリソースが限られたようなプロセッサです。Rust Embeddedグループ発足前から公開されていて、Rust純粋でちゃんとしたOSを組む先駆けにもなっています。Rustで書かれているだけでなく、組込みOSの設計としてもおもしろいものになっています。以前は専用ボードへの実装しか公開さ">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2019-12-30T09:17:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rust製組込みOS TockでC言語アプリケーションを動かす">
+<meta name="twitter:description" content="Tockとはこのブログでも何度か紹介したRust製組込みOSです。以前の記事ターゲットはCortex-MのようなCPUリソースが限られたようなプロセッサです。Rust Embeddedグループ発足前から公開されていて、Rust純粋でちゃんとしたOSを組む先駆けにもなっています。Rustで書かれているだけでなく、組込みOSの設計としてもおもしろいものになっています。以前は専用ボードへの実装しか公開さ">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-02-17T15:00:00.000Z"><a href="/hexo/2019/02/18/tockapp.html">2019-02-18</a></time>
+      
+      
+  
+    <h1 class="title">Rust製組込みOS TockでC言語アプリケーションを動かす</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h2 id="Tockとは"><a href="#Tockとは" class="headerlink" title="Tockとは"></a>Tockとは</h2><p>このブログでも何度か紹介したRust製組込みOSです。<br><a href="/hexo/2018/05/23/tock.html">以前の記事</a><br>ターゲットはCortex-MのようなCPUリソースが限られたようなプロセッサです。<br>Rust Embeddedグループ発足前から公開されていて、Rust純粋でちゃんとしたOSを組む先駆けにもなっています。Rustで書かれているだけでなく、組込みOSの設計としてもおもしろいものになっています。<br>以前は専用ボードへの実装しか公開されていなかったのですが、最近になりSTM社製のNUCLEO-446REボードのサポートが追加されました。<br>手元にあったNUCLEO−429ZIボード用のサポートも追加してもらえるようPRを投げ、無事マージされたことにより、自分の手元でも動かせるようになりました。</p>
+<p>このTockの性質として、ユーザーアプリケーションは独立にビルドする仕組みとなっているため、任意の言語で書くことができるというものがあります。<br>今回はC言語を用いて簡単なアプリケーションを書いてみて、さらにその仕組みを簡単に見ていきたいと思います。</p>
+<h2 id="サンプルアプリケーション"><a href="#サンプルアプリケーション" class="headerlink" title="サンプルアプリケーション"></a>サンプルアプリケーション</h2><p><a href="https://github.com/tock/libtock-c" target="_blank" rel="noopener">libtock-c</a>というライブラリがTockのカーネルを叩くための各種関数を提供しています。<br>これを用いて簡単なアプリケーションを書いてみました</p>
+<p><a href="https://github.com/garasubo/tockapp" target="_blank" rel="noopener">garasubo/tockapp</a></p>
+<p>このアプリケーションはキーボードの入力を受けるとLチカが動き出し、もう一度入力を受けると止まる、というものになっています。<br>サンプルアプリケーションのレポジトリではlibtock-cをgitのサブモジュールとして取り込んで、ビルドはlibtock-c内のAppMakefile.mkに全面的に依存しています。</p>
+<p>libtock-cのレポジトリ自体にもサンプルコードがあります。<br>今回のサンプルでは使っていないのですが、Newlibによって実装されたC標準ライブラリやluaのランタイムもあります。</p>
+<h2 id="ブートプロセス"><a href="#ブートプロセス" class="headerlink" title="ブートプロセス"></a>ブートプロセス</h2><p>サンプルアプリケーションでは普通にmain関数を書いているわけですが、これがTock側からどう呼ばれているかを見てみましょう。<br>リンカスクリプトがlibtock-cのuserland_generic.ldにあります。まずは、アプリケーションがどのようにビルドされるか見てみましょう。</p>
+<a href="https://github.com/tock/libtock-c/blob/master/userland_generic.ld" title="userland_generic.ld" target="_blank" rel="noopener">userland_generic.ld</a>
+
+<p>11行目、<code>ENTRY(_start)</code>となっていますが、これは<code>libtock/crt0.c</code>に定義されています。26行目の.crt0_headerの構造についてもここで定義されています。</p>
+<a href="https://github.com/tock/libtock-c/blob/master/libtock/crt0.c" title="crt0.c" target="_blank" rel="noopener">crt0.c</a>
+
+<p>アプリケーションはメモリ上のどこにおかれるかはビルド時には決定できません。さらにCortex-Mには仮想アドレス機構はないため、すべて物理アドレスで扱う必要があります。<br>そのため、<code>_start</code>関数では4つのメモリレイアウトに関する情報を受けとり、それをもとにアプリケーション上の情報を書き換えるということをやってます。<br>スタックやヒープ領域、デバッグ用の情報などを設定する他に、<a href="https://www.intel.co.jp/content/www/jp/ja/programmable/documentation/iga1420498949526.html#iga1409353027116" target="_blank" rel="noopener">グローバルオフセットテーブル(GOT)</a>の書き換えもやってます。<br>GOTの書き換えは<code>_start</code>で呼び出される<code>_c_start</code>で行われています。<br>159行目のループ中で最上位ビットで場合分けを行っていますが、<br>これはリンカスクリプトでROM領域は0x80000000以上の領域、RAM領域は0x00000000に配置されていることを利用して（17、18行目）、<br>本来アプリケーション領域にある定数を指すものなのか、スタック上に配置されるグローバル変数なのかを判別してアドレスを調整しているためです。</p>
+<h2 id="システムコール"><a href="#システムコール" class="headerlink" title="システムコール"></a>システムコール</h2><p>カーネルとのやりとりは<code>SVC</code>命令を用いたシステムコールにより実現しています。<code>SVC</code>命令を介しているのでそこのインターフェースさえ何らかの方法で実装できれば、Rust以外の言語でもカーネルの機能を呼び出せるという仕組みです。<br>これは<code>libtock/tock.c</code>で実装されていて、サンプルアプリケーションでは直接は呼び出していませんが、<code>libtock-c</code>内の関数を呼び出すことにより間接的に使っています。<br>システムコールは5つのみです。簡単に説明すると</p>
+<ul>
+<li>yield: そのアプリケーションの終了をする。アプリケーションはスケジュールされなくなる</li>
+<li>subscribe: ドライバのコールバック関数を登録する（例：タイマー割り込みで関数を呼び出してもらう）</li>
+<li>command:　ドライバに対して指示を出す（例：LEDを点灯させる）</li>
+<li>allow: カーネルとアプリケーション間で特定のメモリを共有させる（例：タイマードライバにコールバック制御用のデータ構造体を渡す）</li>
+<li>memop: ヒープ領域を変更してもらったり、現在のメモリレイアウトの情報を手に入れるなど、メモリの操作を依頼する</li>
+</ul>
+<h2 id="おまけ"><a href="#おまけ" class="headerlink" title="おまけ"></a>おまけ</h2><p>サンプルアプリケーションで<code>tock_timer_t</code>の実体をユーザーアプリケーション側に持っていて、そのアドレスをカーネルに渡しています。<br>普通の場合はむしろ構造体の実体はカーネル側に持っておき、そのアドレスなりIDなりをユーザーアプリケーションが持つのが一般的だと思いますが、これには理由があります（以前のブログで紹介した論文にも書いてあります）。<br>今回は扱いませんでしたが、Tockでは複数のアプリケーションを動かすこともできます。<br>メモリ領域はアプリケーションごとに独立に持っていて、カーネルや他のアプリケーションとは基本的に共有しません。<br>もしカーネル側が実体を持っているとすると、あるユーザーアプリケーションが大量のタイマーを要求してきた場合、他のアプリケーションがメモリ不足によりタイマーを手に入れられない場合が考えられます。<br>アプリケーション側がタイマーの構造体を抱えれば、大量に要求してきたアプリケーションのみがメモリ不足になり、カーネル及び他のアプリケーションが困るということにはなりません。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://github.com/tock/tock/blob/master/doc/Userland.md" target="_blank" rel="noopener">tock/Userland</a></li>
+<li><a href="https://github.com/tock/tock/blob/master/doc/Syscalls.md" target="_blank" rel="noopener">tock/Syscalls</a></li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/Rust/">Rust</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

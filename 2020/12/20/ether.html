@@ -1,0 +1,310 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>RustのSTM32向けイーサネットドライバを解説する（受信編） | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="この記事は自作OS Advent Calendar 2020の20日目の記事です。
+RustでSTM32ボード用の自作OSをしていて、アプリケーションの幅を増やしたくて、イーサネットドライバを組むことにしました。使用しているのはNucleo-429ZIボードで、イーサネットモジュールが付属しています">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="RustのSTM32向けイーサネットドライバを解説する（受信編）">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="この記事は自作OS Advent Calendar 2020の20日目の記事です。 RustでSTM32ボード用の自作OSをしていて、アプリケーションの幅を増やしたくて、イーサネットドライバを組むことにしました。使用しているのはNucleo-429ZIボードで、イーサネットモジュールが付属しています。去年から取り組みはじめてはいたものの、今までのペリフェラルとは違い仕様が複雑で何度も挫折して中断し">
+<meta name="keywords" content="Rust,osdev">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RustのSTM32向けイーサネットドライバを解説する（受信編）">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2020/12/20/ether.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="この記事は自作OS Advent Calendar 2020の20日目の記事です。 RustでSTM32ボード用の自作OSをしていて、アプリケーションの幅を増やしたくて、イーサネットドライバを組むことにしました。使用しているのはNucleo-429ZIボードで、イーサネットモジュールが付属しています。去年から取り組みはじめてはいたものの、今までのペリフェラルとは違い仕様が複雑で何度も挫折して中断し">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2021-01-17T08:22:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RustのSTM32向けイーサネットドライバを解説する（受信編）">
+<meta name="twitter:description" content="この記事は自作OS Advent Calendar 2020の20日目の記事です。 RustでSTM32ボード用の自作OSをしていて、アプリケーションの幅を増やしたくて、イーサネットドライバを組むことにしました。使用しているのはNucleo-429ZIボードで、イーサネットモジュールが付属しています。去年から取り組みはじめてはいたものの、今までのペリフェラルとは違い仕様が複雑で何度も挫折して中断し">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2020-12-19T15:00:00.000Z"><a href="/hexo/2020/12/20/ether.html">2020-12-20</a></time>
+      
+      
+  
+    <h1 class="title">RustのSTM32向けイーサネットドライバを解説する（受信編）</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>この記事は<a href="https://adventar.org/calendars/4954" target="_blank" rel="noopener">自作OS Advent Calendar 2020</a>の20日目の記事です。</p>
+<p><a href="/hexo/2019/05/15/erkos.html">RustでSTM32ボード用の自作OS</a>をしていて、アプリケーションの幅を増やしたくて、イーサネットドライバを組むことにしました。<br>使用しているのはNucleo-429ZIボードで、イーサネットモジュールが付属しています。<br>去年から取り組みはじめてはいたものの、今までのペリフェラルとは違い仕様が複雑で何度も挫折して中断しまくったのですが、ようやく受信部分だけ完成したので解説していきたいと思います。</p>
+<p>参照するコードは自分が組んだコードでもよかったのですが、送信部分がバグっているのと、参考にしてきた<code>stm32-eth</code>クレートのほうがずっと出来が良いのでそちらを使います。<br>なお、バージョンはv0.1.2とちょっと古いバージョンです。なお、<code>stm32-eth</code>のこのバージョンではいくつか立てる必要のないと思われるビットを立てていたりするので、実際に参考にする場合はちゃんと仕様書で確認しながら見ることをおすすめします。</p>
+
+
+<h2 id="仕様書を入手する"><a href="#仕様書を入手する" class="headerlink" title="仕様書を入手する"></a>仕様書を入手する</h2><p>仕様書なくしてドライバはつくれません。今回はCPUのリファレンスマニュアルとデータシート、ボードのユーザーマニュアルがまず必要です。<br>更に、イーサネット通信は外部物理層(PHY)に対してIEEE 802.3で定義されているインターフェスを介してCPUのイーサーネットモジュールと通信することで実現されています。<br>このPHYに関するマニュアルも必要です。ユーザーマニュアルによるとこのボードではLAN8742A-CZ-TRを使っているとのことなので、これの仕様書も入手しましょう。</p>
+<ul>
+<li><p><a href="https://www.stmcu.jp/design/document/reference_manual/51544/" target="_blank" rel="noopener">STM32F42xxxのリファレンスマニュアル</a></p>
+</li>
+<li><p><a href="https://www.st.com/resource/en/datasheet/stm32f429zi.pdf" target="_blank" rel="noopener">STM32F429xxのデータシート</a></p>
+</li>
+<li><p><a href="https://www.st.com/content/st_com/ja/products/evaluation-tools/product-evaluation-tools/mcu-mpu-eval-tools/stm32-mcu-mpu-eval-tools/stm32-nucleo-boards/nucleo-f429zi.html" target="_blank" rel="noopener">Nucleo-144ボードのユーザーマニュアル</a></p>
+</li>
+<li><p><a href="https://ww1.microchip.com/downloads/en/DeviceDoc/DS_LAN8742_00001989A.pdf" target="_blank" rel="noopener">LAN8742A/LAN8742Aiの仕様書</a></p>
+</li>
+</ul>
+<h2 id="セットアップ"><a href="#セットアップ" class="headerlink" title="セットアップ"></a>セットアップ</h2><p>イーサネットモジュールを使うにはまずGPIOやクロックの供給などの初期設定をする必要があります。<br>GPIOのピンのうちいくつかを適切なAlternateモード設定するのですが、リファレンスマニュアルの方の33.3章のTable 185にピンの対応関係が書いてあります。<br>しかし、これをよく見ると複数のピンに同じ機能が割り当てられているのがわかると思います。実はボードのユーザマニュアル6.11章にこのボードで利用可能なマッピングがちゃんと書かれています。<br>なので、ピンの設定はボードのマニュアルを参照しましょう。<br>Alternateモードの11がイーサネット用のモードです。設定方法は8章のGPIOの章を参照しましょう。</p>
+<p>PHYとの通信方法はReduced Media-independent Interface(RMII)と呼ばれる方法を使います。これはMIIより少ないピン数で通信できる方法です。<br>リファレンスマニュアル33.4.4で書かれているように、RMIIを使うにはSYSCFG_PMCレジスタで23ビット目を立てる必要があります。</p>
+<p>クロックの供給はSYSCFGとイーサネットモジュール、使うGPIOに対して行う必要があります。GPIOはA,B,C,Gを使います。</p>
+<p><code>stm32-eth</code>でこれらのことをやっているのが、<code>src/setup.rs</code>の<code>setup</code>関数と<code>setup_pins</code>関数となっています。</p>
+<h2 id="イーサネットモジュールの初期化"><a href="#イーサネットモジュールの初期化" class="headerlink" title="イーサネットモジュールの初期化"></a>イーサネットモジュールの初期化</h2><p>続いてイーサネットモジュールの初期化を行います。<code>stm32-eth</code>では<code>src/lib.rs</code>の<code>Eth::init</code>に相当する部分です。<br>この初期化には送信に関係する設定もおこなっている場合があります。</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">fn init<span class="params">(&amp;mut self)</span> -&gt; &amp;Self &#123;</span><br><span class="line">    self.reset_dma_and_wait<span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="string">//</span> <span class="keyword">set</span> clock range in MAC MII address register</span><br><span class="line">    let clock_range = ETH_MACMIIAR_CR_HCLK_DIV_16;</span><br><span class="line">    self.eth_mac.macmiiar.modify<span class="params">(|_, w| unsafe &#123; w.cr()</span><span class="string">.bits</span><span class="params">(clock_range)</span> &#125;);</span><br><span class="line"></span><br><span class="line">    self.get_phy<span class="params">()</span></span><br><span class="line">        <span class="string">.reset</span><span class="params">()</span></span><br><span class="line">        <span class="string">.set_autoneg</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="string">//</span> Configuration Register</span><br><span class="line">    self.eth_mac.maccr.modify<span class="params">(|_, w| &#123;</span></span><br><span class="line"><span class="params">        // CRC stripping for Type frames</span></span><br><span class="line"><span class="params">        w.cstf()</span><span class="string">.set_bit</span><span class="params">()</span></span><br><span class="line">            <span class="string">//</span> Fast Ethernet speed</span><br><span class="line">            <span class="string">.fes</span><span class="params">()</span><span class="string">.set_bit</span><span class="params">()</span></span><br><span class="line">            <span class="string">//</span> Duplex mode</span><br><span class="line">            <span class="string">.dm</span><span class="params">()</span><span class="string">.set_bit</span><span class="params">()</span></span><br><span class="line">            <span class="string">//</span> Automatic pad/CRC stripping</span><br><span class="line">            <span class="string">.apcs</span><span class="params">()</span><span class="string">.set_bit</span><span class="params">()</span></span><br><span class="line">            <span class="string">//</span> Retry disable in half-duplex mode</span><br><span class="line">            <span class="string">.rd</span><span class="params">()</span><span class="string">.set_bit</span><span class="params">()</span></span><br><span class="line">            <span class="string">//</span> Receiver enable</span><br><span class="line">            <span class="string">.re</span><span class="params">()</span><span class="string">.set_bit</span><span class="params">()</span></span><br><span class="line">            <span class="string">//</span> Transmitter enable</span><br><span class="line">            <span class="string">.te</span><span class="params">()</span><span class="string">.set_bit</span><span class="params">()</span></span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="string">//</span> frame filter register</span><br><span class="line">    self.eth_mac.macffr.modify<span class="params">(|_, w| &#123;</span></span><br><span class="line"><span class="params">        // Receive All</span></span><br><span class="line"><span class="params">        w.ra()</span><span class="string">.set_bit</span><span class="params">()</span></span><br><span class="line">            <span class="string">//</span> Promiscuous mode</span><br><span class="line">            <span class="string">.pm</span><span class="params">()</span><span class="string">.set_bit</span><span class="params">()</span></span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="string">//</span> Flow Control Register</span><br><span class="line">    self.eth_mac.macfcr.modify<span class="params">(|_, w| &#123;</span></span><br><span class="line"><span class="params">        // Pause time</span></span><br><span class="line"><span class="params">        w.pt()</span><span class="string">.bits</span><span class="params">(0x100)</span></span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="string">//</span> operation mode register</span><br><span class="line">    self.eth_dma.dmaomr.modify<span class="params">(|_, w| &#123;</span></span><br><span class="line"><span class="params">        // Dropping of TCP/IP checksum error frames disable</span></span><br><span class="line"><span class="params">        w.dtcefd()</span><span class="string">.set_bit</span><span class="params">()</span></span><br><span class="line">            <span class="string">//</span> Receive store and forward</span><br><span class="line">            <span class="string">.rsf</span><span class="params">()</span><span class="string">.set_bit</span><span class="params">()</span></span><br><span class="line">            <span class="string">//</span> Disable flushing of received frames</span><br><span class="line">            <span class="string">.dfrf</span><span class="params">()</span><span class="string">.set_bit</span><span class="params">()</span></span><br><span class="line">            <span class="string">//</span> Transmit store and forward</span><br><span class="line">            <span class="string">.tsf</span><span class="params">()</span><span class="string">.set_bit</span><span class="params">()</span></span><br><span class="line">            <span class="string">//</span> Forward error frames</span><br><span class="line">            <span class="string">.fef</span><span class="params">()</span><span class="string">.set_bit</span><span class="params">()</span></span><br><span class="line">            <span class="string">//</span> Operate on second frame</span><br><span class="line">            <span class="string">.osf</span><span class="params">()</span><span class="string">.set_bit</span><span class="params">()</span></span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="string">//</span> bus mode register</span><br><span class="line">    self.eth_dma.dmabmr.modify<span class="params">(|_, w| unsafe &#123;</span></span><br><span class="line"><span class="params">        // Address-aligned beats</span></span><br><span class="line"><span class="params">        w.aab()</span><span class="string">.set_bit</span><span class="params">()</span></span><br><span class="line">            <span class="string">//</span> Fixed burst</span><br><span class="line">            <span class="string">.fb</span><span class="params">()</span><span class="string">.set_bit</span><span class="params">()</span></span><br><span class="line">            <span class="string">//</span> Rx DMA PBL</span><br><span class="line">            <span class="string">.rdp</span><span class="params">()</span><span class="string">.bits</span><span class="params">(32)</span></span><br><span class="line">            <span class="string">//</span> Programmable burst length</span><br><span class="line">            <span class="string">.pbl</span><span class="params">()</span><span class="string">.bits</span><span class="params">(32)</span></span><br><span class="line">            <span class="string">//</span> Rx Tx priority ratio 2<span class="function">:1</span></span><br><span class="line">            <span class="string">.pm</span><span class="params">()</span><span class="string">.bits</span><span class="params">(0b01)</span></span><br><span class="line">            <span class="string">//</span> Use separate PBL</span><br><span class="line">            <span class="string">.usp</span><span class="params">()</span><span class="string">.set_bit</span><span class="params">()</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    self</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>まずは、DMAのソフトウェアリセットをかけています。DMABMRレジスタのSRビット（ビット0）をセットするとDMAコントローラのソフトウェアリセットになり、<br>リセットが終了すると自動的にクリアされるのでそれを待ちます。</p>
+<p>次にPHYモジュールとアクセスするための設定をしていきます。まずは、MIIでPHYのレジスタにアクセスするための下準備として、MACMIIARレジスタのビット4:2でクロックの範囲を指定します。<br>データシートの3.31章によると、25MHzで動作するようなので、<code>0b010</code>にセットすればよさそうです。<br>PHYモジュールのレジスタアクセスは、MACMIIARに読み書きしたいレジスタ番号と読み書きのモードを指定してMACMIIDRに書き込みなら自分でデータを書き込み、読み込みならばこのレジスタに値がPHYから書き込まれます。<br>動作の完了はMACMIIARのMBビットがクリアされることによりわかります。</p>
+<p>具体的なPHYモジュールのレジスタの説明はLANの仕様書の4.2章からたどることができます。<br>Basic Control Registerの15ビットをセットすることでソフトリセットをしたのち、12ビットと9ビットを立てることでAuto-Negotiationを有効にすることで、<br>ハードウェア側で勝手にパラメータ調整を任せることができます。<br>そのあと、PHY special control/status register(31)の12ビットが立っていれば、auto-negotiationが完了したことがわかります（が、stm32-ethでは確認していないようです。いいのかな？）。</p>
+<p>あとは、ペリフェラルのMAC側とDMA側の設定をおこなっていくことになります。<br>MACCRのCSTF・FES・DM・APCS・RD・RE・TEビットを立て（RDビットはDMビットを立てて全二重モードにしているのでおそらく無視されている）、MACFFRのRA・PMビットを立て、MACFCRのPTフィールドでポーズ時間を設定し、DMAOMRでDTCEFD・RSF・DFRF・TSF・FEF・OSFを立て、DMABMRのAAB・FB・RDP・PBL・PM・USPフィールドの値を設定しています。<br>これらのフィールドすべてを解説するのはしんどいので、マニュアルを参照してください。</p>
+<h2 id="受信用ディスクリプタとバッファの用意"><a href="#受信用ディスクリプタとバッファの用意" class="headerlink" title="受信用ディスクリプタとバッファの用意"></a>受信用ディスクリプタとバッファの用意</h2><p>イーサネットのデータはDMAを介してメモリに読み書きされます。そのためのディスクリプタと呼ばれるメモリ領域を確保しないといけません。また、送信されてきたデータが書き込まれるバッファも必要です。これらをリングバッファとしてDMAは利用します。<br>リファレンスマニュアルでは33.6.8で解説されています。今回はNormal Rx DMA descriptorsを使います。</p>
+<p><code>stm32-eth</code>では<code>src/rx.rs</code>の<code>RxRing</code>という構造体がこのリングバッファを抽象化したものです。<code>RxRingEntry</code>が各ディスクリプタとそれに対応するバッファを持っています。<br><code>src/lib.rs</code>の<code>Eth::new</code>でこれらの初期化をしたのち、DMAレジスタに値を書き込んでこのリングバッファを使うようにしています。</p>
+<p>初期化処理で必要なのは</p>
+<ul>
+<li>RDES0のOWNビットを立てることで、DMA側にディスクリプタの所有権を譲る</li>
+<li>RDES1のRBS1でバッファのサイズを指定し、RCHビットを立ててセカンドアドレス連鎖を有効化しておく</li>
+<li>RDES2にバッファのアドレスを登録</li>
+<li>RDES3に次のディスクリプタのアドレスを登録する。リングバッファの最後のエントリの場合、RDES3は設定せず、RDES1のRERビットを立てる</li>
+</ul>
+<p>です。またディスクリプタは8バイトにアラインされている必要があります（ワードアライン）。</p>
+<p>アラインメントを実現するために、stm32-ethでは<code>aligned</code>というクレートを使ってアラインメントを保証しています。<br>また、<code>RxRingEntry</code>にはバッファとディスクリプタが対となって格納されていますが、必ずしも対になっている必要はなく、RDES2にきちんとアドレスを格納しておけば基本的にRAMのどこでも構いません。</p>
+<p>DMARDLARレジスタに先頭のディスクリプタのアドレスをいれ、DMAOMRのSRビットを立てれば、受信用のDMAの設定は完了です。</p>
+<h2 id="DMAからデータを受信する"><a href="#DMAからデータを受信する" class="headerlink" title="DMAからデータを受信する"></a>DMAからデータを受信する</h2><p>DMAからデータを受信してみましょう。本来は正しく設定して、データが来る毎に割り込みを発生させて処理させるのがいいのでしょうが、今回はポーリングで行きます。<br><code>RxRing::recv_next</code>を見てみましょう。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">recv_next</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, eth_dma: &amp;ETHERNET_DMA) -&gt; <span class="built_in">Result</span>&lt;RxPacket, RxError&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> ! <span class="keyword">self</span>.running_state(eth_dma).is_running() &#123;</span><br><span class="line">        <span class="keyword">self</span>.demand_poll(eth_dma);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> entries_len = <span class="keyword">self</span>.entries.len();</span><br><span class="line">    <span class="keyword">let</span> result = <span class="keyword">self</span>.entries[<span class="keyword">self</span>.next_entry].take_received();</span><br><span class="line">    <span class="keyword">match</span> result &#123;</span><br><span class="line">        <span class="literal">Err</span>(RxError::WouldBlock) =&gt; &#123;&#125;</span><br><span class="line">        _ =&gt; &#123;</span><br><span class="line">            <span class="keyword">self</span>.next_entry += <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">self</span>.next_entry &gt;= entries_len &#123;</span><br><span class="line">                <span class="keyword">self</span>.next_entry = <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>まずはDMASRのRPSフィールドをみて受信処理状態を見ています。<br>もし、実行中になっていない場合は、DMARPDRに1をセットして受信ポールを要求します。</p>
+<p><code>take_received</code>は受信が完了しているエントリを取り出すメソッドになっています。<br>受信完了すると、RDES0のOWNビットがクリアされCPU側に渡されたことが示されています。<br>また、FSビットとLSビットをみてこのディスクリプタに対応するバッファにすべてデータが入っているかを確認しています。<br>バッファの長さより長いデータが来た場合は通常は次のエントリに続きのデータが格納されています。<br>しかし今回、バッファのサイズはデータシートにかかれているVLANフレームの最大長の1522バイトなので、2つのディスクリプタにデータがまたがることを想定しないつくりになっているようです。</p>
+<p><code>take_received</code>は<code>RxPacket</code>という構造体が返されていて、<code>Deref</code>によって、データが格納されたバッファへのスライスへの参照に型強制させることにより、読み込みが可能になります。<br><code>RxPacket</code>からはディスクリプタやデータが格納されていないバッファへの操作はライブラリ外からはできないようになっている、というわけです。</p>
+<p>エントリを使い終わったら本来であればOWNビットを立て直すことでリングバッファに復帰させる必要がありますが、<code>recv_next</code>内ではこれからバッファのデータを読み込むわけなのでそれができていません。<br>ではどうするかというと、<code>Drop</code>として<code>RxPacket</code>がライフタイムを終えるとOWNビットが立てられるようになっています。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">impl</span>&lt;<span class="symbol">'a</span>&gt; <span class="built_in">Drop</span> <span class="keyword">for</span> RxPacket&lt;<span class="symbol">'a</span>&gt; &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">drop</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.entry.desc_mut().set_owned();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>これぞRustの力、という感じでこのあたりの設計は非常に参考になりました。</p>
+<h2 id="テスト"><a href="#テスト" class="headerlink" title="テスト"></a>テスト</h2><p>受け取ったパケットをシリアルで垂れ流す、という方法でテストしました。<br>適当にLANにつなげば何かしらのパケットは流れてくるし、そうでない場合は、<a href="http://kozos.jp/software/pkttools.html" target="_blank" rel="noopener">pkttools</a>などを使いわかりやすいパケットを流せばいいと思います。</p>
+<p>以下はstm32-ethを使ったサンプルコードです。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#![no_std]</span></span><br><span class="line"><span class="meta">#![no_main]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> stm32f4xx_hal::&#123;</span><br><span class="line">    gpio::GpioExt,</span><br><span class="line">    stm32::Peripherals,</span><br><span class="line">    serial::config::Config,</span><br><span class="line">    serial::Serial,</span><br><span class="line">    stm32::RCC,</span><br><span class="line">    rcc::RccExt,</span><br><span class="line">    time::&#123;Bps, U32Ext&#125;,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">use</span> stm32_eth::&#123;Eth, RingEntry&#125;;</span><br><span class="line"><span class="keyword">use</span> cortex_m_rt::entry;</span><br><span class="line"><span class="keyword">use</span> core::fmt::&#123;<span class="keyword">self</span>, Write <span class="keyword">as</span> FmtWrite&#125;;</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">crate</span> panic_halt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#[entry]</span></span><br><span class="line"><span class="keyword">unsafe</span> <span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() -&gt; ! &#123;</span><br><span class="line">    <span class="keyword">let</span> p = Peripherals::take().unwrap();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Setup pins and initialize clocks.</span></span><br><span class="line">    <span class="keyword">let</span> gpiod = p.GPIOD.split();</span><br><span class="line"></span><br><span class="line">    stm32_eth::setup(&amp;p.RCC, &amp;p.SYSCFG);</span><br><span class="line">    <span class="keyword">let</span> gpioa = p.GPIOA.split();</span><br><span class="line">    <span class="keyword">let</span> gpiob = p.GPIOB.split();</span><br><span class="line">    <span class="keyword">let</span> gpioc = p.GPIOC.split();</span><br><span class="line">    <span class="keyword">let</span> gpiog = p.GPIOG.split();</span><br><span class="line">    stm32_eth::setup_pins(</span><br><span class="line">        gpioa.pa1, gpioa.pa2, gpioa.pa7, gpiob.pb13, gpioc.pc1,</span><br><span class="line">        gpioc.pc4, gpioc.pc5, gpiog.pg11, gpiog.pg13</span><br><span class="line">    );</span><br><span class="line">    <span class="comment">// Allocate the ring buffers</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> rx_ring: [RingEntry&lt;_&gt;; <span class="number">8</span>] = <span class="built_in">Default</span>::<span class="keyword">default</span>();</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> tx_ring: [RingEntry&lt;_&gt;; <span class="number">2</span>] = <span class="built_in">Default</span>::<span class="keyword">default</span>();</span><br><span class="line">    <span class="comment">// Instantiate driver</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> eth = Eth::new(</span><br><span class="line">        p.ETHERNET_MAC, p.ETHERNET_DMA,</span><br><span class="line">        &amp;<span class="keyword">mut</span> rx_ring[..], &amp;<span class="keyword">mut</span> tx_ring[..]</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> rcc = p.RCC.constrain();</span><br><span class="line">    <span class="keyword">let</span> clocks = rcc.cfgr.freeze();</span><br><span class="line">    <span class="keyword">let</span> pd8 = gpiod.pd8.into_alternate_af7();</span><br><span class="line">    <span class="keyword">let</span> pd9 = gpiod.pd9.into_alternate_af7();</span><br><span class="line">    <span class="keyword">let</span> config = Config::<span class="keyword">default</span>().baudrate(<span class="number">115_200u32</span>.bps());</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> serial = Serial::usart3(p.USART3, (pd8, pd9), config, clocks).unwrap();</span><br><span class="line">    <span class="keyword">let</span> (<span class="keyword">mut</span> tx, _) = serial.split();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">loop</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> <span class="literal">Ok</span>(pkt) = eth.recv_next() &#123;</span><br><span class="line">            <span class="keyword">for</span> p <span class="keyword">in</span> pkt.iter() &#123;</span><br><span class="line">                tx.write_char(*p <span class="keyword">as</span> <span class="built_in">char</span>).unwrap();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><p>仕様書だけでは何をすればいいのかを読み解くのが大変で、他の実装を参考にしながら手探りで実装していったのでそれなりに大変だった。<br>送信部分もこみで解説するつもりだったが、受信部分だけでもそれなりのボリュームになったので、まあ、これはこれでいいかな、と思っている。<br>近日中に送信部分も解説記事を書きたい。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/Rust/">Rust</a>, <a href="/hexo/tags/osdev/">osdev</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

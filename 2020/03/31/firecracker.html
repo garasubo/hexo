@@ -1,0 +1,299 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>論文紹介：Firecracker: Lightweight Virtualization for Serverless Applications | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="元論文：https://www.usenix.org/conference/nsdi20/presentation/agache
+2018年末、AWS Lambdaを提供するためのシステムとしてFirecrackerという仮想マシンモニター（VMM）がオープンソースとして公開されて注目を集めました。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="論文紹介：Firecracker: Lightweight Virtualization for Serverless Applications">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="元論文：https://www.usenix.org/conference/nsdi20/presentation/agache 2018年末、AWS Lambdaを提供するためのシステムとしてFirecrackerという仮想マシンモニター（VMM）がオープンソースとして公開されて注目を集めました。   この論文は、その中身を解説・評価する論文です。 論文概要 タイトル：Firecracker:">
+<meta name="keywords" content="paper">
+<meta property="og:type" content="article">
+<meta property="og:title" content="論文紹介：Firecracker: Lightweight Virtualization for Serverless Applications">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2020/03/31/firecracker.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="元論文：https://www.usenix.org/conference/nsdi20/presentation/agache 2018年末、AWS Lambdaを提供するためのシステムとしてFirecrackerという仮想マシンモニター（VMM）がオープンソースとして公開されて注目を集めました。   この論文は、その中身を解説・評価する論文です。 論文概要 タイトル：Firecracker:">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2020-04-02T11:27:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="論文紹介：Firecracker: Lightweight Virtualization for Serverless Applications">
+<meta name="twitter:description" content="元論文：https://www.usenix.org/conference/nsdi20/presentation/agache 2018年末、AWS Lambdaを提供するためのシステムとしてFirecrackerという仮想マシンモニター（VMM）がオープンソースとして公開されて注目を集めました。   この論文は、その中身を解説・評価する論文です。 論文概要 タイトル：Firecracker:">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2020-03-30T15:00:00.000Z"><a href="/hexo/2020/03/31/firecracker.html">2020-03-31</a></time>
+      
+      
+  
+    <h1 class="title">論文紹介：Firecracker: Lightweight Virtualization for Serverless Applications</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>元論文：<a href="https://www.usenix.org/conference/nsdi20/presentation/agache" target="_blank" rel="noopener">https://www.usenix.org/conference/nsdi20/presentation/agache</a></p>
+<p>2018年末、AWS Lambdaを提供するためのシステムとしてFirecrackerという仮想マシンモニター（VMM）がオープンソースとして公開されて注目を集めました。</p>
+
+
+<p>この論文は、その中身を解説・評価する論文です。</p>
+<h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
+<li>タイトル：Firecracker: Lightweight Virtualization for Serverless Applications</li>
+<li>著者： Alexandru Agache, Marc Brooker et al.</li>
+<li>会議：<a href="https://www.usenix.org/conference/nsdi20" target="_blank" rel="noopener">17th USENIX Symposium on Networked Systems Design and Implementation (NSDI 20)</a></li>
+</ul>
+<p>USENIX協会主催のNSDIで発表されました。<br>USENIXはもともとはUnix User Groupという団体でしたが、現在はシステムやネットワーク、セキュリティなどの会議やワークショップを開催しています。<br>そのなかでもNSDIはネットワーク系の会議としてトップクラスの会議の１つです。<br>書いている人たちはAWSの中の人のようです。</p>
+<p>AWS Lambdaとは、いわゆるサーバーレスコンピューティングといわれるサービスで、イベントの発生ごとに実行されるアプリケーションを設定しておくと、サーバーの設定無しでアプリケーションを実行して応答を返してくれる、というものです。<br>このアプリケーションを動かすのに使われているフレームワークで使われているのがFirecrackerです。</p>
+<p>この論文ではFirecrackerのことをVMMと呼んでいますが、KVMやXenのような「VMM」ではありません。これはちょっと私も混乱したポイントなのですが、ここでのVMMとは各ゲストOSに対してのサンドボックスを提供するためのコンポーネントというような位置づけです。<br>KVMとQEMUの組み合わせでは、QEMUがこのVMMに相当します。<br>このブログではVMMをこの論文の使い方にそうように使いますが、私は普段はVMMという言葉をXenやKVMのようなフレームワークに対して使っている（ハイパーバイザと同義の意味で使っている）ので、他の記事とは使い方が異なることに注意してください。<br>ちなみにFirecrackerはRust製です。</p>
+<h2 id="背景・動機"><a href="#背景・動機" class="headerlink" title="背景・動機"></a>背景・動機</h2><p>AWS Lambdaをつくるにあたり、以下のような性質を持つ仮想化フレームワークが必要とされました</p>
+<ul>
+<li>独立性：複数の関数が同一のハードウェアで走ってもセキュアであること（互いに干渉したり、権限昇格のようなことが起きない）</li>
+<li>オーバーヘッドと密度：たくさんの関数が同一ハードウェアで動かせるよう、少ないオーバーヘッドで動かせること</li>
+<li>パフォーマンス：ネイティブ実行に近い速度が出せること</li>
+<li>コンパチビリティ：任意のLinuxバイナリやライブラリがコード変更や再コンパイルなしで動かせること</li>
+<li>高速な切り替え：古い関数実行をクリーンアップし、新しい関数を実行が素早く行えること</li>
+<li>ソフトアロケーション：CPUやメモリのオーバーコミットが可能なように、関数は必要なリソースしか使わないようにする</li>
+</ul>
+<p>現状の類似した独立した環境を提供する既存のものとして、コンテナ・仮想化・言語のVMを使った独立化を挙げています。<br>Dockerでお馴染みのコンテナは、<code>seccomp-bpf</code>でシステムコールを制限するという形でセキュリティを担保してますが、200を超えるLinuxのシステムコールを制御しなければならず、Linuxのシステムコールのバグの危険性もあります。<br>Xenなどを使ったハードウェア仮想化は、ゲストOSに完全独立な仮想のCPUを与えるという方法ですが、カーネルまるまるを使うとスタートアップの時間がかかり、メモリのオーバーヘッドも大きいため、密度を上げることが難しいことで知られています。<br>また、仮想化のフレームワークそのもののコード量が多いことも問題です（trusted computing base、すなわちTCBが大きい）。<br>Java Virtual Machine（JVM）などの言語のVMは、言語や機能が限定されるため、これも条件を満たしません。</p>
+<p>そこで、Firecrackerの取る方法は仮想化のアプローチをベースとしたものになっています。<br>有名なKVMとQEMUを使った仮想化ではQEMUが非常にコードの大きな部分を占めていて、これを減らすことができればTCBも減らすことができます。<br>FirecrackerではこのQEMUを置き換えるというものになっています。</p>
+<h2 id="Firecrackの構造"><a href="#Firecrackの構造" class="headerlink" title="Firecrackの構造"></a>Firecrackの構造</h2><p>Firecrackerの設計方針として、既存のモジュールを再実装するのは基本的に避け、できる限りLinux内のコンポーネントを利用するというものがあります。<br>これは実装コストを下げるというのと、サービスを運用する際、Linuxの知識がそのまま使えるというものがあります。</p>
+<p>FirecrackerはKVMのインフラに乗っかりつつ、QEMUに変わるVMMとして実装し、その上で小さな仮想マシン（MicroVM）を動かすという設計になっています。<br>VMMはChrome OSのVMMであるcrossvmをベースにコードを削ったりリファクタリングして、現在は完全に別物として実装されています。</p>
+<p>Firecrackerはデバイスとして、ネットワークやディスクなどのブロックデバイス、シリアルポートとi8042（PS/2キーボードコントローラ）のみをサポートしています。<br>このうち、ネットワークドライバとブロックデバイスドライバはvirtioをそのまま使うことでコスト削減に貢献しています</p>
+<p>Firecrackerのプロセスを操作するインターフェースとしてREST APIを提供しています。これなら様々な言語から操作することが用意で、それこそcurlなどのコマンドラインツールでも操作可能になるからです。</p>
+<p>各VMの独立性を保つためには、プロセスごとのレートリミットをつける必要があります。Firecrackerでは1秒ごとのオペレーション数をAPIから設定することができます。</p>
+<p>セキュリティのためのJailerというものも実装されています。これはFirecrackerそのものが使えるインターフェースを制限し、ゲストがVMMの脆弱性をつくことを難しくするためのものです。</p>
+<h2 id="評価"><a href="#評価" class="headerlink" title="評価"></a>評価</h2><p>大量のVMを走らせるという実験を、QEMUと最近Intelが発表したRust製VMMであるCloud Hypervisorとの比較をおこなっています。</p>
+<p>まず、起動時間です。QEMUよりかはパフォーマンスがいいのですが、Cloud Hypervisorには若干劣ります。一方で、メモリのオーバーヘッドはFirecrackerが3MB程度なのに対して、Cloud Hypervisorが13MBなので、こちらはFirecrackerに軍配が上がります。<br>次にIO性能ですが、実装がいろいろ足りていないため、QEMUにも負けている部分がいろいろあるようです。</p>
+<p>さて、はじめに掲げた目標は達成できているでしょうか？</p>
+<ul>
+<li>独立性：仮想化を用い、サイドチャネルの対策もした</li>
+<li>オーバーヘッドと密度：大量のVMを低いオーバーヘッドで動かせることを確認した</li>
+<li>パフォーマンス：改善の余地はあるが、十分なパフォーマンスを達成</li>
+<li>コンパチビリティ：変更していないLinuxカーネルを動かせた</li>
+<li>高速な切り替え：起動時間が十分に短い</li>
+<li>ソフトアロケーション：20倍のオーバーサブスクリプションをテストしたが問題なし</li>
+</ul>
+<p>ということで、全部満たしていそうです。</p>
+<h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><p>仮想化フレームワークとしてUnikernelを以前紹介したが、こちらはよりコンパチビリティを意識したアプローチになっていている一方、きちんとVMの密度を上げられているというのは面白いと思いました。<br>KVMのフレームワークに詳しくなくVMMという単語の使い方に困惑しましたが、調べてみると結構こういう意味で使っている場合が多いようでややこしいですね…っｇ</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/paper/">paper</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

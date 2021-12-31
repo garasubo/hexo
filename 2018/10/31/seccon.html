@@ -1,0 +1,270 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>SECCON 2018 参戦記 | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="SECCON 2018予選にnegainoidoで参加して、ReversingのSepecial Device FileとSpecial Instructionsを解きました。
+Special Instructionsバイナリファイルが与えられ、それを実行してフラグを得る。いろいろなアーキテクチャの">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="SECCON 2018 参戦記">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="SECCON 2018予選にnegainoidoで参加して、ReversingのSepecial Device FileとSpecial Instructionsを解きました。 Special Instructionsバイナリファイルが与えられ、それを実行してフラグを得る。いろいろなアーキテクチャのクロスコンパイラも与えられる。とりあえず、そのツールチェーンをビルドしつつ、バイナリを眺める。fil">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SECCON 2018 参戦記">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2018/10/31/seccon.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="SECCON 2018予選にnegainoidoで参加して、ReversingのSepecial Device FileとSpecial Instructionsを解きました。 Special Instructionsバイナリファイルが与えられ、それを実行してフラグを得る。いろいろなアーキテクチャのクロスコンパイラも与えられる。とりあえず、そのツールチェーンをビルドしつつ、バイナリを眺める。fil">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2018-10-31T13:37:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SECCON 2018 参戦記">
+<meta name="twitter:description" content="SECCON 2018予選にnegainoidoで参加して、ReversingのSepecial Device FileとSpecial Instructionsを解きました。 Special Instructionsバイナリファイルが与えられ、それを実行してフラグを得る。いろいろなアーキテクチャのクロスコンパイラも与えられる。とりあえず、そのツールチェーンをビルドしつつ、バイナリを眺める。fil">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-10-31T11:02:37.000Z"><a href="/hexo/2018/10/31/seccon.html">2018-10-31</a></time>
+      
+      
+  
+    <h1 class="title">SECCON 2018 参戦記</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>SECCON 2018予選にnegainoidoで参加して、ReversingのSepecial Device FileとSpecial Instructionsを解きました。</p>
+<h2 id="Special-Instructions"><a href="#Special-Instructions" class="headerlink" title="Special Instructions"></a>Special Instructions</h2><p>バイナリファイルが与えられ、それを実行してフラグを得る。いろいろなアーキテクチャのクロスコンパイラも与えられる。<br>とりあえず、そのツールチェーンをビルドしつつ、バイナリを眺める。<code>file</code>コマンドではアーキテクチャを特定できなかったが、<code>strings</code>コマンドを使うと、</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">This</span> <span class="selector-tag">program</span> <span class="selector-tag">uses</span> <span class="selector-tag">special</span> <span class="selector-tag">instructions</span>.</span><br><span class="line"><span class="selector-tag">SETRSEED</span>: (<span class="attribute">Opcode</span>:<span class="number">0</span>x16)</span><br><span class="line">    <span class="selector-tag">RegA</span> <span class="selector-tag">-</span>&gt; <span class="selector-tag">SEED</span></span><br><span class="line"><span class="selector-tag">GETRAND</span>: (<span class="attribute">Opcode</span>:<span class="number">0</span>x17)</span><br><span class="line">    <span class="selector-tag">xorshift32</span>(SEED) <span class="selector-tag">-</span>&gt; <span class="selector-tag">SEED</span></span><br><span class="line">    <span class="selector-tag">SEED</span> <span class="selector-tag">-</span>&gt; <span class="selector-tag">RegA</span></span><br><span class="line"><span class="selector-tag">GCC</span>: (GNU) <span class="selector-tag">4</span><span class="selector-class">.9</span><span class="selector-class">.4</span></span><br><span class="line"><span class="selector-tag">moxie-elf</span><span class="selector-class">.c</span></span><br></pre></td></tr></table></figure>
+
+<p>というのが見えるので、moxieというアーキテクチャだということがわかる。<br>ツールチェーンにはエミュレータも含まれているが、<code>strings</code>の結果にもあるとおり、xorshift専用の命令が組み込まれている。<br>xorshiftのアルゴリズムについては<a href="https://ja.wikipedia.org/wiki/Xorshift" target="_blank" rel="noopener">wikipedia</a>参照。xorとshiftによって簡単かつそこそこ質のよい乱数が生成できるらしい。<br>この専用命令を関数としてどこかにねじ込み、命令をその関数の呼び出しに書き換えるという戦略も考えられるが、今回はやっていることがバイナリ内のロジックが比較的シンプルなので、<br>それを適当なプログラミング言語に再実装して手元で走らせるのが楽。<br>moxieのアーキテクチャマニュアルはその時は見つけられなかったが、割と素直な構成なので、ある程度他のアセンブラを触った人ならなんなく読めるはず。<br>やっていることは、初めになんやかんやputsで文字列を出した後、decode関数で暗号化されたflagをデコードし、それをputsしている。<br>デコードの仕組みは暗号化された文字に対して、更に別のrandvalという埋め込まれている定数とxorshiftによって生まれる乱数とのxorをとっているだけ。</p>
+<p>乱数の初期シードをコピペミスするとかして無駄に時間を浪費してしまったが、なんとか提出できた</p>
+<h2 id="Special-Device-File"><a href="#Special-Device-File" class="headerlink" title="Special Device File"></a>Special Device File</h2><p>今度はaarch64のバイナリが与えられる。今度は/dev/xorshift64というデバイスを叩いているためそのままでは実行できない。<br>xorshift64は名前から察するにxorshiftで乱数を生成しているだけであろうと予想できる。</p>
+<p>ARMv7-Aのアセンブラは読み書きしたことがあるが、aarch64ははじめてだったので、少々戸惑ってしまったが、<br>ちょっと公式ドキュメントを読めば理解できた。64bitアーキテクチャのため、馴染みのない命令がそこそこあったが、<br><a href="https://developer.arm.com/products/architecture/cpu-architecture/a-profile/docs/100076/latest/part-a-instruction-set-overview/overview-of-aarch64-state/registers-in-aarch64-state" target="_blank" rel="noopener">Arm公式で提供しているドキュメント</a>がそこそこ親切なので調べれば大丈夫。<br>やっていることはSpecial Instructionと大差ない。xorshift64の初期シードを探すのに多少手間取ったが、よく見ると初めにスタックに64bitの定数を積んで、スタックポインタをwrite関数に渡していたのに気がつき、それがシードだった。</p>
+<h2 id="取り組んだが解けなかった問題"><a href="#取り組んだが解けなかった問題" class="headerlink" title="取り組んだが解けなかった問題"></a>取り組んだが解けなかった問題</h2><h3 id="Needle-in-a-haystack"><a href="#Needle-in-a-haystack" class="headerlink" title="Needle in a haystack"></a>Needle in a haystack</h3><p>恒例(?)の動画問題。題名から察するにどこか数フレームにフラグがあるのかなあ、とチームメイトがいろいろ試行錯誤。<br>自分もいろいろアイデアを出したが、結局何も掴めず。</p>
+<p>結論はビルの一室のあかりがモールス信号になっていたらしい。まあ、この問題は解けなくても仕方ないかなあという気分。</p>
+<h3 id="GhostKingdom"><a href="#GhostKingdom" class="headerlink" title="GhostKingdom"></a>GhostKingdom</h3><p>唯一のWeb問題。ウェブサービスが与えられていて、/FLAG以下のアドレスのどこかにフラグがあるらしい。<br>そのウェブサービスでできることは</p>
+<ul>
+<li>ユーザーの登録とログイン</li>
+<li>メッセージの送信フォーム</li>
+<li>URLを与えて、そのページのスクリーンショットの取得</li>
+</ul>
+<p>メッセージの送信フォームにはプレビュー機能があって、そこにcssという名前の怪しいパラメータがあった。<br>適当な値を入れると、プレビュー部分のstyleタグに壊れた文字が入っていたので、何らかの形式でエンコードされたcssであろうと考え、base64を試したら見事正解。</p>
+<p>他にはスクリーンショットの取得部分で、自分で適当なページをつくって、その中でlocalhostにリダイレクトさせることで、ページにlocalhostとしてアクセスすることで画像アップロード機能を使える、というところまでは掴んだ。<br>ログインはiframe内でログイン用のURLを叩かせた。</p>
+<p>しかし、それ以上をつかむことができず終了。<br>答えとしては<a href="https://speakerdeck.com/lmt_swallow/css-injection-plus-plus-ji-cun-shou-fa-falsegai-guan-todui-ce" target="_blank" rel="noopener">CSS injection</a>として知られている技法でフォームの値を抜き出し、セッションIDを取得すること、<br>その後、画像アップローダーで使われているImageMagicの脆弱性をつくことだったらしい。<br>参考：<a href="http://hakatashi.hatenadiary.com/entry/2018/10/28/211034" target="_blank" rel="noopener">http://hakatashi.hatenadiary.com/entry/2018/10/28/211034</a></p>
+<p>CSS injectionのことを知らなかったほか、セッションIDがcsrfトークンとしてフォームに埋め込まれていたことに気がつけなかった。<br>たとえそれらに気がついたとして、ImageMagicの脆弱性までたどり着けるかどうかも怪しい。<br>任意CSSを埋め込めることに気がつけた時点で、もっとCSSを利用したテクニックについて調べていればよかった。<br>常日頃CTFをやっている人間でないのでその場で知識を調達してこなければならないのが厳しい。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

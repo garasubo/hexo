@@ -1,0 +1,274 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>ICPC2014参戦記 | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="ICPC2014国内予選参加しました。結果は5完の24位でアジア地区予選には自明に進めないのでここでおしまい。
+解いた問題と方針相方にAを任している間に、C,Eの実装を考えて、Aが終わった後、Cを通す。疲れたので相方にBを任せている間に、Dの方針を聞いたり他の問題考えていた。Bが終わった後、DとEを">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="ICPC2014参戦記">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="ICPC2014国内予選参加しました。結果は5完の24位でアジア地区予選には自明に進めないのでここでおしまい。 解いた問題と方針相方にAを任している間に、C,Eの実装を考えて、Aが終わった後、Cを通す。疲れたので相方にBを任せている間に、Dの方針を聞いたり他の問題考えていた。Bが終わった後、DとEを連続して実装して通す。F、Gは歯がたちませんでした。 C問題はじめは二部探索かな、と思ったが、判定関">
+<meta name="keywords" content="procon">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ICPC2014参戦記">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2014/07/12/icpc.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="ICPC2014国内予選参加しました。結果は5完の24位でアジア地区予選には自明に進めないのでここでおしまい。 解いた問題と方針相方にAを任している間に、C,Eの実装を考えて、Aが終わった後、Cを通す。疲れたので相方にBを任せている間に、Dの方針を聞いたり他の問題考えていた。Bが終わった後、DとEを連続して実装して通す。F、Gは歯がたちませんでした。 C問題はじめは二部探索かな、と思ったが、判定関">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2014-12-24T13:38:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ICPC2014参戦記">
+<meta name="twitter:description" content="ICPC2014国内予選参加しました。結果は5完の24位でアジア地区予選には自明に進めないのでここでおしまい。 解いた問題と方針相方にAを任している間に、C,Eの実装を考えて、Aが終わった後、Cを通す。疲れたので相方にBを任せている間に、Dの方針を聞いたり他の問題考えていた。Bが終わった後、DとEを連続して実装して通す。F、Gは歯がたちませんでした。 C問題はじめは二部探索かな、と思ったが、判定関">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-07-12T10:16:00.000Z"><a href="/hexo/2014/07/12/icpc.html">2014-07-12</a></time>
+      
+      
+  
+    <h1 class="title">ICPC2014参戦記</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>ICPC2014国内予選参加しました。<br>結果は5完の24位でアジア地区予選には自明に進めないのでここでおしまい。</p>
+<h1 id="解いた問題と方針"><a href="#解いた問題と方針" class="headerlink" title="解いた問題と方針"></a>解いた問題と方針</h1><p>相方にAを任している間に、C,Eの実装を考えて、<br>Aが終わった後、Cを通す。<br>疲れたので相方にBを任せている間に、Dの方針を聞いたり他の問題考えていた。<br>Bが終わった後、DとEを連続して実装して通す。<br>F、Gは歯がたちませんでした。</p>
+<h2 id="C問題"><a href="#C問題" class="headerlink" title="C問題"></a>C問題</h2><p>はじめは二部探索かな、と思ったが、判定関数考えているうちに直接求まることに気がつく。</p>
+<p>まず、各々のx軸上の区間のビルの高さの最大値を求める。ビルが存在しなければ0とする。<br>i&lt;=0となるような[i-1,i]区間ではx=iの地点がより太陽が先に見えてしまう。<br>i&gt;0となるような[i-1,i]区間ではx=i-1の地点がより太陽が先に見える。<br>よってそれぞれの区間について、太陽が先に見えるx座標とそこの高さに円が到達する時間を求める。<br>そのうち最小のものが答えとわかる。</p>
+<p>r&lt;=20という制限により、区間中に存在するビルの高さの最大値は愚直に求まり、<br>到達する時間については2次方程式をさくっと解くだけ。</p>
+<h2 id="D問題"><a href="#D問題" class="headerlink" title="D問題"></a>D問題</h2><p>相方から聞いた方針を具体化しただけ。</p>
+<p>文字数がたかだか20なので、各文字について変換されたorされないと仮定して復号化、それを暗号化してちゃんと元に戻るかを計算すれば大丈夫、<br>というもので実装した。<br>各文字について変換したかどうかをビットマスクで表現して、’z’を復号化するときだけは例外処理。<br>ちゃんと元に戻った文字列は記録し、最後にソートして出力。</p>
+<p>ただ、この方針、すぐには実装できるのだが、最大で2^20*20*25の計算となり、500000000くらいとなり、普通のプロコンだと通用しない計算量となってしまった。<br>（暗号化するかしないかのパターンで2^20通り、暗号化で20*25の処理が入る）<br>ただ、ICPCは制限時間が無く、手元で実行し出力ファイルを提出すればいいだけなので、<br>出力を待っている間、他の問題を実装していれば問題なく正解をもらえた。</p>
+<p>もうちょい何とかするとすると、暗号化するところの処理を文字の出現位置とかをメモすることで高速化するか、<br>DFSとかで暗号化できないような文字列は探索しないようにすることでそもそも判定の手間を減らすとかか。<br>あと、ビットマスクの探索順を工夫すれば最後のソートはいらない。<br>まあ、いずれも実装が複雑化しそうなので、これはこれでよかったのかなあ。</p>
+<h2 id="E問題"><a href="#E問題" class="headerlink" title="E問題"></a>E問題</h2><p>自明に木構造をしているので、木DP的な何かかなと当たりをつける。<br>ノード数が300と少ないので、全ての点について根であると仮定した場合で回しても十分間に合いそう。<br>終点についてもそれぞれについて終点としてみて試せば300*300*300で間に合うんじゃないか、となったが、<br>擬似コード書き始める時点で、終点を固定して探索するの厄介だなあと考え、もうちょっと考えなおしてみる。</p>
+<p>そこで、始点と終点が同じであるパターンからまず考える。<br>始点をAとしておく。<br>葉、つまりこの先に何もない島につながっている橋はわざわざ渡る必要もなく、即座に撤去すれば良い。<br>そうではない島(Bとおく)につながっている橋は、まず、Bより先にある橋を撤去する必要があるので、一度その橋をわたらなければならない。<br>Bについても、Aに戻るためには同じ橋を渡らなければならないので即座には撤去できず、Bよりも先にある橋を全て撤去してBに戻り、<br>Aに戻り、やっとA-B間の橋を撤去出来る。<br>つまり、ある島を始点とした場合、それを根にした木と考えた時、葉をつなぐ橋は即座に撤去し、そうでない橋は2回渡った後撤去することで、<br>全ての橋を撤去できる。始点と終点が同じならこれが最小コストのはずだ。</p>
+<p>始点と終点が異なる場合、最後に終点まで行くとき、そのパス上にある橋を渡ることになるが、この時、戻る必要性がないので、渡った時点で即撤去できる。<br>つまり、始点と終点が異なる場合、始点から終点までのパス長ぶん戻るコストを節約できるという訳である。<br>よって、始点と終点が異なる場合の最終コストは始点を固定した場合、その始点から最も長い長さの葉ではない島を終点とした時である。</p>
+<p>コードとしては、DFSで始点と終点が同じと仮定した場合のコストを計算しつつ、始点からその島までのコストを持つことで最も遠い島を探すようなコードになった。<br>最も遠い島に関してと始点と終点が同じ時のコストを計算するDFSを分けてもDFS1回の計算量が高々ノード数程度なので、十分に間に合う。</p>
+<p>#感想・反省<br>3度目の参戦となり、今までの反省を活かせたんじゃないかなと思っている。<br>1度目は個人としての能力があまりにも低すぎた＆相方がガチ勢だったので、足を引っ張るだけのゴミだったのだが、<br>2度目は自分の能力もそれなりについて、相方もほぼ同レベルだったが、結構足を引っ張ってしまったと反省していた。<br>原因はちゃんと実装を細かいレベルで考えていなかったことで、<br>方針は立っても細かいところでつまり1台しか使えないパソコンをかなり占有してしまった。</p>
+<p>今回は相方が実装している間に、実装の細かいところをじっくりと考えたので、実装はかなり早く終わったのではないかな、と思っている。<br>前回の僕であれば、Eで始点・終点それぞれ固定して探索しようで行けると思い込んで実装に詰まっているところだった。<br>あと、チーム全体和やかな雰囲気だったので、練習量も個人の能力もそこそこだった割にはいい成績を残せたのかなと。</p>
+<p>ただ、今回も反省はあって、入出力パターンの確認はしっかりやるべきだった。<br>これで1回躓いてしまった。ロスは小さかったかもしれないが、やはり、事前に意識すべき範囲であった。</p>
+<p>#まとめ<br>ICPCにおいて最も重要なこと、それはパーフェクト・ハーモニー、完全調和だ！</p>
+<p>（強い人に怒られそう）</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/procon/">procon</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

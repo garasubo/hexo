@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>論文紹介：My VM is Lighter (and Safer) than your Container | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="元論文: https://dl.acm.org/citation.cfm?id=3132763
+VM（仮想マシン）をたくさん立ち上げたいとき、VMM（仮想マシンモニタ、ハイパーバイザ）のどういうところがボトルネックになるかを分析した上で、VMMを改善し、Unikernelを用いてコンテナシステムより">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="論文紹介：My VM is Lighter (and Safer) than your Container">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="元論文: https://dl.acm.org/citation.cfm?id=3132763 VM（仮想マシン）をたくさん立ち上げたいとき、VMM（仮想マシンモニタ、ハイパーバイザ）のどういうところがボトルネックになるかを分析した上で、VMMを改善し、Unikernelを用いてコンテナシステムより軽量で（かつセキュアな）システムを構築しました、というような話です。 論文概要 タイトル：My VM">
+<meta name="keywords" content="paper,unikernel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="論文紹介：My VM is Lighter (and Safer) than your Container">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2019/06/30/lightvm.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="元論文: https://dl.acm.org/citation.cfm?id=3132763 VM（仮想マシン）をたくさん立ち上げたいとき、VMM（仮想マシンモニタ、ハイパーバイザ）のどういうところがボトルネックになるかを分析した上で、VMMを改善し、Unikernelを用いてコンテナシステムより軽量で（かつセキュアな）システムを構築しました、というような話です。 論文概要 タイトル：My VM">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2019-06-30T06:30:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="論文紹介：My VM is Lighter (and Safer) than your Container">
+<meta name="twitter:description" content="元論文: https://dl.acm.org/citation.cfm?id=3132763 VM（仮想マシン）をたくさん立ち上げたいとき、VMM（仮想マシンモニタ、ハイパーバイザ）のどういうところがボトルネックになるかを分析した上で、VMMを改善し、Unikernelを用いてコンテナシステムより軽量で（かつセキュアな）システムを構築しました、というような話です。 論文概要 タイトル：My VM">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-06-29T15:00:00.000Z"><a href="/hexo/2019/06/30/lightvm.html">2019-06-30</a></time>
+      
+      
+  
+    <h1 class="title">論文紹介：My VM is Lighter (and Safer) than your Container</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>元論文: <a href="https://dl.acm.org/citation.cfm?id=3132763" target="_blank" rel="noopener">https://dl.acm.org/citation.cfm?id=3132763</a></p>
+<p>VM（仮想マシン）をたくさん立ち上げたいとき、VMM（仮想マシンモニタ、ハイパーバイザ）のどういうところがボトルネックになるかを分析した上で、VMMを改善し、Unikernelを用いてコンテナシステムより軽量で（かつセキュアな）システムを構築しました、というような話です。</p>
+<h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
+<li>タイトル：My VM is Lighter (and Safer) than your Container</li>
+<li>著者：Filipe Manco, Costin Lupu, Florian Schmidt　et. al.</li>
+<li>会議：Proceedings of the 26th Symposium on Operating Systems Principles (SOSP ‘17)</li>
+</ul>
+<p>システム系のトップカンファレンスとしておなじみのSOSPで発表された論文です。<br>著者はNEC Laboratories Europeとブカレスト工科大学（ルーマニアの大学）の所属の方々です。</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>DockerやLXCのような軽量な仮想化はひとつのトレンドになっている。例えばGoogleでは自社のサービスを全てコンテナ化して動かしており、Container as a Service（CaaS）としてAmazonやMicrosoftのAzureもコンテナプラットフォームを提供している。<br>コンテナ型仮想化はXenやKVMのようなハードウェアレベルの仮想化に比べると起動が早く、インスタンスごとのメモリ使用量も少なくてすみ、１つのホストによりたくさんのインスタンスを立ち上げられる。<br>しかし、コンテナ型仮想化ではインスタンスはホストOSから400以上ものsyscallのAPIを与えられ、それらをセキュアに保つのは難しい。これらのAPIを利用することでインスタンスがリソースを大量に消費するようなDoS攻撃を他のインスタンスに対してしかけることも考えられる。<br>そのため、複数のユーザーが存在するような状況ではコンテナ型仮想化を使うことはセキュリティ上の懸念から難しい。</p>
+<h2 id="研究の要求仕様"><a href="#研究の要求仕様" class="headerlink" title="研究の要求仕様"></a>研究の要求仕様</h2><p>彼らは既存のハードウェアレベル仮想化のVMMのボトルネックを分析した上で、LightVMという軽量なType-1のハイパーバイザ（XenのようにOSを介在することなくハードウェア上で直接動くVMM）を開発した。<br>ゴールとしてコンテナのような軽量性を目指していて、具体的な仕様としては</p>
+<ul>
+<li>インスタンスの高速な起動</li>
+<li>大量のインスタンスが建てられること（メモリ使用量とインスタンスイメージのサイズが小さい）</li>
+<li>インスタンスの一時停止と再開が高速にできる</li>
+</ul>
+<p>ということを掲げている。</p>
+<h2 id="軽量なVM"><a href="#軽量なVM" class="headerlink" title="軽量なVM"></a>軽量なVM</h2><p>まず第一にVMそのものが軽量である必要がある。多くの場合、VM（ないしコンテナ）は1つのアプリケーションのみを動かすことが多い。<br>そこに注目することで、VMに含まれる機能を削れば軽量なVMをつくることができる。<br>有名な既存研究としてはUnikernelが存在する（参考：<a href="http://anil.recoil.org/papers/2013-asplos-mirage.pdf" target="_blank" rel="noopener">Unikernels: Library Operating Systems for the Cloud</a>）。<br>これはOSをライブラリ化してしまい、対象アプリケーションに直接リンクさせることにより、非常に小さいVMをつくるというものである。<br>OSの機能をシングルアプリケーションを動かすことに特化させられ必要な機能のみをリンクするので強力なアプローチである一方、<br>Unikernelが提供するAPIはLinuxなどの既存のAPIとは互換性がないため、多くの場合、既存のアプリケーションをそのまま動かすのは非常に難しい。</p>
+<p>もう一つの軽量なVMをつくる方法として、Tinyxが存在する。<br>これは特定のアプリケーションを動かすことに特化したLinuxディストリビューションを自動的にビルドするというツールだ。<br>この研究ではこの２種類のVMと通常のLinuxのVMを使い各種実験を行っている。</p>
+<h2 id="既存のVMMのボトルネック"><a href="#既存のVMMのボトルネック" class="headerlink" title="既存のVMMのボトルネック"></a>既存のVMMのボトルネック</h2><p>この研究では著名なType-1ハイパーバイザであるXenを分析して、大量のインスタンスを立ち上げた時のボトルネックを調べている。<br>まず、1000のVMを立ち上げる、という実験をしている。全てのVMは起動後アイドル状態になるようにしてインスタンスが増えてもリソースを消費しないようにしたにもかかわらず、起動時間がインスタンスが増えるに従い激減していることがまずわかった（VMはDebian、Tinyx、Unikernelそれぞれで試している）。<br>原因はXenStoreというVMの情報を管理するツールに自身の情報を登録するフェーズにあることがわかった。</p>
+<p>そこで彼らのLightVMではXenStoreを使わず<code>noxs</code>という新たなVM・VMM間のコミュニケーションを共有メモリを介して行うアーキテクチャを設計した。<br>また、<code>xl/libxl</code>の代わりとして<code>chaos/libchaos</code>というツールスタックも実装した。<br>XenではVM起動時にVM側のデバイス側のインターフェースを初期化するにはまず、dom0がデバイスのバックエンドからイベントチャンネルなどの必要な情報を取り出し、それをXenStoreに格納する。<br>その後、VM側はXenStoreに問い合わせることによってそれらの情報を取り出す。このXenStoreとのインタラクションは頻繁に発生し起動が遅くなる原因となる。<br>LightVMではdom0がバックエンドから取り出した必要な情報をハイパーバイザ内のページに格納する。その後、VM側でハイパーコールを使うことでそれらの情報を取り出しVM側で情報を持つようにする。<br>その後、デバイスのバックエンドとのやり取りはイベントチャンネル介し直接やり取りできるようになる。</p>
+<p>また、彼らは同じようなVM作成時に実行されるコマンドのうち多くは、VM作成前に実行できるということに注目した（例えば同じメモリ容量を割り当てるVMであれば事前にメモリをアロケートしておく）。<br>そこで、libchaosでは作成時のフェーズをprepareとexecuteという2つのフェーズに分け、prepareはVM作成コマンドが発行される前に予め行っておき、VM作成のための土台をプールしておく。<br>VM作成コマンドが実行されると、そのプールから土台を持ってきて、そのVMのためにコンフィギュレーションをチェックした上で実際にVMを起動させる。</p>
+<h2 id="評価"><a href="#評価" class="headerlink" title="評価"></a>評価</h2><p>Dockerとブートタイム、マイグレーション、メモリ使用量などを比較している。詳細は割愛するが、Docker並のパフォーマンスが実現できている。</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>Xenのボトルネックを詳細に分析した上で、LightVMという新しいアーキテクチャのVMMを設計し、Dockerにもひけを取らない軽量な仮想化フレームワークを構築した。<br>ユースケースとしては、モバイルエッジコンピューティング（クラウド上ではなくモバイル端末にプロセスを直接走らせる）やAmazon Lambdaのような短時間の計算リソース提供サービスなどが考えられる。<br>この研究ではXenをターゲットとしたが、KVMなど他のVMMでもこの手法は使えるだろうと論文では主張している。<br>また、用いるVMとしてUnikernelはアプリケーション移植のエンジニアリングコストが高く、Tinyxは通常のLinuxのVMよりはパフォーマンスがいいが、Unikernelほどではなない。<br>そのような面からDocker並の使いやすさはまだ備えていない。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/paper/">paper</a>, <a href="/hexo/tags/unikernel/">unikernel</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>UEFIアプリケーションをRustで書く（外部クレートなし） | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="このあいだのRustのアップデートで、x86_64-unknown-uefiなるターゲットが追加された、と聞いてRustでUEFIプログラミングに挑戦しました。なお、世の中にはすでにuefi-rsというものが用意されているので、もっと簡単にUEFIアプリケーションを書くことができます。ただ、このクレ">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="UEFIアプリケーションをRustで書く（外部クレートなし）">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="このあいだのRustのアップデートで、x86_64-unknown-uefiなるターゲットが追加された、と聞いてRustでUEFIプログラミングに挑戦しました。なお、世の中にはすでにuefi-rsというものが用意されているので、もっと簡単にUEFIアプリケーションを書くことができます。ただ、このクレートの構造の説明みたいなのがドキュメントとして見当たらず、今までUEFIを触ったことがなかったので、">
+<meta name="keywords" content="Rust">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UEFIアプリケーションをRustで書く（外部クレートなし）">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2019/03/30/rust-uefi.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="このあいだのRustのアップデートで、x86_64-unknown-uefiなるターゲットが追加された、と聞いてRustでUEFIプログラミングに挑戦しました。なお、世の中にはすでにuefi-rsというものが用意されているので、もっと簡単にUEFIアプリケーションを書くことができます。ただ、このクレートの構造の説明みたいなのがドキュメントとして見当たらず、今までUEFIを触ったことがなかったので、">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2019-03-31T07:47:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="UEFIアプリケーションをRustで書く（外部クレートなし）">
+<meta name="twitter:description" content="このあいだのRustのアップデートで、x86_64-unknown-uefiなるターゲットが追加された、と聞いてRustでUEFIプログラミングに挑戦しました。なお、世の中にはすでにuefi-rsというものが用意されているので、もっと簡単にUEFIアプリケーションを書くことができます。ただ、このクレートの構造の説明みたいなのがドキュメントとして見当たらず、今までUEFIを触ったことがなかったので、">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-03-30T12:48:35.000Z"><a href="/hexo/2019/03/30/rust-uefi.html">2019-03-30</a></time>
+      
+      
+  
+    <h1 class="title">UEFIアプリケーションをRustで書く（外部クレートなし）</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>このあいだのRustのアップデートで、<code>x86_64-unknown-uefi</code>なるターゲットが追加された、と聞いてRustでUEFIプログラミングに挑戦しました。<br>なお、世の中にはすでに<a href="https://github.com/rust-osdev/uefi-rs" target="_blank" rel="noopener">uefi-rs</a>というものが用意されているので、もっと簡単にUEFIアプリケーションを書くことができます。<br>ただ、このクレートの構造の説明みたいなのがドキュメントとして見当たらず、今までUEFIを触ったことがなかったので、せっかくなのでこのクレートも含め外部クレートなしでのプログラミングをしました。</p>
+<h2 id="UEFIとは"><a href="#UEFIとは" class="headerlink" title="UEFIとは"></a>UEFIとは</h2><p>BIOSに代わるファームウェアに対するソフトウェアインターフェースのこと。詳しくは<a href="https://ja.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface" target="_blank" rel="noopener">Wikipedia</a>ないし、C言語を使っての開発についてはもっと多くの先例があるのでそちらを参考にすればいいと思われる。</p>
+<ul>
+<li><a href="https://qiita.com/tnishinaga/items/40755f414557faf45dcb" target="_blank" rel="noopener">gnu-efiでUEFI遊びをはじめよう - Qiita</a></li>
+<li><a href="http://d.hatena.ne.jp/shina_ecc/20140819/1408434995" target="_blank" rel="noopener">ツールキットを使わずに UEFI アプリケーションの Hello World! を作る - 品川高廣（東京大学）のブログ</a></li>
+<li><a href="http://yuma.ohgami.jp/UEFI-Bare-Metal-Programming/" target="_blank" rel="noopener">フルスクラッチで作る!UEFIベアメタルプログラミング</a></li>
+</ul>
+<p>最新の仕様は直接仕様書を見て確認しましょう。今回はversion 2.7に準拠。<br><a href="https://uefi.org/specifications" target="_blank" rel="noopener">Unified Extensible Firmware Interface Forum</a></p>
+<h2 id="準備"><a href="#準備" class="headerlink" title="準備"></a>準備</h2><p>今回はx86_64のUEFIアプリケーションをつくります。<br>まず、x86_64ターゲットが追加されているRustを使う必要があります。また、ターゲットは追加されたものの、標準ライブラリ(stdではなくcoreとか)がまだ整えられていないのでstableではなくnightlyを使う必要があります。<br>更に、標準ライブラリを組み込むため<a href="https://github.com/rust-osdev/cargo-xbuild" target="_blank" rel="noopener">cargo-xbuild</a>も使う必要があります</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ rustup<span class="built_in"> default </span>nightly-2019-03-23</span><br><span class="line">$ cargo install cargo-xbuild</span><br></pre></td></tr></table></figure>
+
+<p>また、実行環境としてqemu-system-x86_64とqemu用のUEFIファームウェアである<a href="https://github.com/tianocore/tianocore.github.io/wiki/OVMF" target="_blank" rel="noopener">OVMF</a>が必要です。<br>自前でビルドする方法はやってみたのですが、途中で詰まってしまったし、めちゃくちゃ時間もかかるのでビルド済みのものをとってきたほうが早いでしょう<br><a href="https://www.kraxel.org/repos/" target="_blank" rel="noopener">https://www.kraxel.org/repos/</a>からjenkins/edk2以下にあるx64用のrpmをとってきてその中にあるOVMF_VARS-pure-efi.fdとOVMF_CODE-pure-efi.fdをとってきました。</p>
+<h2 id="できたもの"><a href="#できたもの" class="headerlink" title="できたもの"></a>できたもの</h2><p>Githubに置いておきました。<br><a href="https://github.com/garasubo/uefi-practice" target="_blank" rel="noopener">garasubo/uefi-practice</a><br><code>cargo xbuild --target x86_64-unknown-uefi</code>としてビルドし、qemu-run.shでqemu上で走らせます。ただし、OVMF_VARS.fdとOVMF_CODE.fdをプロジェクトのルートディレクトリに置いておく必要があります。</p>
+<p>qemu-run.shを実行するとuefiシェルが立ち上がるので</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Shell</span><span class="bash"> &gt; fs0:</span></span><br><span class="line"><span class="bash">FS0: \&gt; uefi-practice.efi</span></span><br></pre></td></tr></table></figure>
+
+<p>とすると、画面がクリアされた後、Hello Worldします</p>
+<h2 id="解説"><a href="#解説" class="headerlink" title="解説"></a>解説</h2><p><code>efi_main</code>関数がエントリポイントになっています。仕様書で言うと<code>EFI_IMAGE_ENTRY_POINT</code>に相当します。<br>仕様書にはC言語での型宣言が書かれているのですが、これをRustで書いていくことになります。<br>普通にstructやenumを宣言してしまうとRust独自のABIでコンパイルされてしまうので、<code>repr</code>をつけて互換性を保ちます。詳しくはThe Rustonomiconの<a href="https://doc.rust-lang.org/nomicon/data.html" target="_blank" rel="noopener">Data Layoutの章</a>が参考になります。<br>今回の目標はhello worldすることなのですが、UEFIのテキストを出力するためのインターフェースを利用します。<br>仕様書で言うと<code>EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL</code>です。<br>僕のコードではreset関数とoutput_string関数が定義されていますが、本当はもっとあります。<br>他のstructについても今回は使う部分だけ型宣言をして残りはサボりました。使わない関数はusizeでごまかしました。全部実装するのはしんどい。</p>
+<p>output_stringはPROTOCOL自体へのポインタと文字列への先頭ポインタを渡す必要があります。この文字列が少々やっかいでUCS-2でエンコーディングされていないといけません。<br>RustはUTF-8で文字列を扱っているため、1文字が16ビットのUCS-2に変換するのは標準ライブラリだけで簡単にやってくれそうではなかったので、<br>適当なバッファを用意して、実行時に無理やり16ビット配列に変換しました(uefi-rsも内部ではそうやっていた)。</p>
+<p>あとは<code>no_std</code>では<code>panic_handler</code>は自前で用意しなければならないのでそれも忘れずに。</p>
+<h2 id="疑問点"><a href="#疑問点" class="headerlink" title="疑問点"></a>疑問点</h2><p>uefi-rsを参考にしながらつくったのだが、<code>extern &quot;C&quot;</code>と<code>extren &quot;win64&quot;</code>の両方が出てくることがあり、これの違いについてはよくわからなかった。<br>とりあえずuefi-rsに従いこれらの宣言をつけておいたが、本当は<code>extern &quot;C&quot;</code>としておいても問題ないかも？</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>UEFIの仕様は真面目に実装するのは大変なので、おとなしくuefi-rsを使いましょう</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/Rust/">Rust</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

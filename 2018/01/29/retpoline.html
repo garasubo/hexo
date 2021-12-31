@@ -1,0 +1,261 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>spectreとmeltdownの対策 | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="前回のブログでspectreとmeltdownの原理についてまとめたので、今度はその対策についてまとめる。
+そもそもspectreとmeltdownはすべてハードウェアそのものに原因があるが、これらの対策はソフトウェアでなんとか防ごうというものである。また、これらの対策はパフォーマンス低下を伴うが、">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="spectreとmeltdownの対策">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="前回のブログでspectreとmeltdownの原理についてまとめたので、今度はその対策についてまとめる。 そもそもspectreとmeltdownはすべてハードウェアそのものに原因があるが、これらの対策はソフトウェアでなんとか防ごうというものである。また、これらの対策はパフォーマンス低下を伴うが、最終的にはその影響はそこまで大きくなかったようだ。 Variant 1 (Spectre)特権レベル">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spectreとmeltdownの対策">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2018/01/29/retpoline.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="前回のブログでspectreとmeltdownの原理についてまとめたので、今度はその対策についてまとめる。 そもそもspectreとmeltdownはすべてハードウェアそのものに原因があるが、これらの対策はソフトウェアでなんとか防ごうというものである。また、これらの対策はパフォーマンス低下を伴うが、最終的にはその影響はそこまで大きくなかったようだ。 Variant 1 (Spectre)特権レベル">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2018-01-30T13:54:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="spectreとmeltdownの対策">
+<meta name="twitter:description" content="前回のブログでspectreとmeltdownの原理についてまとめたので、今度はその対策についてまとめる。 そもそもspectreとmeltdownはすべてハードウェアそのものに原因があるが、これらの対策はソフトウェアでなんとか防ごうというものである。また、これらの対策はパフォーマンス低下を伴うが、最終的にはその影響はそこまで大きくなかったようだ。 Variant 1 (Spectre)特権レベル">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-01-29T13:34:44.000Z"><a href="/hexo/2018/01/29/retpoline.html">2018-01-29</a></time>
+      
+      
+  
+    <h1 class="title">spectreとmeltdownの対策</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p><a href="2018/01/07/spectre-meltdown.html">前回のブログ</a>でspectreとmeltdownの原理についてまとめたので、今度はその対策についてまとめる。</p>
+<p>そもそもspectreとmeltdownはすべてハードウェアそのものに原因があるが、これらの対策はソフトウェアでなんとか防ごうというものである。<br>また、これらの対策はパフォーマンス低下を伴うが、最終的にはその影響はそこまで大きくなかったようだ。</p>
+<h2 id="Variant-1-Spectre"><a href="#Variant-1-Spectre" class="headerlink" title="Variant 1 (Spectre)"></a>Variant 1 (Spectre)</h2><p>特権レベルで動くソフトウェアが、ユーザーのコードを実行する際の配列境界チェックをかいくぐるというものだった。<br>対策としてはそもそもそのようなコードを特権環境で動かさないといものがまず挙げられる（LinuxではeBPFを無効化するなど）。<br>また、コンパイラレベルでこのような脆弱性を生むコードを防ぐというものも挙げられる。<br>ARMの場合は配列境界チェック用のbuiltin関数を提供している。<br><a href="https://developer.arm.com/support/security-update/compiler-support-for-mitigations" target="_blank" rel="noopener">https://developer.arm.com/support/security-update/compiler-support-for-mitigations</a><br>Windowsもコンパイラを変更し、再コンパイルしたものを配布しているようである。</p>
+<h2 id="Variant-2-Spectre"><a href="#Variant-2-Spectre" class="headerlink" title="Variant 2 (Spectre)"></a>Variant 2 (Spectre)</h2><p>間接ジャンプ予測先をインジェクションすることで、KVMのモジュールなどのアドレスを抜き出し、ゲストOSのメモリの内容を盗み出す攻撃であった。</p>
+<p>こちらも特権レベル中で動く既存のコードを利用するものなので、その部分のコードを変更することになる。最も単純な方法としては分岐予測を無効にすることであるが、当然コストがかかる。<br>これらの方法よりお手軽な方法として<a href="https://support.google.com/faqs/answer/7625886" target="_blank" rel="noopener">Retpoline</a>という手法も公開され、gccやllvmにも実装された。<br>これは間接ジャンプ命令を書き換え、逆に間接分岐先を予めコントロールしてしまおうといものである。<br>Intelのプロセッサの場合、普通の間接ジャンプと関数呼び出しから戻る時の間接ジャンプ（スタックに戻り先が記録されているので、その値を読む間接ジャンプによって呼び出し元に戻る）では、使う分岐予測のバッファーが違うことを利用する。<br>普通の間接ジャンプ命令を、関数呼び出しとスタックの戻り先の書き換えにより実現することによって、分岐予測器を騙し投機実行を止める、というのがRetpolineの概要である。</p>
+<h2 id="Variant-3-Meltdown"><a href="#Variant-3-Meltdown" class="headerlink" title="Variant 3 (Meltdown)"></a>Variant 3 (Meltdown)</h2><p>この脆弱性は、Spectreと違い特権レベルで動くコードに依存せず、完全にユーザーレベルで完結してしまう。<br>そもそもの原因はカーネルとユーザープログラムの間で同じページテーブルを使っているということなので、これを分離することで解決できる。<br>LinuxではKPTI（Kernel page-table isolation）と呼ばれる。もともとはKAISERというパッチがmeltdown発覚より前に公開されていて、それをベースとしたもののようだ。<br>KAISERも同様にカーネルとユーザープログラムの間でのページテーブルを分けるというものであったが、想定していたのはKASLR（kernel address layout randomization）が破られるというものであった(参考：<a href="https://gruss.cc/files/kaiser.pdf)。" target="_blank" rel="noopener">https://gruss.cc/files/kaiser.pdf)。</a><br>ページテーブルを分けるということは、TLBフラッシュの頻度を増やすため、アプリケーションによってはパフォーマンスが低下する恐れがあるはずだが、パフォーマンス低下を軽減する方法について言及している資料は自分はまだ見つけていない。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://developer.arm.com/support/security-update" target="_blank" rel="noopener">ARMでの対策について</a></li>
+<li><a href="https://blogs.technet.microsoft.com/jpsecurity/2018/01/23/understanding-the-performance-impact-of-spectre-and-meltdown-mitigations-on-windows-systems/" target="_blank" rel="noopener">Windowsでの対策について</a></li>
+<li><a href="https://support.google.com/faqs/answer/7625886" target="_blank" rel="noopener">Retpoline</a></li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

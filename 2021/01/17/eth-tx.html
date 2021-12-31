@@ -1,0 +1,290 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>RustのSTM32向けイーサネットドライバを解説する（送信編） | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="STM32ボードのイーサネットドライバのRust実装であるstm32-ethクレートの送信部分のロジックの解説をしていきます。
+
+
+前回の記事では受信部分を解説しました。そのときは、自分のOS用のドライバでの送信が成功していなかったため、受信のみの解説になってしまったのですが、今回晴れて送信部分のバ">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="RustのSTM32向けイーサネットドライバを解説する（送信編）">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="STM32ボードのイーサネットドライバのRust実装であるstm32-ethクレートの送信部分のロジックの解説をしていきます。   前回の記事では受信部分を解説しました。そのときは、自分のOS用のドライバでの送信が成功していなかったため、受信のみの解説になってしまったのですが、今回晴れて送信部分のバグがとれたので、安心して記事を書けるようになりました。 イーサネットモジュールの初期化部分のロジック">
+<meta name="keywords" content="Rust,osdev">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RustのSTM32向けイーサネットドライバを解説する（送信編）">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2021/01/17/eth-tx.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="STM32ボードのイーサネットドライバのRust実装であるstm32-ethクレートの送信部分のロジックの解説をしていきます。   前回の記事では受信部分を解説しました。そのときは、自分のOS用のドライバでの送信が成功していなかったため、受信のみの解説になってしまったのですが、今回晴れて送信部分のバグがとれたので、安心して記事を書けるようになりました。 イーサネットモジュールの初期化部分のロジック">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2021-01-17T12:27:17.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RustのSTM32向けイーサネットドライバを解説する（送信編）">
+<meta name="twitter:description" content="STM32ボードのイーサネットドライバのRust実装であるstm32-ethクレートの送信部分のロジックの解説をしていきます。   前回の記事では受信部分を解説しました。そのときは、自分のOS用のドライバでの送信が成功していなかったため、受信のみの解説になってしまったのですが、今回晴れて送信部分のバグがとれたので、安心して記事を書けるようになりました。 イーサネットモジュールの初期化部分のロジック">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2021-01-17T07:45:56.000Z"><a href="/hexo/2021/01/17/eth-tx.html">2021-01-17</a></time>
+      
+      
+  
+    <h1 class="title">RustのSTM32向けイーサネットドライバを解説する（送信編）</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>STM32ボードのイーサネットドライバのRust実装である<code>stm32-eth</code>クレートの送信部分のロジックの解説をしていきます。</p>
+
+
+<p><a href="/hexo/2020/12/20/ether.html">前回の記事</a>では受信部分を解説しました。<br>そのときは、自分のOS用のドライバでの送信が成功していなかったため、受信のみの解説になってしまったのですが、<br>今回晴れて送信部分のバグがとれたので、安心して記事を書けるようになりました。</p>
+<p>イーサネットモジュールの初期化部分のロジックは受信とかぶっているので省略していきます。<br>仕様書も前回記事で用いたものを使います。</p>
+<h2 id="送信用ディスクリプタとバッファの用意"><a href="#送信用ディスクリプタとバッファの用意" class="headerlink" title="送信用ディスクリプタとバッファの用意"></a>送信用ディスクリプタとバッファの用意</h2><p>受信はDMAを用いてメモリにデータが書き込まれ、操作のためにはリングバッファになったディスクリプタと呼ばれる領域とそれに対応するバッファを確保する必要がありました。<br>送信もDMAを用いてメモリ上のデータを転送し、リングバッファになっているディスクリプタを用いて操作していきます。<br>リファレンスマニュアルでは33.6.7で解説されています。今回はNormal Tx DMA descriptorsを使います。</p>
+<p><code>stm32-eth</code>では<code>src/tx.rs</code>の<code>TxRing</code>という構造体がこのリングバッファを抽象化したものです。<code>TxRingEntry</code>が各ディスクリプタとそれに対応するバッファを持っています。<br>この<code>TxRingEntry</code>と受信のとき使った<code>RxRingEntry</code>は共に<code>RingEntry&lt;T&gt;</code>というジェネリック型を用いて実装されていることからわかるように、共通点は多いです。ただし、フィールドの位置が微妙に違ったりするので注意しましょう。</p>
+<p>この送信用ディスクリプタの初期化には以下のような処理が必要です。</p>
+<ul>
+<li>TDES0のOWNビットをクリアしておく。このビットがセットされているとDMA側が所持していることになるが、まだ送信するべきものがないのでCPU側で所持する</li>
+<li>TDES0のTCHビットをセットすることで、セカンドアドレス連鎖を有効にする</li>
+<li>リングバッファの末尾のエントリ以外の場合、TDES3に次のディスクリプタのアドレスを書き込む。最後のエントリの場合は、アドレスは設定せずにTDES0のTERビットをセットする。</li>
+</ul>
+<p>また、ディスクリプタは8バイトにアラインされている必要があります（ワードアライン）。</p>
+<p>あと、これは前回書き忘れたのですが、DMAで書き換えられるメモリにアクセスしてポーリングなどの処理を書く場合は<code>core::ptr::read_volatile</code>を使うなどしないと最適化されてちゃんと動作しない場合があることにも注意しましょう（１敗）。</p>
+<p>DMATDLARレジスタに先頭のディスクリプタのアドレスをいれ、DMAOMRのSTビットを立てれば、送信用のDMAの設定は完了です。</p>
+<h2 id="DMAからデータを送信する"><a href="#DMAからデータを送信する" class="headerlink" title="DMAからデータを送信する"></a>DMAからデータを送信する</h2><p><code>Eth::send</code>から呼び出されている<code>TxRing::send</code>が送信でディスクリプタやバッファの処理をするコードです。実際に見てみましょう。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">send</span></span>&lt;F: <span class="built_in">FnOnce</span>(&amp;<span class="keyword">mut</span> [<span class="built_in">u8</span>]) -&gt; R, R&gt;(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, length: <span class="built_in">usize</span>, f: F) -&gt; <span class="built_in">Result</span>&lt;R, TxError&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> entries_len = <span class="keyword">self</span>.entries.len();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">match</span> <span class="keyword">self</span>.entries[<span class="keyword">self</span>.next_entry].prepare_packet(length) &#123;</span><br><span class="line">        <span class="literal">Some</span>(<span class="keyword">mut</span> pkt) =&gt; &#123;</span><br><span class="line">            <span class="keyword">let</span> r = f(pkt.deref_mut());</span><br><span class="line">            pkt.send();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">self</span>.next_entry += <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">self</span>.next_entry &gt;= entries_len &#123;</span><br><span class="line">                <span class="keyword">self</span>.next_entry = <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="literal">Ok</span>(r)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="literal">None</span> =&gt;</span><br><span class="line">            <span class="literal">Err</span>(TxError::WouldBlock)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>関数としては送りたいデータの長さと、ドライバ内のバッファにデータを書き込むための関数を受け取り、<code>Result</code>を返すという型になっています。<br>やっていることはまず、利用可能なディスクリプタがあるか探していて、ある場合は、エントリ内のディスクリプタの下準備とバッファ領域を準備します。<br>ディスクリプタの下準備とは</p>
+<ul>
+<li>TDES1のTBS1にバッファサイズを書き込む</li>
+<li>TDES2にバッファのアドレスを書き込む</li>
+</ul>
+<p>の２つです。バッファは<code>TxEntry</code>内のバッファのうち、必要な長さのみのスライスへのミュータブルな参照として渡されます。<br>引数として渡される関数はこのスライスにデータを書き込むこととなります。</p>
+<p>その後、準備したバッファ領域に対して受け取った関数<code>f</code>を実行します。<br><code>pkt.send()</code>はTDES0のOWNビットを立てる処理でこれでこのエントリがDMA側で処理される準備ができたことになります。<br>リングバッファのカウンターを更新したら、<code>Ok</code>を返しておしまいです。</p>
+<p>最後に呼び出し元の<code>Eth::send</code>が<code>TxRing::demand_poll</code>を呼び出していますが、これはDMATPDRレジスタに1を書き込むことによってDMAが送信ディスクリプタをポーリングするように要求するものです。</p>
+<p>受信とは違い、最後に<code>Drop</code>等は特に実装する必要はないです。</p>
+<h2 id="送信用バッファについて"><a href="#送信用バッファについて" class="headerlink" title="送信用バッファについて"></a>送信用バッファについて</h2><p>この<code>stm32-eth</code>では送信用バッファとディスクリプタを１つの構造体にまとめ上げていますが、実はこうする必要はあんまりなかったりします。<br>そもそもディスクリプタできちんと指定してあげれば、バッファのアドレスに特に縛りはありません。</p>
+<p>この実装だと非行率的な例をいくつかあげます。<br>まず、送信用バッファとは別のメモリ上にすでに出来上がったパケットが存在している場合（例えば定数になっている場合）、引数として与えられる関数<code>f</code>はメモリ間のデータコピーをするだけとなってしまいます。<br>また、現状の実装では<code>TxEntry</code>を確保した後、送信用バッファにデータを用意するという流れになっていますが、実際は送信用のデータの用意はTxEntryの確保前でもよいはずです。<br>このデータの用意がそこそこ時間のかかるものであれば、無駄にTxEntryを確保する時間が長くなってしまいます。</p>
+<p><code>send</code>関数を任意のアドレスとその長さを渡すような関数にしてしまう、という実装にすればこのような問題は解決されそうです。<br>が、ひとつ注意しなければならないのはライフタイムの問題です。<br>DMAでアクセスされるバッファ領域が送信中に解放されてしまい別のデータが入るなどとなれば送信が失敗してしまいます。<br>なので、バッファ領域はライフタイム制約を入れた参照として受け取るとよいでしょう。この場合の制約はドライバと同じ区間生存する、というものならば大丈夫でしょう。</p>
+<h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><p>最後のバグの原因はGPIOの設定がひとつだけ間違っていた、というものだったのですが、気がつくまで相当しんどかったです。<br>とりあえずちゃんと実装できて一安心です。<br>送信は受信とは違った実装ポイントがあるので、もっと作り込めばおもしろそうだなと思いました。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/Rust/">Rust</a>, <a href="/hexo/tags/osdev/">osdev</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>論文紹介：An analysis of performance evolution of Linux&#39;s core operations | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="元論文：https://dl.acm.org/citation.cfm?id=3359640
+論文概要
+タイトル：An analysis of performance evolution of Linux’s core operations
+著者： Xiang (Jenny) Ren, Kirk R">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="論文紹介：An analysis of performance evolution of Linux&#39;s core operations">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="元論文：https://dl.acm.org/citation.cfm?id=3359640 論文概要 タイトル：An analysis of performance evolution of Linux’s core operations 著者： Xiang (Jenny) Ren, Kirk Rodrigues et al. 会議：Proceedings of the 27th ACM Sym">
+<meta name="keywords" content="paper">
+<meta property="og:type" content="article">
+<meta property="og:title" content="論文紹介：An analysis of performance evolution of Linux&#39;s core operations">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2019/11/30/linux-perf.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="元論文：https://dl.acm.org/citation.cfm?id=3359640 論文概要 タイトル：An analysis of performance evolution of Linux’s core operations 著者： Xiang (Jenny) Ren, Kirk Rodrigues et al. 会議：Proceedings of the 27th ACM Sym">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2020-01-01T06:31:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="論文紹介：An analysis of performance evolution of Linux&#39;s core operations">
+<meta name="twitter:description" content="元論文：https://dl.acm.org/citation.cfm?id=3359640 論文概要 タイトル：An analysis of performance evolution of Linux’s core operations 著者： Xiang (Jenny) Ren, Kirk Rodrigues et al. 会議：Proceedings of the 27th ACM Sym">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-11-29T15:00:00.000Z"><a href="/hexo/2019/11/30/linux-perf.html">2019-11-30</a></time>
+      
+      
+  
+    <h1 class="title">論文紹介：An analysis of performance evolution of Linux&#39;s core operations</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>元論文：<a href="https://dl.acm.org/citation.cfm?id=3359640" target="_blank" rel="noopener">https://dl.acm.org/citation.cfm?id=3359640</a></p>
+<h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
+<li>タイトル：An analysis of performance evolution of Linux’s core operations</li>
+<li>著者： Xiang (Jenny) Ren, Kirk Rodrigues et al.</li>
+<li>会議：<a href="https://sosp19.rcs.uwaterloo.ca" target="_blank" rel="noopener">Proceedings of the 27th ACM Symposium on Operating Systems Principles (SOSP’19)</a></li>
+</ul>
+<p>SOSPという2年に一度のシステム系国際会議のトップカンファレンスのものです。トップカンファレンスだけあって毎回新しい手法をとんでもない実装量でこなす、みたいなとてつもない論文が多い印象なのですが、この論文は地道にLinuxのパフォーマンスの変化を観察し、その原因を探っていくという結構変わり種な論文な気がしました。</p>
+<p>Linux 3.0から3.19、4.0から4.20までのカーネルを用いてマイクロベンチマークで性能測定をして性能変化の原因を調査し、アプリケーションベンチマークでその変化が実アプリケーションに与える影響を調べましたという論文です。<br>実は、システムコールやコンテキストスイッチなどのカーネルのオペレーションのレイテンシは段々と大きくなっているということがわかりました。<br>これらの原因はセキュリティの強化、機能の追加、さらにはカーネルのコンフィグの設定ミスが原因であると突き止めました。<br>また、これらのパフォーマンス低下を緩和させるパッチや、コンフィグの設定を変えることでパフォーマンス低下を避けられることも示しています。</p>
+<h2 id="パフォーマンス低下の原因"><a href="#パフォーマンス低下の原因" class="headerlink" title="パフォーマンス低下の原因"></a>パフォーマンス低下の原因</h2><p>この論文で紹介されていた11の原因を簡単に見ていきます</p>
+<h3 id="セキュリティの強化"><a href="#セキュリティの強化" class="headerlink" title="セキュリティの強化"></a>セキュリティの強化</h3><p>CPUの脆弱性として話題になったMeltdownの対策として導入されたKPTIにより、マイクロベンチマークの性能は22％低下しています。<br>KPTI以前ではアドレス空間をカーネルとユーザー間で共有していたのですが、KPTIの導入により異なるページテーブルを使うようになりました。<br>その影響で、特権モードの切り替えのたびにTLBフラッシュが発生したため性能が大きく低下することとなりました。<br>その後、process context identifire (PCID)を利用することで、TLBフラッシュの範囲を限定することである程度この性能低下は緩和されましたが、PCID書き込みのためのシステムレジスタアクセスのオーバーヘッドも実はかなり大きく、一部のベンチマークでは逆にさらにスコアが下がることになってしまいました。</p>
+<p>Spectreの対策として導入されたRetpolineのパッチも性能に影響を与えています。Retpolineは間接分岐を書き換えることで分岐予測を誤らせるものですが、その影響で分岐予測が上手く働かず性能が低下してしまいます。<br>著者らは<code>select</code>システムコールの性能低下に注目し、<code>select</code>の中で31個もの間接分岐があることに注目し、これらを普通の分岐に書き換えることによって性能低下を抑えることに成功しています。</p>
+<p>SLABのフリーリストのランダム化も影響を与えています。SLABとは同じサイズのメモリ領域のリストを持っておきそれをカーネルオブジェクトのメモリアロケーションに使うというものですが、そのメモリ領域の順番をランダム化させておくことにより、万が一バッファオーバーフローなどの脆弱性があったときでも目的のオブジェクトを攻撃者にアクセスさせにくくさせることができます。<br>しかし、これはフリーリストのランダム化にかかる時間と離れたメモリ領域へのアクセスが増えることによるキャッシュミスの増加というオーバーヘッドを発生させてしまいます。</p>
+<p>同じくバッファオーバーフローを利用した攻撃の対策として導入されたhardened usercopyもオーバーヘッドを生んでいます。これはユーザー空間とカーネル空間間のコピーを行う際、カーネルのポインタを毎回チェックして不正なアクセスがないか検査するというものです。<br>このオーバーヘッド影響はどのようなデータタイプにアクセスするかによって異なります。</p>
+<h3 id="新しい機能導入"><a href="#新しい機能導入" class="headerlink" title="新しい機能導入"></a>新しい機能導入</h3><p>fault-aroundはページフォルト時に対象となったページへのマッピングだけではなく、その周辺のページについてもマッピングしておくことで、ページフォルトの数を減らそうというものです。<br>この変更はページアクセスの局所性を仮定したものですが、大きなファイルへのアクセスはランダムに行われがちでむしろ逆効果なのです。big-pagefaultというテストではこの変更により54%の性能低下が起きました。</p>
+<p>control group (cgroup) メモリコントローラーはcgroup毎のメモリ使用を管理する機能です。この機能はDockerなどのコンテナ型仮想化のために導入されたものです。<br>この変更によりそれぞれのページがcgroup毎に割り当てられ、ページのアロケーション・デアロケーション毎にオーバーヘッドが発生します。</p>
+<p>Transparent Huge Page (THP)は2MBのページを割り当てた後、必要に応じて別スレッドで4KBの通常のページに分割していくというものです。これはページテーブルのサイズを小さくし、TLBミスを少なくする効果があります。<br>しかし、2MB毎にページを割り当ててしまうことでフラグメンテーションが発生し、一部のベンチマークでは性能が低下します。</p>
+<p>Virtual machine monitor(VMM)などのために導入されたユーザー空間ページフォルトハンドリングは、ページフォルト時のエラーハンドリングをユーザー空間で行えるようにしたものです。<br>これはページフォルト時にそのページがユーザー空間で処理されるべきものなのかをチェックする必要があるため、オーバーヘッドを生みます。</p>
+<h3 id="コンフィギュレーションの変更"><a href="#コンフィギュレーションの変更" class="headerlink" title="コンフィギュレーションの変更"></a>コンフィギュレーションの変更</h3><p>Forced Context Tracking (FCT)はデバッグ用の機能で、CPUの利用率をトラッキングしたりするのに使われます。これが一部のバージョンで有効になってしまっていたため、パフォーマンスがその間は低下していました。</p>
+<p>Linux 3.14で導入されたパッチで、second-level TLBのサイズの認識ができるようになりました。それ以前だとサイズの認識ができなかったため、不必要なTLBフラッシュが発生していました。この機能が利用できるようになったのは、second-level TLBを積んだHaswellファミリーのプロセッサがリリースされてから6ヶ月もあとのことでした。</p>
+<p>CPU Idle Power-Stateサポートは、CPUをアイドル状態にする際のアイドル状態のレベルをコントロールするものです。このパッチが充てられる前は常にもっともレベルの高いアイドル状態に突入し、復帰までの時間がかかるためオーバーヘッドが余計にかかってしまっていました。<br>しかし、Xeonプロセッサ上でこのパッチがLTSカーネルで利用できるようになるまで時間がかかってしまい、導入前の間はオーバーヘッドが大きくなってしまっていました。</p>
+<h2 id="まとめ・感想"><a href="#まとめ・感想" class="headerlink" title="まとめ・感想"></a>まとめ・感想</h2><p>カーネルのオペレーションがだんだんと遅くなっていて、適切なパフォーマンスチューニングでそれらが緩和できることを示しました。<br>しかし一方で、このようなパフォーマンスチューニングは非常にコストがかかり、Linuxのように大量の変更が日々されているなかでこのようなことを行うのは難しいということも認めています。<br>実際、Googleのデータセンター用のカーネルは100人以上のエンジニアによってパフォーマンスチューニングが行われているそうです。</p>
+<p>OS開発の世界は厳しい！</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/paper/">paper</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

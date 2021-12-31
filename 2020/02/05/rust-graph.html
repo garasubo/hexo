@@ -1,0 +1,298 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Rustで循環参照を含むグラフをArc/Rcを使ってつくる | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="Rustで循環参照を含む場合の処理はかなり面倒くさい。基本的にミュータブルな参照は同時に1つしか持てないのだが、例えば双方向連結リストの場合、あるノードに対してその前のノードとその後ろのノードから参照される必要があるので、この場合どうにかしてミュータブルな参照以外の方法で前後のノードへのアクセス方法">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Rustで循環参照を含むグラフをArc/Rcを使ってつくる">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="Rustで循環参照を含む場合の処理はかなり面倒くさい。基本的にミュータブルな参照は同時に1つしか持てないのだが、例えば双方向連結リストの場合、あるノードに対してその前のノードとその後ろのノードから参照される必要があるので、この場合どうにかしてミュータブルな参照以外の方法で前後のノードへのアクセス方法を確保する必要がある。 ということで、前回のRust LT会でそのテーマで発表した方がいらっしゃった">
+<meta name="keywords" content="Rust">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rustで循環参照を含むグラフをArc&#x2F;Rcを使ってつくる">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2020/02/05/rust-graph.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="Rustで循環参照を含む場合の処理はかなり面倒くさい。基本的にミュータブルな参照は同時に1つしか持てないのだが、例えば双方向連結リストの場合、あるノードに対してその前のノードとその後ろのノードから参照される必要があるので、この場合どうにかしてミュータブルな参照以外の方法で前後のノードへのアクセス方法を確保する必要がある。 ということで、前回のRust LT会でそのテーマで発表した方がいらっしゃった">
+<meta property="og:locale" content="ja">
+<meta property="og:image" content="https://ogimage.blog.st-hatena.com/13208692334729897634/10328749687239599894/1493330425">
+<meta property="og:image" content="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-user-contents.imgix.net%2Fhttps%253A%252F%252Fcdn.qiita.com%252Fassets%252Fpublic%252Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png%3Fixlib%3Drb-4.0.0%26w%3D1200%26mark64%3DaHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9UnVzdCVFMyU4MSVBRSUyMCU2MEFyYyU2MCUyMCVFMyU4MiU5MiVFOCVBQSVBRCVFMyU4MiU4MCUyODElMjklM0ElMjBBcmMlMkZSYyVFMyU4MSVBRSVFNSU5RiVCQSVFNiU5QyVBQyZ0eHQtY29sb3I9JTIzMjEyMTIxJnR4dC1mb250PUhpcmFnaW5vJTIwU2FucyUyMFc2JnR4dC1zaXplPTU2JnR4dC1jbGlwPWVsbGlwc2lzJnR4dC1hbGlnbj1sZWZ0JTJDdG9wJnM9NjVmZGFkN2E0NmE4N2VkNzFjZjI0MjQ3MDE4MzIyMzk%26mark-x%3D142%26mark-y%3D112%26s%3Dce821c46c1d382b0cc714fc6d4edc66b?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwcW5pZ2h5JnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz1iMjRjOWIzMjFkYjkxYTk0YTJkMTg5ZWI1YzRkZmY4MQ&mark-x=142&mark-y=491&s=8ae280f4e06f7f8a10055db97be955b9">
+<meta property="og:image" content="https://github.githubassets.com/images/modules/gists/gist-og-image.png">
+<meta property="og:updated_time" content="2020-03-31T15:36:39.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rustで循環参照を含むグラフをArc&#x2F;Rcを使ってつくる">
+<meta name="twitter:description" content="Rustで循環参照を含む場合の処理はかなり面倒くさい。基本的にミュータブルな参照は同時に1つしか持てないのだが、例えば双方向連結リストの場合、あるノードに対してその前のノードとその後ろのノードから参照される必要があるので、この場合どうにかしてミュータブルな参照以外の方法で前後のノードへのアクセス方法を確保する必要がある。 ということで、前回のRust LT会でそのテーマで発表した方がいらっしゃった">
+<meta name="twitter:image" content="https://ogimage.blog.st-hatena.com/13208692334729897634/10328749687239599894/1493330425">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2020-02-04T15:00:00.000Z"><a href="/hexo/2020/02/05/rust-graph.html">2020-02-05</a></time>
+      
+      
+  
+    <h1 class="title">Rustで循環参照を含むグラフをArc/Rcを使ってつくる</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Rustで循環参照を含む場合の処理はかなり面倒くさい。<br>基本的にミュータブルな参照は同時に1つしか持てないのだが、例えば双方向連結リストの場合、あるノードに対してその前のノードとその後ろのノードから参照される必要があるので、この場合どうにかしてミュータブルな参照以外の方法で前後のノードへのアクセス方法を確保する必要がある。</p>
+<p>ということで、前回のRust LT会でそのテーマで発表した方がいらっしゃった</p>
+
+<p>ここで用いられている方法は<code>unsafe</code>を使い、生ポインタとTyped Arenaという動的に同じ生存区間のメモリを確保できるライブラリを使う、または自作のメモリプールを使うというものである。<br>しかし、できれば<code>unsafe</code>は使いたくない。さらにいうとstdだけで実現できると嬉しい。</p>
+<p>Typed Arenaを使う方法は結構有名で、こちらのブログでも紹介されている</p>
+<a href="https://qnighy.hatenablog.com/entry/2017/04/28/070000" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://ogimage.blog.st-hatena.com/13208692334729897634/10328749687239599894/1493330425"></div><div class="descriptions"><div class="og-title">Rustでグラフを表現するにはTyped Arenaが便利 - 簡潔なQ</div><div class="og-description">概要: Rustでグラフのように相互参照を含むデータ構造を表現するには、Typed Arenaという方法が適している。これについて説明する 整数による表現 グラフの表現方法で、最も簡単なのは、ノードを整数で表し、グラフのデータを別に持つ方法である。 fn main() { let…</div></div></div></a>
+<p>ただし、この方法の弱点はメモリを開放する手段がないので、一度ノードをつくってしまうとグラフ全体が生存している間は削除してもメモリが開放されない。<br>ライフタイムの管理も難しく、設計をうまくしてあげる必要もある。</p>
+<p>他の方法としては<code>Rc</code>/<code>Arc</code>を使う方法がある。</p>
+<a href="https://qiita.com/qnighy/items/4bbbb20e71cf4ae527b9#%E5%AF%BE%E7%A7%B0%E3%81%AA%E5%BE%AA%E7%92%B0%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E8%A1%A8%E7%8F%BE%E3%81%99%E3%82%8B" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-user-contents.imgix.net%2Fhttps%253A%252F%252Fcdn.qiita.com%252Fassets%252Fpublic%252Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png%3Fixlib%3Drb-4.0.0%26w%3D1200%26mark64%3DaHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9UnVzdCVFMyU4MSVBRSUyMCU2MEFyYyU2MCUyMCVFMyU4MiU5MiVFOCVBQSVBRCVFMyU4MiU4MCUyODElMjklM0ElMjBBcmMlMkZSYyVFMyU4MSVBRSVFNSU5RiVCQSVFNiU5QyVBQyZ0eHQtY29sb3I9JTIzMjEyMTIxJnR4dC1mb250PUhpcmFnaW5vJTIwU2FucyUyMFc2JnR4dC1zaXplPTU2JnR4dC1jbGlwPWVsbGlwc2lzJnR4dC1hbGlnbj1sZWZ0JTJDdG9wJnM9NjVmZGFkN2E0NmE4N2VkNzFjZjI0MjQ3MDE4MzIyMzk%26mark-x%3D142%26mark-y%3D112%26s%3Dce821c46c1d382b0cc714fc6d4edc66b?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwcW5pZ2h5JnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz1iMjRjOWIzMjFkYjkxYTk0YTJkMTg5ZWI1YzRkZmY4MQ&mark-x=142&mark-y=491&s=8ae280f4e06f7f8a10055db97be955b9"></div><div class="descriptions"><div class="og-title">Rustの `Arc` を読む(1): Arc/Rcの基本 - Qiita</div><div class="og-description">概要: Rustの Arc 型の実装は宝の宝庫です。そこで、これを隅から隅まで解説してみます。
+
+第1回「Arc/Rcの基本」では、実際に Arc のソースを読む前に Arc/Rc の使い方を解説します。
+
+
+
+第1回 Arc/Rcの...</div></div></div></a>
+<p>Rcは参照カウンタ付きのスマートポインタでArcはそのスレッド安全版である。この方法ではRc/Arcのアクセスのための実行時オーバーヘッドおよび参照カウンタ分のメモリオーバーヘッドが発生するが、<br>代わりにライフタイムは比較的自由に管理でき、ノードのメモリも参照がなくなると自動的に開放してくれる。</p>
+<p>注意点としてはRustはメモリリークに関しての保証はないため、Rcで循環参照をつくってしまうとメモリリークを起こすことになる。<br>そのため、ノード間の連結は弱参照<code>Weak</code>で実現し、ノード全体の強参照を保持する親構造体を持つことで、この問題を解決する。<br>この場合、ノードのコンストラクタは直接呼ぶのではなく、親構造体のメソッド呼び出しとして実態をもらうことになる。<br>また、ノード内部構造は晒したくないので、ユーザーが触るノード構造体の実態はノード内部構造体への弱参照のラッパになる。</p>
+<p>弱参照から内部の値にアクセスするのは失敗する可能性があるので、ノードのメソッドは常に<code>Result</code>型で返してあげる必要がある。<br>また、ノード内部になんらかの値を保持させる場合、そこへのアクセスも少々厄介になる。<br>今回は、内部値への直接の参照を返すことは諦め、代わりにクロージャーを渡してもらうことにより、内部値の読み込み及び変更を実現した。<br>実際の実装は以下の通りである。先述のqnighy氏のブログにあった実装をベースにして、ノードの削除、子要素の取得、内部値の読み書きを追加したものである。<br>Arcを使っているのでスレッド安全でもある。</p>
+<a href="https://gist.github.com/garasubo/07f4671a133657ee4f39ff86924c4a54" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://github.githubassets.com/images/modules/gists/gist-og-image.png"></div><div class="descriptions"><div class="og-title">synchronous graph</div><div class="og-description">synchronous graph. GitHub Gist: instantly share code, notes, and snippets.</div></div></div></a>
+
+<p>削除や値の読み書きに対応するために変更した点について説明していく。<br>ノードの削除は<code>Graph</code>の持っている強参照を削除しないとメモリが開放されないため、Graphのメソッドとして実装した。<br>強参照が<code>Vec</code>のどこに格納されているかを指定するため、<code>NodeInner</code>に位置を持っておき、それをもとに削除することにした。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">remove_node</span></span>(&amp;<span class="keyword">self</span>, node: &amp;Node&lt;T&gt;) -&gt; <span class="built_in">Result</span>&lt;(), GraphError&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> lock = <span class="keyword">self</span>.<span class="number">0</span>.lock().unwrap();</span><br><span class="line">    <span class="keyword">let</span> rc = node.<span class="number">0</span>.upgrade().ok_or(GraphError::NodeDead)?;</span><br><span class="line">    <span class="keyword">let</span> id = rc.lock().unwrap().id;</span><br><span class="line">    <span class="keyword">if</span> id &lt; lock.nodes.len() &#123;</span><br><span class="line">        <span class="keyword">let</span> tar_node = lock.nodes[id].<span class="number">0</span>.take();</span><br><span class="line">        <span class="keyword">if</span> tar_node.is_none() &#123;</span><br><span class="line">            <span class="literal">Err</span>(GraphError::InvalidNode)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            lock.nodes[id].<span class="number">1</span> = lock.next;</span><br><span class="line">            lock.next = id;</span><br><span class="line">            <span class="literal">Ok</span>(())</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="literal">Err</span>(GraphError::InvalidNode)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Vecから特定の要素を削除するのはそこそこにめんどくさく、またそれにより他のノードのインデックスがずれると困るので、強参照をもつVecは<code>Option</code>型で値を持っておき、削除された場合は<code>None</code>に置き換えることにした。</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#[derive(Debug, Clone)]</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">GraphInner</span>&lt;<span class="title">T</span>&gt; &#123;</span></span><br><span class="line">    <span class="symbol">nodes:</span> Vec&lt;(Option&lt;Arc&lt;Mutex&lt;NodeInner&lt;T&gt;&gt;&gt;&gt;, usize)&gt;,</span><br><span class="line">    <span class="symbol">next:</span> usize,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">#[derive(Debug, Clone)]</span></span><br><span class="line">pub <span class="class"><span class="keyword">struct</span> <span class="title">Graph</span>&lt;<span class="title">T</span>&gt;(<span class="title">Arc</span>&lt;<span class="title">Mutex</span>&lt;<span class="title">GraphInner</span>&lt;<span class="title">T</span>&gt;&gt;&gt;);</span></span><br></pre></td></tr></table></figure>
+
+<p>削除が頻繁に起こるとVecがNoneで埋め尽くされてしまうので、Noneになった箇所は再利用できるようにした。そのために、グラフには次のNoneの位置を持たせておき、各ノードにはその次のNoneの位置をもたせることで、<br>Noneの連結リストを構成することで要素の再利用を行うようにしている。VecにNoneが存在しない場合、末尾に要素を追加する。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">new_node</span></span>(&amp;<span class="keyword">self</span>, value: T) -&gt; Node&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> lock = <span class="keyword">self</span>.<span class="number">0</span>.lock().unwrap();</span><br><span class="line">    <span class="keyword">let</span> next = lock.next;</span><br><span class="line">    <span class="keyword">let</span> inner = NodeInner &#123;</span><br><span class="line">        value,</span><br><span class="line">        neighbors: <span class="built_in">Vec</span>::new(),</span><br><span class="line">        id: next,</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> node = Arc::new(Mutex::new(inner));</span><br><span class="line">    <span class="keyword">if</span> next &lt; lock.nodes.len() &#123;</span><br><span class="line">        <span class="keyword">let</span> node_weak = Node(Arc::downgrade(&amp;node));</span><br><span class="line">        lock.nodes[next].<span class="number">0</span>.replace(node.clone());</span><br><span class="line">        lock.next = lock.nodes[next].<span class="number">1</span>;</span><br><span class="line">        node_weak</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> node_weak = Node(Arc::downgrade(&amp;node));</span><br><span class="line">        lock.nodes.push((<span class="literal">Some</span>(node.clone()), next + <span class="number">1</span>));</span><br><span class="line">        lock.next += <span class="number">1</span>;</span><br><span class="line">        node_weak</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ただし、あくまで強参照用の要素の再利用であって、ノードそのもののメモリ領域の再利用はしていないので、メモリ効率は改善の余地があると思われる。</p>
+<p>ノードの値の読み書きであるがArcやMutexで囲われているので、そのまま参照を返すことはできない。<br>そこで、内部値の参照を受け取って処理をする関数をもらう、というメソッドをつくっておくことにした。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">read</span></span>&lt;V, F&gt;(&amp;<span class="keyword">self</span>, f: F) -&gt; <span class="built_in">Result</span>&lt;V, GraphError&gt; <span class="keyword">where</span> F: <span class="built_in">Fn</span>(&amp;T) -&gt; V &#123;</span><br><span class="line">    <span class="keyword">let</span> rc = <span class="keyword">self</span>.<span class="number">0</span>.upgrade().ok_or(GraphError::NodeDead)?;</span><br><span class="line">    <span class="keyword">let</span> lock = rc.lock().or(<span class="literal">Err</span>(GraphError::LockFailure))?;</span><br><span class="line">    <span class="keyword">let</span> result = f(&amp;lock.value);</span><br><span class="line">    <span class="literal">Ok</span>(result)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">write</span></span>(&amp;<span class="keyword">self</span>, val: T) -&gt; <span class="built_in">Result</span>&lt;(), GraphError&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> rc = <span class="keyword">self</span>.<span class="number">0</span>.upgrade().ok_or(GraphError::NodeDead)?;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> lock = rc.lock().or(<span class="literal">Err</span>(GraphError::LockFailure))?;</span><br><span class="line">    lock.value = val;</span><br><span class="line">    <span class="literal">Ok</span>(())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">modify</span></span>&lt;F&gt;(&amp;<span class="keyword">self</span>, f: F) -&gt; <span class="built_in">Result</span>&lt;(), GraphError&gt; <span class="keyword">where</span> F: <span class="built_in">Fn</span>(&amp;<span class="keyword">mut</span> T) &#123;</span><br><span class="line">    <span class="keyword">let</span> rc = <span class="keyword">self</span>.<span class="number">0</span>.upgrade().ok_or(GraphError::NodeDead)?;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> lock = rc.lock().or(<span class="literal">Err</span>(GraphError::LockFailure))?;</span><br><span class="line">    f(&amp;<span class="keyword">mut</span> lock.value);</span><br><span class="line">    <span class="literal">Ok</span>(())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意点としては、渡す関数中で同一ノードへのアクセスを試みると、Mutexが衝突してデッドロックないし<code>LockFailure</code>が返ってしまう。<br><code>Node</code>はノードの実態への弱参照であるため、複製が可能であるためにコンパイルそのものは通ってしまう。<br>また、弱参照であるために、削除されたノードである可能性が常に存在するため、すべてのメソッドは<code>Result</code>型で返ってくる。</p>
+<h2 id="弱点・TODO"><a href="#弱点・TODO" class="headerlink" title="弱点・TODO"></a>弱点・TODO</h2><p>強参照は1つしかないため、ノードの実態のメモリリークはないが、Arcの参照カウンタのための領域は弱参照が残り続けている限り開放されない。<br>ノード削除の際、他のノードとの連結情報までは削除をおこなっていないため、連結情報としてその弱参照は生き続ける可能性があるし、そもそも<code>Node</code>型自体は複製可能なので、別の箇所で弱参照が生き続けることもありえる。<br>一応、ノードの子要素の無効な弱参照は適宜消してあげる関数はつくっておいたが、どこで呼び出すかが問題となる。</p>
+<p>また、異なる<code>Graph</code>のノードを識別できていないため、<code>remove_node</code>に別のグラフのノードを渡してあげることで挙動がおかしくなる危険性がある。<br>対策としてはノードになんらかのGraphの識別子をもたせ、それをチェックすることになると思われる（<code>GraphInner</code>への弱参照とか？）。</p>
+<p>あとは、隣接ノード情報周りは作り込みが甘いので、もうちょっとなんとかしたい。</p>
+<p>また、スレッド安全性を捨てればArcがRcになり、Mutexも取れるので実行時オーバーヘッドがマシになると思われるので、そのバージョンもつくってみたい。<br>あと、オーバーヘッドがどうのとか言っているが、ちゃんとパフォーマンス計測はしていないので、他のバージョンもつくってやってみたい。</p>
+<p>進捗ダメです。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/Rust/">Rust</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Rustで組込みプログラミングや自作OS作成をするには | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="「Rustで始める自作組込みOS入門」という本というかドキュメントの公開を始めました。
+
+
+これは以前からつくっていたErkOSという自作OSでの経験を元にして、どうやったらRustで自作組込みOSの最初の一歩を踏み出せるか、というものをドキュメントにしたものです。このドキュメントはこの前の技術書展">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Rustで組込みプログラミングや自作OS作成をするには">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="「Rustで始める自作組込みOS入門」という本というかドキュメントの公開を始めました。   これは以前からつくっていたErkOSという自作OSでの経験を元にして、どうやったらRustで自作組込みOSの最初の一歩を踏み出せるか、というものをドキュメントにしたものです。このドキュメントはこの前の技術書展の告知が来たあたりから構想を練っていて、すきま時間にちまちまと書き進めていたものですが、とりあえず、">
+<meta name="keywords" content="Rust,osdev,Kernel&#x2F;VM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rustで組込みプログラミングや自作OS作成をするには">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2020/05/06/rust-os.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="「Rustで始める自作組込みOS入門」という本というかドキュメントの公開を始めました。   これは以前からつくっていたErkOSという自作OSでの経験を元にして、どうやったらRustで自作組込みOSの最初の一歩を踏み出せるか、というものをドキュメントにしたものです。このドキュメントはこの前の技術書展の告知が来たあたりから構想を練っていて、すきま時間にちまちまと書き進めていたものですが、とりあえず、">
+<meta property="og:locale" content="ja">
+<meta property="og:image" content="https://opengraph.githubassets.com/2deef68f1d9d92f818075be457cd066d6933c14d8963466386c17a087f625fe5/rust-embedded/wg">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/35896598?s=280&v=4">
+<meta property="og:image" content="https://booth.pximg.net/c/620x620/e47cf4ad-5f00-4211-90a2-ee0e5a07ef12/i/1478032/9fdc0ed2-32b0-4c0d-9db9-38193b660280_base_resized.jpg">
+<meta property="og:updated_time" content="2020-12-28T04:53:51.531Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rustで組込みプログラミングや自作OS作成をするには">
+<meta name="twitter:description" content="「Rustで始める自作組込みOS入門」という本というかドキュメントの公開を始めました。   これは以前からつくっていたErkOSという自作OSでの経験を元にして、どうやったらRustで自作組込みOSの最初の一歩を踏み出せるか、というものをドキュメントにしたものです。このドキュメントはこの前の技術書展の告知が来たあたりから構想を練っていて、すきま時間にちまちまと書き進めていたものですが、とりあえず、">
+<meta name="twitter:image" content="https://opengraph.githubassets.com/2deef68f1d9d92f818075be457cd066d6933c14d8963466386c17a087f625fe5/rust-embedded/wg">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2020-05-05T15:00:00.000Z"><a href="/hexo/2020/05/06/rust-os.html">2020-05-06</a></time>
+      
+      
+  
+    <h1 class="title">Rustで組込みプログラミングや自作OS作成をするには</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>「Rustで始める自作組込みOS入門」という本というかドキュメントの公開を始めました。</p>
+
+
+<p>これは以前からつくっていた<a href="/hexo/2019/05/15/erkos.html">ErkOS</a>という自作OSでの経験を元にして、どうやったらRustで自作組込みOSの最初の一歩を踏み出せるか、というものをドキュメントにしたものです。<br>このドキュメントはこの前の技術書展の告知が来たあたりから構想を練っていて、すきま時間にちまちまと書き進めていたものですが、とりあえず、プロセスの切り替えっぽいところまでの説明を終えることができたので公開しました。</p>
+<p>組込みでRustをやる話や自作OSを書く話というのは先駆者がたくさんいて、僕自身もそれらの資料を参考にしつつ書き進めて来ました。<br>一応、それらの既存のものとは差別化はしているつもりではあるものの、既存のものを完全に上回るというものではないです。内容もまだまだ足りない。</p>
+<p>以前、<a href="/hexo/2017/11/05/rust-os.html">RustでOSを書くプロジェクトもろもろ</a>でいくつかOSを書く際に参考になりそうなプロジェクトをまとめましたが、情報も古くなってきたので、改めて参考になるプロジェクトを紹介していきたいと思います。</p>
+<h2 id="Redox"><a href="#Redox" class="headerlink" title="Redox"></a>Redox</h2><a href="https://www.redox-os.org/jp/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Redox - Your Next(Gen) OS - Redox - Your Next(Gen) OS</div><div class="og-description">The Redox official website</div></div></div></a>
+<p>RustでデスクトップOSを書くというプロジェクト。完成度はかなり高く、GUIツールなどもすべてRustで書き直す、とかなり本格的。<br><a href="https://www.redox-os.org/jp/news/focusing-on-rustc/" target="_blank" rel="noopener">最近のブログポスト</a>によると実際のハードウェアで動くための課題はかなりクリアできているようで、<br>今はコンパイラそのものを改良してRedox上でRedoxをビルドすることを目指しているらしい。</p>
+<p>このRedoxプロジェクトから派生したクレートも役に立つものが多い</p>
+<h2 id="Tock"><a href="#Tock" class="headerlink" title="Tock"></a>Tock</h2><a href="https://www.tockos.org/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Tock Embedded Operating System</div><div class="og-description">Tock is a safe, multitasking operating system for low-power, low-memory microcontrollers.</div></div></div></a>
+<p>Rustで書かれたCortex-M向けの組込みOS。SOSPで<a href="/hexo/2018/05/23/tock.html">論文</a>を出していいたりとOSそのもの構造も興味深い。<br>かつてはRustコンパイラに手を加えたりするものが主流でしたが、このTockはnightlyコンパイラだけでコンパイルできるのも特徴。</p>
+<p>最近、Googleが発表した<a href="https://github.com/google/OpenSK" target="_blank" rel="noopener">OpenSK</a>というUSBのセキュリティキーのオープンな実装を発表したが、そこで使われているのもこのTockです。</p>
+<h2 id="Rust-Embeddedグループ"><a href="#Rust-Embeddedグループ" class="headerlink" title="Rust Embeddedグループ"></a>Rust Embeddedグループ</h2><a href="https://github.com/rust-embedded/wg" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://opengraph.githubassets.com/2deef68f1d9d92f818075be457cd066d6933c14d8963466386c17a087f625fe5/rust-embedded/wg"></div><div class="descriptions"><div class="og-title">GitHub - rust-embedded/wg: Coordination repository of the embedded devices Working Group</div><div class="og-description">Coordination repository of the embedded devices Working Group - GitHub - rust-embedded/wg: Coordination repository of the embedded devices W…</div></div></div></a>
+<p>Rustにはいくつかの公式ワーキンググループがあって、そのうちの１つがこのEmbeddedワーキンググループです。<br>各種ドキュメントや組込み開発で使えるクレートを公開しています。<br>主にCortex-MやCortex-A、RISC-Vをターゲットにしています。</p>
+<p><a href="https://docs.rust-embedded.org/embedonomicon/" target="_blank" rel="noopener">The Embedonomicon</a>は一からベアメタルプログラミングするための手引になっていてとても参考になります。</p>
+<p><a href="https://github.com/rust-embedded/rust-raspberrypi-OS-tutorials" target="_blank" rel="noopener">RaspberryPiを使ったOS開発のチュートリアル</a>はGICv2にも対応しているようなので、Cortex-Aで自作OSしたい人は参考になるかもしれません。</p>
+<p>OS開発ということにフォーカスしているわけではないですが、個々のコンポーネントを書く際はかなり参考になります。</p>
+<h2 id="Rust-OSDev"><a href="#Rust-OSDev" class="headerlink" title="Rust OSDev"></a>Rust OSDev</h2><a href="https://github.com/rust-osdev" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://avatars.githubusercontent.com/u/35896598?s=280&v=4"></div><div class="descriptions"><div class="og-title">Rust OSDev</div><div class="og-description">Operating System Development in Rust. Rust OSDev has 23 repositories available. Follow their code on GitHub.</div></div></div></a>
+<p>非公式グループですが、OSを書く、ということに焦点を置いたグループです。<br>こちらはx86系のアーキテクチャをたーゲットにしています。</p>
+<p>UEFIのアプリケーションを書くのに便利な<a href="https://github.com/rust-osdev/uefi-rs" target="_blank" rel="noopener">uefiクレート</a>など、x86系の自作OSに役立つクレートを多く出しています。</p>
+<p>特にこのグループのメンバーの一人であるPhilippさんの自作OSブログは内容が充実していて、自作OSでのテストの書き方やヒープアロケータのデザインと実装といった他のアーキテクチャでも使える項目の解説も充実しています。</p>
+<a href="https://os.phil-opp.com/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Writing an OS in Rust</div><div class="og-description">This blog series creates a small operating system in the Rust programming language. Each post is a small tutorial and includes all needed co…</div></div></div></a>
+
+<h2 id="日本語の資料"><a href="#日本語の資料" class="headerlink" title="日本語の資料"></a>日本語の資料</h2><p>今まで紹介したものはほとんどが英語のものでしたが、日本語のリソースとして<a href="https://twitter.com/LDScell" target="_blank" rel="noopener">@LDScell</a>さんがEmbeddedグループのドキュメントの和訳を公開している他、<br>「組込み/ベアメタルRustクックブック」という資料を公開しています。</p>
+<a href="https://booth.pm/ja/items/1478032" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://booth.pximg.net/c/620x620/e47cf4ad-5f00-4211-90a2-ee0e5a07ef12/i/1478032/9fdc0ed2-32b0-4c0d-9db9-38193b660280_base_resized.jpg"></div><div class="descriptions"><div class="og-title">組込み/ベアメタルRustクックブック（電子版） - emb-sabi - BOOTH</div><div class="og-description">こちらで公開している内容と同じものです。 https://tomoyuki-nakabayashi.github.io/embedded-rust-techniques/ Rustを組込みで使うためのテクニック集です。 HTML版での閲覧をお勧めしています。HTML版を開くには、…</div></div></div></a>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/Rust/">Rust</a>, <a href="/hexo/tags/osdev/">osdev</a>, <a href="/hexo/tags/Kernel-VM/">Kernel/VM</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>spectre and meltdownまとめ | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="IntelのCPUの重大なバグが発覚した、のような騒ぎから話題になったspectreとmeltdownについて調べた。
+基本的にはGoogle Project Zeroチームによるブログポストが最も信頼性の高くかつまとまっているので、この記事はそれのまとめ的なものhttps://googleproj">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="spectre and meltdownまとめ">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="IntelのCPUの重大なバグが発覚した、のような騒ぎから話題になったspectreとmeltdownについて調べた。 基本的にはGoogle Project Zeroチームによるブログポストが最も信頼性の高くかつまとまっているので、この記事はそれのまとめ的なものhttps://googleprojectzero.blogspot.jp/2018/01/reading-privileged-mem">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spectre and meltdownまとめ">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2018/01/07/spectre-meltdown.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="IntelのCPUの重大なバグが発覚した、のような騒ぎから話題になったspectreとmeltdownについて調べた。 基本的にはGoogle Project Zeroチームによるブログポストが最も信頼性の高くかつまとまっているので、この記事はそれのまとめ的なものhttps://googleprojectzero.blogspot.jp/2018/01/reading-privileged-mem">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2018-01-13T14:39:01.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="spectre and meltdownまとめ">
+<meta name="twitter:description" content="IntelのCPUの重大なバグが発覚した、のような騒ぎから話題になったspectreとmeltdownについて調べた。 基本的にはGoogle Project Zeroチームによるブログポストが最も信頼性の高くかつまとまっているので、この記事はそれのまとめ的なものhttps://googleprojectzero.blogspot.jp/2018/01/reading-privileged-mem">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-01-07T07:06:27.000Z"><a href="/hexo/2018/01/07/spectre-meltdown.html">2018-01-07</a></time>
+      
+      
+  
+    <h1 class="title">spectre and meltdownまとめ</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>IntelのCPUの重大なバグが発覚した、のような騒ぎから話題になったspectreとmeltdownについて調べた。</p>
+<p>基本的にはGoogle Project Zeroチームによるブログポストが最も信頼性の高くかつまとまっているので、この記事はそれのまとめ的なもの<br><a href="https://googleprojectzero.blogspot.jp/2018/01/reading-privileged-memory-with-side.html" target="_blank" rel="noopener">https://googleprojectzero.blogspot.jp/2018/01/reading-privileged-memory-with-side.html</a></p>
+<h2 id="発端"><a href="#発端" class="headerlink" title="発端"></a>発端</h2><p>おそらく<a href="https://www.theregister.co.uk/2018/01/02/intel_cpu_design_flaw/" target="_blank" rel="noopener">ここの記事</a>でIntelのCPUにバグが発覚したと報じ他のメディアがこれを拡散。<br>ただ、情報がかなり曖昧で、本当にIntel固有なものなのか、従来から指摘されている攻撃の可能性（現実的には不可能だから対処する必要はない）のことではないかなど様々な憶測が飛び交い<br>最終的にはGoogleやIntelが声明を発表し、去年から発覚していた攻撃手法で近日発表する予定だったが情報がリークしてしまったので、前倒しで詳細を公表するとのことだった。</p>
+<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>spectreとmeltdownは３つの攻撃手法のことを指す。どれもCPUの性質を利用することによりカーネルによって保護されている領域に対してユーザースペースからアクセスしようというものである。</p>
+<p>当初、Intel CPUのバグと言われていたが、CPUが誤動作するため保護が破れる、という類のものではない。<br>これらはキャッシュや分岐予測といった様々なCPUで広く用いられている高速化手法により発生するCPUのある種の癖を利用してメモリを読みだそうとするものである。<br>よって、Intel固有のものではなく、AMDやARMでも起こりうると明記されている。<br>しかし、影響を受ける可能性が高いのはIntelのCPUでProject Zeroのブログでも主にIntelアーキテクチャでの話を元に進められている。</p>
+<h2 id="攻撃の原理"><a href="#攻撃の原理" class="headerlink" title="攻撃の原理"></a>攻撃の原理</h2><p>spectreとmeltdownの原理について簡単にブログから要約する。spectreがvariant 1と2を指し、meltdownがvariant 3を指す。</p>
+<h3 id="Variant-1-境界チェックバイパス"><a href="#Variant-1-境界チェックバイパス" class="headerlink" title="Variant 1: 境界チェックバイパス"></a>Variant 1: 境界チェックバイパス</h3><p>カーネル内の境界チェックをすり抜けて、アクセスが禁止されている領域の値を読みだす方法。<br>この方法はユーザーがカーネルに処理を依頼して、カーネル内で処理を実行するアプリケーションを利用した攻撃である。<br>今回のProof of Concept(PoC)ではeBPF（extended Berkeley Packet Filter）というユーザーによってパケットフィルターを定義するインターフェースを利用している。</p>
+<p>この攻撃で肝になるのは<a href="https://ja.wikipedia.org/wiki/%E6%8A%95%E6%A9%9F%E7%9A%84%E5%AE%9F%E8%A1%8C" target="_blank" rel="noopener">投機的実行</a>である。<br>これはif文などの条件分岐の結果が決定する前に、どちらの結果になるかを予想して処理を進めてしまうCPUの高速化手法である。<br>本来であればその予想が外れた場合、投機的実行による変更は巻き戻されそれが外部に漏れることはない。<br>しかし、この失敗した投機的実行内でメモリアクセスが行われていた場合、そのメモリの結果はキャッシュに残る。<br>キャッシュに残るだけではユーザーがその値の中身を読み取ることはできないが、キャッシュにデータが残っている場合、そのアドレスへのアクセス時間は短くなる。これを利用する。</p>
+<p>具体的なコードのスニペットをProject Zeroのブログポストより引用する</p>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">struct<span class="built_in"> array </span>&#123;</span><br><span class="line">    unsigned<span class="built_in"> long </span>length;</span><br><span class="line">    unsigned char data[];</span><br><span class="line">&#125;;</span><br><span class="line">struct<span class="built_in"> array </span>*arr1 = ...; /* small<span class="built_in"> array </span>*/</span><br><span class="line">struct<span class="built_in"> array </span>*arr2 = ...; /*<span class="built_in"> array </span>of size 0x400 */</span><br><span class="line">/* &gt;0x400 (OUT OF BOUNDS!) */</span><br><span class="line">unsigned<span class="built_in"> long </span>untrusted_offset_from_caller = ...;</span><br><span class="line">if (untrusted_offset_from_caller &lt; arr1-&gt;length) &#123;</span><br><span class="line">    unsigned char value = arr1-&gt;data[untrusted_offset_from_caller];</span><br><span class="line">    unsigned<span class="built_in"> long </span>index2 = ((value&amp;1)*0x100)+0x200;</span><br><span class="line">   <span class="built_in"> if </span>(index2 &lt; arr2-&gt;length) &#123;</span><br><span class="line">        unsigned char value2 = arr2-&gt;data[index2];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>untrusted_offset_from_caller</code>というのが読まれたくないメモリ領域のアドレス。本来であればif文による境界チェックによって処理は実行されないはずだが、<br><code>arr1-&gt;length</code>の値がキャッシュに載っていない場合、メモリロードによる待ちが発生しその間に投機的実行によってif文の中身が実行される。<br><code>untrusted_offset_from_caller</code>の値がキャッシュに乗っていた場合、<code>value</code>の値がすぐに読みこまれ投機的実行が進む。<br><code>index2</code>の値は<code>value</code>の値によって0x200か0x300となり、このアドレスのメモリ領域のアドレスはユーザーがアクセスできる。<br>投機的実行によってこのメモリ領域もキャッシュに乗る。<br>最終的にこの投機的実行の結果は破棄されるのだが、0x200がキャッシュに乗っているか0x300がキャッシュに乗っているかで<code>value</code>の1bitが読み込めてしまう。<br>キャッシュ乗っているか否かは、メモリロードの時間によって分かってしまう。</p>
+<h3 id="Variant-2-分岐ターゲットインジェクション"><a href="#Variant-2-分岐ターゲットインジェクション" class="headerlink" title="Variant 2: 分岐ターゲットインジェクション"></a>Variant 2: 分岐ターゲットインジェクション</h3><p>この攻撃では、<a href="https://ja.wikipedia.org/wiki/Kernel-based_Virtual_Machine" target="_blank" rel="noopener">KVM</a>上でのゲストマシンから同じCPU上での他のゲストマシンのページアドレスやKVMのモジュールがどこにロードされているかを特定するものである。<br>当然、アドレスが分かっただけではMMUによって保護されているはずなのでそのまま中身を知ることはできない。が、PoCではeBPFを使うことによってデータを取り出している<br>（ここの詳細は理解できなかった。<a href="http://crypto.stanford.edu/~blynn/rop/" target="_blank" rel="noopener">ROP</a>の要領でコードを実行させて、Variant 1と同じ方法でキャッシュからデータを引き出す？）。</p>
+<p>この攻撃ではindirection branch（分岐先のアドレスがメモリ上にあるような分岐）の分岐予測を利用する。indirection branchの分岐先がキャッシュされていない場合、そのロードの時間がかかる。<br>そのため、投機的実行のためにどのアドレスに分岐するか、その命令アドレスに対してどこに分岐したかの履歴をもとに予測する機構がついている。<br>この機構の詳細は公開されていない。そのため、この機構のリバースエンジニアリングから説明されている。<br>そのリバースエンジニアリングの結果を元に、予め分岐予測機構の状態を設定し、hyper callなどの実行時間の差から分岐予測が失敗したかどうかを知ることでアドレスを知る、というのが概要である。</p>
+<p>正直、ここの説明は自分では理解できない点も多かった。</p>
+<h3 id="Variant-3-Rogue-data-cache-load"><a href="#Variant-3-Rogue-data-cache-load" class="headerlink" title="Variant 3: Rogue data cache load"></a>Variant 3: Rogue data cache load</h3><p>（1/13　補足）cyber.wtfのブログ内容についても言及を加え、ARMプロセッサの例についても補足</p>
+<p>ユーザースペースからカーネル空間のメモリを直接読む攻撃。これがMeltdownと呼ばれるもので、今回の騒動で最も広い範囲に影響が出ると考えられているようだ。</p>
+<p>詳細はこちらのブログ参照<br><a href="https://cyber.wtf/2017/07/28/negative-result-reading-kernel-memory-from-user-mode/" target="_blank" rel="noopener">https://cyber.wtf/2017/07/28/negative-result-reading-kernel-memory-from-user-mode/</a></p>
+<p>基本的なアイデアとしては、メモリの権限設定のチェックが完了する前にプロセッサはメモリの読み込みを投機に実行していて、Variant 1と同じ要領でメモリの値が読めるというもののようだ。<br>コードのスニペットを上記ブログより引用する</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Mov</span> <span class="built_in">rax</span>, [somekerneladdress]</span><br><span class="line"><span class="keyword">And</span> <span class="built_in">rax</span>, <span class="number">1</span></span><br><span class="line"><span class="keyword">Mov</span> <span class="built_in">rbx</span>,[<span class="built_in">rax</span>+Someusermodeaddress]</span><br></pre></td></tr></table></figure>
+
+<p>カーネル空間からのメモリ呼び出しの直後にその値に依存するユーザー空間アドレスへの読み込みを行い、その後、どこがキャッシュされているかでそのカーネル空間のメモリの値を確定させようというものである。<br>ページテーブルによる例外が発生する前に、後ろの2つの命令が投機的実行されると可能になってしまうというわけである。<br>ここで後ろ2つの命令が投機的実行されてしまうとVariant 1と同じように、どのアドレスがキャッシュされているかによってユーザー空間からカーネル空間のメモリの値が読める。</p>
+<p>しかし、cyber.wtfではこのような不正なアクセスをした場合は投機的実行中raxの値が常に0になるような挙動をしたので結果的には失敗した、としている。<br>Googleのチームは、cyber.wtfチームがやっていたカーネル空間をキャッシュするために呼び出していたprefetch命令を使うのを辞めたところうまくいった、としている。</p>
+<p>また、ARMプロセッサの場合、この攻撃の亜種としてカーネルモードでしか読めないシステムレジスタを読み出せてしまうことがある。<br><a href="https://developer.arm.com/support/security-update/download-the-whitepaper" target="_blank" rel="noopener">ARM社のwhite paper</a>よりコードを引用する。</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">LDR </span><span class="built_in">R1</span>, [<span class="built_in">R2</span>] <span class="comment">; arranged to miss in the cache</span></span><br><span class="line"><span class="keyword">CMP </span><span class="built_in">R1</span>, <span class="number">#0</span></span><br><span class="line"><span class="keyword">BEQ </span>over <span class="comment">; This will be taken</span></span><br><span class="line"><span class="keyword">MRC </span><span class="built_in">p15</span>, <span class="number">0</span>, <span class="built_in">R3</span>, <span class="built_in">c2</span>, <span class="built_in">c0</span>, <span class="number">0</span> <span class="comment">; read of TTBR0</span></span><br><span class="line"><span class="keyword">LSL </span><span class="built_in">R3</span>, <span class="built_in">R3</span>, <span class="symbol">#imm</span></span><br><span class="line"><span class="keyword">AND </span><span class="built_in">R3</span>, <span class="built_in">R3</span>, <span class="number">#0xFC0</span></span><br><span class="line"><span class="keyword">LDR </span><span class="built_in">R5</span>, [<span class="built_in">R6</span>,<span class="built_in">R3</span>] <span class="comment">; R6 is  an PL0 base address</span></span><br><span class="line"><span class="symbol">over</span></span><br></pre></td></tr></table></figure>
+
+<p>4行目のコードがTTBR0というページテーブルに関する情報が格納されているシステムレジスタをR3レジスタに格納して、<br>その結果を使ってユーザー空間のアドレスを決定してロードする、ということをしている（PL0とはARMでのユーザーモードを意味する）。<br>3行目が分岐命令で、本来ならばoverまで飛ぶのだが、分岐予測が失敗すると4行目以降が投機的に実行され、<br>最終的にVariant 1と同じようにどのユーザーアドレスがキャッシュされているかでシステムレジスタの値が読めてしまう。</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>とりあえずProject Zeroのブログポストのうち、攻撃原理に関わるところを中心にまとめてみた。<br>Intelプロセッサのアーキテクチャやセキュリティ分野にそこまで詳しいわけではないので、誤りも多々含まれるかもしれないが、見つけたらご指摘お願いします。</p>
+<p>ARMなどからも発表があるのでそちらの方も読み込んだらまた補足をしていきたいと思う。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

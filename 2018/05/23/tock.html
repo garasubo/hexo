@@ -1,0 +1,274 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>論文紹介：Multiprogramming a 64kB Computer Safely and Efficiently | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="元論文：Multiprogramming a 64 kB Computer Safely and Efficiently
+以前の記事でも少し紹介したRustで書かれた組み込みハードウェア向けのOSの設計についての論文である。
+実際のOSのプロダクトのサイトはこちら： Tock Embedded Op">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="論文紹介：Multiprogramming a 64kB Computer Safely and Efficiently">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="元論文：Multiprogramming a 64 kB Computer Safely and Efficiently 以前の記事でも少し紹介したRustで書かれた組み込みハードウェア向けのOSの設計についての論文である。 実際のOSのプロダクトのサイトはこちら： Tock Embedded Operating System 論文概要 タイトル：Multiprogramming a 64 kB">
+<meta name="keywords" content="Rust,paper">
+<meta property="og:type" content="article">
+<meta property="og:title" content="論文紹介：Multiprogramming a 64kB Computer Safely and Efficiently">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2018/05/23/tock.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="元論文：Multiprogramming a 64 kB Computer Safely and Efficiently 以前の記事でも少し紹介したRustで書かれた組み込みハードウェア向けのOSの設計についての論文である。 実際のOSのプロダクトのサイトはこちら： Tock Embedded Operating System 論文概要 タイトル：Multiprogramming a 64 kB">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2019-03-17T11:32:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="論文紹介：Multiprogramming a 64kB Computer Safely and Efficiently">
+<meta name="twitter:description" content="元論文：Multiprogramming a 64 kB Computer Safely and Efficiently 以前の記事でも少し紹介したRustで書かれた組み込みハードウェア向けのOSの設計についての論文である。 実際のOSのプロダクトのサイトはこちら： Tock Embedded Operating System 論文概要 タイトル：Multiprogramming a 64 kB">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-05-23T12:37:37.000Z"><a href="/hexo/2018/05/23/tock.html">2018-05-23</a></time>
+      
+      
+  
+    <h1 class="title">論文紹介：Multiprogramming a 64kB Computer Safely and Efficiently</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>元論文：<a href="https://sing.stanford.edu/site/publications/levy17-tock.pdf" target="_blank" rel="noopener">Multiprogramming a 64 kB Computer Safely and Efficiently</a></p>
+<p><a href="2017/11/05/rust-os.html">以前の記事</a>でも少し紹介したRustで書かれた組み込みハードウェア向けのOSの設計についての論文である。</p>
+<p>実際のOSのプロダクトのサイトはこちら： <a href="https://www.tockos.org/" target="_blank" rel="noopener">Tock Embedded Operating System</a></p>
+<h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
+<li>タイトル：Multiprogramming a 64 kB Computer Safely and Efficiently</li>
+<li>著者：Amit Levy (Stanford University) et al.</li>
+<li>会議：The 26th ACM Symposium on Operating Systems Principles (SOSP 17)</li>
+</ul>
+<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p>同年のAPSysで発表した<a href="https://dl.acm.org/citation.cfm?id=3124717" target="_blank" rel="noopener">論文</a>がRustという言語でどのようにOSを書くかを論じているのに対して、こちらはタイトルからもわかるようにCPUが貧弱でメモリが非常に少ない環境でのOSデザインについて論じている。<br>著者らが対象としてるのはCortex-MシリーズのようなRAMが数10kB程度、MMUのような高度なメモリ保護機能がないマイクロコントローラ（MCU）である。<br>このようなMCUでも、例えばスマートウォッチのように複数の独立したアプリケーションを動かすためOSが必要になってくる。<br>もちろん、MCU向けのOSというのは多く存在しているが、並列性やメモリの効率、Fault isolationなどの要件を同時に満たすのは容易ではない。</p>
+<p>著者らTockというOSをRustで実装し、これらの課題に取り組んだ。</p>
+<h2 id="CapsulesとGrants"><a href="#CapsulesとGrants" class="headerlink" title="CapsulesとGrants"></a>CapsulesとGrants</h2><p>Tockを構成するキーとなる概念がこのCapsulesとGrantsである。</p>
+<p>Capsulesはカーネルに組み入れられるコンポーネントとなるユニットたちで、Rustの構造体として現される。<br>このCapsuleを用いてデバイスのインターフェースやシステムコールのインターフェースをつくる。それぞれのCapsuleはRustの型システムによって互いのメモリに直接は干渉できないようにできる。<br>Capsuleのメモリ安全性は型システムによる所有権により検証される、つまりコンパイル時に検証されるので実行時のオーバーヘッドを最小限にできる。<br>カーネルのスケジューラはイベントドリブンで駆動し、Capsulesと直接やりとりする。Capsules自体はイベントを発行することはないため、スケジューラを介す必要はない。単純な関数であればインライン化されることも期待されるのでこれも実行時のオーバーヘッドを減らすことになる。<br>ただし、プリエンティブされることはないことになるので、実行時間の長い処理をさせるとシステム全体を止めることとなり得る。</p>
+<p>Tockにも通常のOSのようにプロセスの概念が存在する。それぞれ独立のヒープ領域とスタック領域を持ち、カーネルやその構成要素のCapsulesとはシステムコールイベントを発行することでやりとりする。<br>ただし、MCUはMMUを持たないため、全て絶対アドレスでのメモリアクセスとなる。そこで代わりにMemory Protection Unit(MPU)を用いてメモリ領域を保護する。<br>プロセス自体はどんな言語でも書け、またスケジューラによってプリエンティブされる。</p>
+<p>プロセスがCapsulesに処理を依頼する場合、そのリクエスト毎にメモリが必要となることがある。例えばタイマーであれば、どの時間にどの関数を呼び出すか、のようなメタデータを格納する必要がある。<br>ただし、システム実行中にそのメタデータを最大いくつまで保持しなければならないかを予想するのは難しい。そのため、単に静的に確保した配列に情報を格納すれば、並列に実行できるリクエストの数を制限することになるし、<br>動的にメモリを確保しようとすれば、カーネルのヒープ領域が突然足りなくなることが考えられる。<br>そこでTockではプロセス毎にGrantsと呼ばれる領域を持たせて、このメモリ領域をCapsulesに渡す、というテクニックを用いる。カーネル領域のヒープ領域に対して、Grantsはプロセス内の一種のヒープ領域みたいなものなので（プロセスの通常のヒープは別に存在している）、<br>動的にメモリを確保することにはなるが、メモリが足りなくなっても、そのプロセス1つのみが困るだけなのでシステム全体が困るという自体は避けられる。<br>Grants領域はMPUで保護されているため、プロセス自身がこの領域を直接アクセスすることはできない。</p>
+<h2 id="評価"><a href="#評価" class="headerlink" title="評価"></a>評価</h2><p>Tock自体、全く新しい構成のOSなので従来OSとの単純比較はできない。<br>そこで、Case StudyとしてTock上で実際にアプリケーションを実装した時のCase Studyと、新たに導入された概念であるCapsulesとGrantsによるパフォーマンスの検証を行っている。<br>ボードはArmのCortex-M4を用いた評価ボード上で構成している。<br>CapsulesやGrantsの各種インターフェースは当然ある程度のメモリオーバーヘッドと実行時オーバーヘッドを伴うが、それがモノリシックなシステムや既存のプロセスベースのシステムと比べて少なくてすむことを検証ている。<br>ただ、Grantsの導入はカーネルのアルゴリズムの変更を強要する。例えば、タイマーの例であれば、ハードウェアからの割り込みが発生した際、どの処理を行うか登録されたイベントから探さなければならないが、<br>その情報は各プロセスの各Grants内に入っているためそれを全て走査しなければならない。ただし、そもそもMCU上でのシステムで大量にプロセスが発生することはあまりないので大きい問題にはならないと主張している。</p>
+<h2 id="まとめ・感想"><a href="#まとめ・感想" class="headerlink" title="まとめ・感想"></a>まとめ・感想</h2><p>Rustの型システムを活用することで、新たな概念を利用しつつ組み込みOSに適した並列性、メモリの効率性、Fault isolationをTockは達成した。</p>
+<p>まだ実際の実装を追うところまではできていないので、進捗ダメです</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/Rust/">Rust</a>, <a href="/hexo/tags/paper/">paper</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

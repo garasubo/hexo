@@ -1,0 +1,268 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Rust LT会 | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="Rust LT会 #4にLT登壇枠で参加してきました。この会に参加するのははじめてなので少々ためらったのですが、LT枠が結構余っていたのと、たまにはこういう場で発表して自身のモチベーションあげようということで、簡単ではありましたが、低レイヤープログラミングについての話をしました。
+発表スライド
+発表">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Rust LT会">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="Rust LT会 #4にLT登壇枠で参加してきました。この会に参加するのははじめてなので少々ためらったのですが、LT枠が結構余っていたのと、たまにはこういう場で発表して自身のモチベーションあげようということで、簡単ではありましたが、低レイヤープログラミングについての話をしました。 発表スライド 発表時間には間に合ったものの、会の開始時間には遅刻してしまい運営の方々にはご迷惑をおかけしました。登壇枠">
+<meta name="keywords" content="Rust">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust LT会">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2019/04/25/rust-lt.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="Rust LT会 #4にLT登壇枠で参加してきました。この会に参加するのははじめてなので少々ためらったのですが、LT枠が結構余っていたのと、たまにはこういう場で発表して自身のモチベーションあげようということで、簡単ではありましたが、低レイヤープログラミングについての話をしました。 発表スライド 発表時間には間に合ったものの、会の開始時間には遅刻してしまい運営の方々にはご迷惑をおかけしました。登壇枠">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2019-04-25T13:49:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rust LT会">
+<meta name="twitter:description" content="Rust LT会 #4にLT登壇枠で参加してきました。この会に参加するのははじめてなので少々ためらったのですが、LT枠が結構余っていたのと、たまにはこういう場で発表して自身のモチベーションあげようということで、簡単ではありましたが、低レイヤープログラミングについての話をしました。 発表スライド 発表時間には間に合ったものの、会の開始時間には遅刻してしまい運営の方々にはご迷惑をおかけしました。登壇枠">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-04-24T15:00:00.000Z"><a href="/hexo/2019/04/25/rust-lt.html">2019-04-25</a></time>
+      
+      
+  
+    <h1 class="title">Rust LT会</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p><a href="https://rust.connpass.com/event/125666/" target="_blank" rel="noopener">Rust LT会 #4</a>にLT登壇枠で参加してきました。<br>この会に参加するのははじめてなので少々ためらったのですが、LT枠が結構余っていたのと、たまにはこういう場で発表して自身のモチベーションあげようということで、簡単ではありましたが、低レイヤープログラミングについての話をしました。</p>
+<p><a href="https://garasubo.github.io/rustlt4/">発表スライド</a></p>
+<p>発表時間には間に合ったものの、会の開始時間には遅刻してしまい運営の方々にはご迷惑をおかけしました。<br>登壇枠で参加するときは特に時間に余裕を持たなければ…</p>
+<h2 id="ちょっとした補足"><a href="#ちょっとした補足" class="headerlink" title="ちょっとした補足"></a>ちょっとした補足</h2><p>いくつか会場で出た質問とか、スライドでは深く突っ込んでいない内容についてちょっとした補足をしておきます</p>
+<h3 id="no-stdプログラミングでのクレート"><a href="#no-stdプログラミングでのクレート" class="headerlink" title="no_stdプログラミングでのクレート"></a>no_stdプログラミングでのクレート</h3><p>低レイヤープログラミングでは基本的にはstdクレートは使えないため、stdクレートに依存している大半のクレートは使用できません。<br>しかし、中にはno_stdでつくられているものもあり、そういうものは<a href="https://rust-embedded.github.io/book/intro/no-std.html" target="_blank" rel="noopener">crate.ioでno_stdキーワードがついています</a>。 
+が、たとえno_stdでつかえるものでも作者がキーワードを設定していないことも多いです…</p>
+<p>追記：<a href="https://crates.io/categories/no-std" target="_blank" rel="noopener">no_stdというカテゴリーをつけるほうが一般的っぽい</a></p>
+<p>それでも個人的にはクレートシステムの存在はありがたく、すでに様々な便利なクレートの存在のおかげで、低レイヤープログラミングといえどもフルスクラッチで書くのを避けることもできます。<br>C言語などではデファクトといえるこういうシステムがなかったのでありがたいと思っています。</p>
+<h3 id="Redoxについて"><a href="#Redoxについて" class="headerlink" title="Redoxについて"></a>Redoxについて</h3><p><a href="https://gitlab.redox-os.org/redox-os/rust" target="_blank" rel="noopener">Redoxのレポジトリ</a>を見ればわかるのですが、なんとRustコンパイラのフォークをサブモジュールとしてとりこんでいます。<br>どこを変更したかは具体的には追えていないのですが、所有権に関する制約を緩和するためにRustコンパイラを変更する必要があったという記述をどこかで見た記憶があります。<br>Rustコンパイラそのものをビルドする必要があるので、Redox全体のビルドは結構大変です。dockerイメージが同梱されているので、そちらを利用するといいでしょう。</p>
+<p>一方で、このブログでも何度か登場したTockはnightlyコンパイラでビルドでき、発表された論文ではその部分が貢献のひとつとして強調されていました。<br>TockはRustで書かれているという以外にも、組込みOSの設計として面白いアーキテクチャをしているので、興味があれば是非みてみるといいと思います。</p>
+<h2 id="スライドについて"><a href="#スライドについて" class="headerlink" title="スライドについて"></a>スライドについて</h2><p><a href="http://jedcn.github.io/reveal-ck/" target="_blank" rel="noopener">reveal-ck</a>というのを使ってつくりました。<br>いつもならばPowerPointかGoogle Docsでつくるのですが、markdown形式でつくれてウェブページとして公開できるのはいいかも、と思い試験的に使ってみました。<br>しかし、スライドの文字の位置や大きさをもっと調整したかったとかを考えると、やはりPower Pointとかでつくったほうがいいのかも、というのが正直な感想です。<br>また次回、LT会等の機会があったら別のシステムもいろいろ検討したいと思います。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/Rust/">Rust</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

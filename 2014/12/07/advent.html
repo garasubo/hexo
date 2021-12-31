@@ -1,0 +1,291 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>論文紹介ー&quot;User-guided device driver synthesis&quot; | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="システム系論文紹介 Advent Calendar 2014の7日目の記事です。
+論文概要
+タイトル： User-guided device driver synthesis
+著者：Leonid Ryzhyk, Adam Walker, John Keys, Alexander Legg, Arun">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="論文紹介ー&quot;User-guided device driver synthesis&quot;">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="システム系論文紹介 Advent Calendar 2014の7日目の記事です。 論文概要 タイトル： User-guided device driver synthesis 著者：Leonid Ryzhyk, Adam Walker, John Keys, Alexander Legg, Arun Raghunath, Michael Stumm, Mona Vij 会議：11th USENIX">
+<meta property="og:type" content="article">
+<meta property="og:title" content="論文紹介ー&quot;User-guided device driver synthesis&quot;">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2014/12/07/advent.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="システム系論文紹介 Advent Calendar 2014の7日目の記事です。 論文概要 タイトル： User-guided device driver synthesis 著者：Leonid Ryzhyk, Adam Walker, John Keys, Alexander Legg, Arun Raghunath, Michael Stumm, Mona Vij 会議：11th USENIX">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2015-12-12T11:40:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="論文紹介ー&quot;User-guided device driver synthesis&quot;">
+<meta name="twitter:description" content="システム系論文紹介 Advent Calendar 2014の7日目の記事です。 論文概要 タイトル： User-guided device driver synthesis 著者：Leonid Ryzhyk, Adam Walker, John Keys, Alexander Legg, Arun Raghunath, Michael Stumm, Mona Vij 会議：11th USENIX">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-12-07T12:38:00.000Z"><a href="/hexo/2014/12/07/advent.html">2014-12-07</a></time>
+      
+      
+  
+    <h1 class="title">論文紹介ー&quot;User-guided device driver synthesis&quot;</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p><a href="http://www.adventar.org/calendars/440" target="_blank" rel="noopener">システム系論文紹介 Advent Calendar 2014</a>の7日目の記事です。</p>
+<h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
+<li>タイトル： User-guided device driver synthesis</li>
+<li>著者：Leonid Ryzhyk, Adam Walker, John Keys, Alexander Legg, Arun Raghunath, Michael Stumm, Mona Vij</li>
+<li>会議：11th USENIX Symposium on Operating Systems Design and Implementation</li>
+<li>URL： <a href="https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-ryzhyk.pdf" target="_blank" rel="noopener">https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-ryzhyk.pdf</a></li>
+</ul>
+<p>デバイスドライバをユーザーが指示を出しつつ半自動でデバイスドライバを合成するツールTermiteというものを提案しています。<br>この著者はこのTermiteというツールを<a href="http://doi.acm.org/10.1145/1629575.1629583" target="_blank" rel="noopener">Automatic Device Driver Synthesis with Termite</a>という論文で<br>その2つのやり取りをオートマトンとしてみて、その上で行なわれるゲームの必勝法としてデバイスドライバの合成をしてやろうというものです。</p>
+<p>当初は完全自動だったのですが、現代の科学では完全自動だと厳しいものがあると悟った著者らがユーザーの入力補助をうまく取り入れるという<br>方針に変えてこのような形になったようです。<br>この論文は今までやってきたことのまとめ、という形になっているようです。</p>
+<h2 id="Specificationの書き方"><a href="#Specificationの書き方" class="headerlink" title="Specificationの書き方"></a>Specificationの書き方</h2><p>このTermiteへの入力として必要なのはdriver, device, OSそれぞれのmodelのspecificationです。<br>これはTermite Specification Language（TSL）によって与えられます。</p>
+<p>TSLの具体例は論文にあります。</p>
+<h3 id="Device-model"><a href="#Device-model" class="headerlink" title="Device model"></a>Device model</h3><p>デバイスの動作についてのモデルです。<br>デバイスがどのように動くかは<br>デバイスのデザイナーが持っているはずのtransaction-level models（TLM）から簡単にわかります。<br>ただし、ベンダーが非公開にしている場合も多く、TLM to TSLのコンパイラも開発中とのこと。</p>
+<p>デバイスモデルを仕様書から書き起こす方法についてはSOSPの論文の方に詳しく議論されていましたが、この論文ではされていませんでした。</p>
+<h3 id="OS-model"><a href="#OS-model" class="headerlink" title="OS model"></a>OS model</h3><p>OSがドライバに向けて発行するAPIを構築するためのモデルです。<br>イーサーネットならパケットを送るとか受け取るとかそんな感じです。</p>
+<h3 id="DeviceとOSモデルをつなげる"><a href="#DeviceとOSモデルをつなげる" class="headerlink" title="DeviceとOSモデルをつなげる"></a>DeviceとOSモデルをつなげる</h3><p>このデバイスとOSの定義の関係する状態を結びつける必要があるのですが、<br>この2つの定義をできるだけ独立に保ちたいという要請もあります。</p>
+<p>そこで、virtual interfaceというものを導入しています。<br>これはデバイスモデルの重要なイベントをOSに通知するコールバックみたいなものです。<br>これは実際に合成されるデバイスドライバの動作というわけではなく、<br>これで定義を与えてやろうというものです。</p>
+<p>また、ドライバの動きを制限するassertや、ドライバがどこに向かっていくのかを定義するgoalというものも定めることができます。</p>
+<h3 id="ドライバテンプレート"><a href="#ドライバテンプレート" class="headerlink" title="ドライバテンプレート"></a>ドライバテンプレート</h3><p>OSが実際に呼び出す関数を定めるテンプレートです。</p>
+<h2 id="User-guided-code-generation"><a href="#User-guided-code-generation" class="headerlink" title="User-guided code generation"></a>User-guided code generation</h2><p>コードの合成はIDEで編集するという感じでおこなわれます。<br>このIDEの機能としてgeneratorとverifierがあります。<br>generatorが自動補完のように現在の入力位置にモデルから合成したコードを埋め込むことができます。<br>もちろん、合成したコードに対しての変更も可能です。<br>verifierが書かれたコードが定義に合っているかどうかをチェックします。</p>
+<h2 id="Synthesis"><a href="#Synthesis" class="headerlink" title="Synthesis"></a>Synthesis</h2><p>モデル間の合成なのですが、これはデバイス・OSとドライバ間でおこなわれるゲームと見立てることでおこなわれます。<br>ゲームの状態を有限オートマトンとして、状態遷移はコントロール可能なものとドライバやOSが勝手に行うコントロール不可能なものの2つです。<br>このゲームに勝つ戦略、すなわちなってはならない状態に陥らないように行動するのがドライバで、これを合成するというわけです。<br>このゲームに勝つ戦略がそもそも存在しない場合、合成は失敗となります。</p>
+<p>この合成は下手に行うと状態数爆発を起こしたりと厄介なのですが、<br>それを起こさないため、筆者は様々な工夫をしています。</p>
+<p>詳しいことを書いているとキリが無いので、ここでは省略します。<br>また、この論文より他の関連する論文のほうが詳しく書かれているようです。<br>（私は読んでいません）</p>
+<h2 id="Debugging-with-counterexamples"><a href="#Debugging-with-counterexamples" class="headerlink" title="Debugging with counterexamples"></a>Debugging with counterexamples</h2><p>このゲームベースの合成に失敗した時のデバッグ支援方法もTermiteは備えています。<br>ゲームに勝つ戦略を妨げている環境の振る舞い、counterexample strategiesを探します。<br>これはこのゲームの双対ゲームを解くことで得られます。<br>このcounterexample strategyをステップ実行することで、デバッグを支援します。</p>
+<h2 id="Limitations-of-Termite"><a href="#Limitations-of-Termite" class="headerlink" title="Limitations of Termite"></a>Limitations of Termite</h2><ul>
+<li>DMAを扱えない<ul>
+<li>状態数が爆発する</li>
+</ul>
+</li>
+<li>デバイスコントロールとは本質的に関係ないところは他の手法を使うことで簡単に合成できるが、現在のところでは手動で埋め込むしかない</li>
+<li>並列処理への対応ができない</li>
+<li>リアルタイム性の保障はできないので、ハードリアルタイムなドライバはつくれない</li>
+</ul>
+<h2 id="Implementation-and-evaluation"><a href="#Implementation-and-evaluation" class="headerlink" title="Implementation and evaluation"></a>Implementation and evaluation</h2><p>このTermite、Haskellのコードおよそ3万行で10人年かかっているとのこと。<br>USBのwebカメラ、UARTのシリアルコントローラなどを実際に実装して評価しています。<br>各デバイスドライバに実装するのに1週間ほど（ドキュメントを読んでデバイスの仕様を調べる時間も含まれている）とのこと。</p>
+<p>合成アルゴリズムも、提案している手法と従来手法を比べ、従来手法だと2時間以内に終わらなかったものが、1分〜10分ほどで終わっていることが示されています。<br>verificationはまだ最適化されていないため、合成より時間はかかっていますが、それでも最大でも13分ほどしかかかっていません。</p>
+<p>実際に出来上がるドライバはどうしても手動での最適化や変更が必要なのですが、60%〜90%は自動で合成できたようです。</p>
+<p>また、できあがったコードサイズなのですが、これも全体的に小さくなっています。<br>これは、このドライバがデバイス動かすロジックに集中していること、<br>普通のデバイスドライバはコードの再利用などを考えて冗長になっていることなどが挙げられるようです。</p>
+<p>この方法では定義の再利用が可能というのが1つの売りなのですが、これについてもOSを変えたることで試しています。<br>これも定義をほとんど変えることなく再利用できたとしています。</p>
+<p>パフォーマンスもほぼ同等とのことです。</p>
+<h2 id="まとめと私見"><a href="#まとめと私見" class="headerlink" title="まとめと私見"></a>まとめと私見</h2><p>Termiteというデバイスドライバ合成ツールについての論文でした。<br>形式的手法を用いて定義からドライバを合成し、さらにそのデバッグについても形式的手法を用いて支援しているというのはおもしろいと思い、今回この論文を紹介しました。<br>私自身、デバイスドライバを書いたことは一切なく、専門分野でもなく少々準備が甘くなりつたない文章となってしまいましたが、<br>ご指摘・マサカリ等ありましたら、コメントお願いします。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

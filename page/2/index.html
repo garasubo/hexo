@@ -1,0 +1,823 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Page 2 | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta property="og:type" content="website">
+<meta property="og:title" content="己の不学を恥じる">
+<meta property="og:url" content="http://garasubo.github.io/hexo/page/2/index.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:locale" content="ja">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="己の不学を恥じる">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2020-03-30T15:00:00.000Z"><a href="/hexo/2020/03/31/firecracker.html">2020-03-31</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2020/03/31/firecracker.html">論文紹介：Firecracker: Lightweight Virtualization for Serverless Applications</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>元論文：<a href="https://www.usenix.org/conference/nsdi20/presentation/agache" target="_blank" rel="noopener">https://www.usenix.org/conference/nsdi20/presentation/agache</a></p>
+<p>2018年末、AWS Lambdaを提供するためのシステムとしてFirecrackerという仮想マシンモニター（VMM）がオープンソースとして公開されて注目を集めました。</p>
+
+
+<p>この論文は、その中身を解説・評価する論文です。</p>
+<h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
+<li>タイトル：Firecracker: Lightweight Virtualization for Serverless Applications</li>
+<li>著者： Alexandru Agache, Marc Brooker et al.</li>
+<li>会議：<a href="https://www.usenix.org/conference/nsdi20" target="_blank" rel="noopener">17th USENIX Symposium on Networked Systems Design and Implementation (NSDI 20)</a></li>
+</ul>
+<p>USENIX協会主催のNSDIで発表されました。<br>USENIXはもともとはUnix User Groupという団体でしたが、現在はシステムやネットワーク、セキュリティなどの会議やワークショップを開催しています。<br>そのなかでもNSDIはネットワーク系の会議としてトップクラスの会議の１つです。<br>書いている人たちはAWSの中の人のようです。</p>
+<p>AWS Lambdaとは、いわゆるサーバーレスコンピューティングといわれるサービスで、イベントの発生ごとに実行されるアプリケーションを設定しておくと、サーバーの設定無しでアプリケーションを実行して応答を返してくれる、というものです。<br>このアプリケーションを動かすのに使われているフレームワークで使われているのがFirecrackerです。</p>
+<p>この論文ではFirecrackerのことをVMMと呼んでいますが、KVMやXenのような「VMM」ではありません。これはちょっと私も混乱したポイントなのですが、ここでのVMMとは各ゲストOSに対してのサンドボックスを提供するためのコンポーネントというような位置づけです。<br>KVMとQEMUの組み合わせでは、QEMUがこのVMMに相当します。<br>このブログではVMMをこの論文の使い方にそうように使いますが、私は普段はVMMという言葉をXenやKVMのようなフレームワークに対して使っている（ハイパーバイザと同義の意味で使っている）ので、他の記事とは使い方が異なることに注意してください。<br>ちなみにFirecrackerはRust製です。</p>
+<h2 id="背景・動機"><a href="#背景・動機" class="headerlink" title="背景・動機"></a>背景・動機</h2><p>AWS Lambdaをつくるにあたり、以下のような性質を持つ仮想化フレームワークが必要とされました</p>
+<ul>
+<li>独立性：複数の関数が同一のハードウェアで走ってもセキュアであること（互いに干渉したり、権限昇格のようなことが起きない）</li>
+<li>オーバーヘッドと密度：たくさんの関数が同一ハードウェアで動かせるよう、少ないオーバーヘッドで動かせること</li>
+<li>パフォーマンス：ネイティブ実行に近い速度が出せること</li>
+<li>コンパチビリティ：任意のLinuxバイナリやライブラリがコード変更や再コンパイルなしで動かせること</li>
+<li>高速な切り替え：古い関数実行をクリーンアップし、新しい関数を実行が素早く行えること</li>
+<li>ソフトアロケーション：CPUやメモリのオーバーコミットが可能なように、関数は必要なリソースしか使わないようにする</li>
+</ul>
+<p>現状の類似した独立した環境を提供する既存のものとして、コンテナ・仮想化・言語のVMを使った独立化を挙げています。<br>Dockerでお馴染みのコンテナは、<code>seccomp-bpf</code>でシステムコールを制限するという形でセキュリティを担保してますが、200を超えるLinuxのシステムコールを制御しなければならず、Linuxのシステムコールのバグの危険性もあります。<br>Xenなどを使ったハードウェア仮想化は、ゲストOSに完全独立な仮想のCPUを与えるという方法ですが、カーネルまるまるを使うとスタートアップの時間がかかり、メモリのオーバーヘッドも大きいため、密度を上げることが難しいことで知られています。<br>また、仮想化のフレームワークそのもののコード量が多いことも問題です（trusted computing base、すなわちTCBが大きい）。<br>Java Virtual Machine（JVM）などの言語のVMは、言語や機能が限定されるため、これも条件を満たしません。</p>
+<p>そこで、Firecrackerの取る方法は仮想化のアプローチをベースとしたものになっています。<br>有名なKVMとQEMUを使った仮想化ではQEMUが非常にコードの大きな部分を占めていて、これを減らすことができればTCBも減らすことができます。<br>FirecrackerではこのQEMUを置き換えるというものになっています。</p>
+<h2 id="Firecrackの構造"><a href="#Firecrackの構造" class="headerlink" title="Firecrackの構造"></a>Firecrackの構造</h2><p>Firecrackerの設計方針として、既存のモジュールを再実装するのは基本的に避け、できる限りLinux内のコンポーネントを利用するというものがあります。<br>これは実装コストを下げるというのと、サービスを運用する際、Linuxの知識がそのまま使えるというものがあります。</p>
+<p>FirecrackerはKVMのインフラに乗っかりつつ、QEMUに変わるVMMとして実装し、その上で小さな仮想マシン（MicroVM）を動かすという設計になっています。<br>VMMはChrome OSのVMMであるcrossvmをベースにコードを削ったりリファクタリングして、現在は完全に別物として実装されています。</p>
+<p>Firecrackerはデバイスとして、ネットワークやディスクなどのブロックデバイス、シリアルポートとi8042（PS/2キーボードコントローラ）のみをサポートしています。<br>このうち、ネットワークドライバとブロックデバイスドライバはvirtioをそのまま使うことでコスト削減に貢献しています</p>
+<p>Firecrackerのプロセスを操作するインターフェースとしてREST APIを提供しています。これなら様々な言語から操作することが用意で、それこそcurlなどのコマンドラインツールでも操作可能になるからです。</p>
+<p>各VMの独立性を保つためには、プロセスごとのレートリミットをつける必要があります。Firecrackerでは1秒ごとのオペレーション数をAPIから設定することができます。</p>
+<p>セキュリティのためのJailerというものも実装されています。これはFirecrackerそのものが使えるインターフェースを制限し、ゲストがVMMの脆弱性をつくことを難しくするためのものです。</p>
+<h2 id="評価"><a href="#評価" class="headerlink" title="評価"></a>評価</h2><p>大量のVMを走らせるという実験を、QEMUと最近Intelが発表したRust製VMMであるCloud Hypervisorとの比較をおこなっています。</p>
+<p>まず、起動時間です。QEMUよりかはパフォーマンスがいいのですが、Cloud Hypervisorには若干劣ります。一方で、メモリのオーバーヘッドはFirecrackerが3MB程度なのに対して、Cloud Hypervisorが13MBなので、こちらはFirecrackerに軍配が上がります。<br>次にIO性能ですが、実装がいろいろ足りていないため、QEMUにも負けている部分がいろいろあるようです。</p>
+<p>さて、はじめに掲げた目標は達成できているでしょうか？</p>
+<ul>
+<li>独立性：仮想化を用い、サイドチャネルの対策もした</li>
+<li>オーバーヘッドと密度：大量のVMを低いオーバーヘッドで動かせることを確認した</li>
+<li>パフォーマンス：改善の余地はあるが、十分なパフォーマンスを達成</li>
+<li>コンパチビリティ：変更していないLinuxカーネルを動かせた</li>
+<li>高速な切り替え：起動時間が十分に短い</li>
+<li>ソフトアロケーション：20倍のオーバーサブスクリプションをテストしたが問題なし</li>
+</ul>
+<p>ということで、全部満たしていそうです。</p>
+<h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><p>仮想化フレームワークとしてUnikernelを以前紹介したが、こちらはよりコンパチビリティを意識したアプローチになっていている一方、きちんとVMの密度を上げられているというのは面白いと思いました。<br>KVMのフレームワークに詳しくなくVMMという単語の使い方に困惑しましたが、調べてみると結構こういう意味で使っている場合が多いようでややこしいですね…っｇ</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2020-02-26T12:02:23.000Z"><a href="/hexo/2020/02/26/rust-cli.html">2020-02-26</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2020/02/26/rust-cli.html">Rustでコマンドラインツールを開発する</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>コマンドラインツールをつくる際、今まではPythonやRubyなどのスクリプト言語をつかうことが多かった。<br>スクリプト言語はコンパイルする必要がなく、普通のシェルスクリプトよりかは書きやすいし、外部のライブラリも組込みやすい。<br>Java・ScalaなどのJVM系言語はC言語系よりかは書きやすいが、JVMの起動の時間が気になってしまいあまり向いていないように思われる。</p>
+<p>しかしながら、スクリプト言語での開発にも問題はある。<br>動的に型がついて危ない、というのは小さくなりがちなちょっとしたツールでは比較的無視しやすいのでいいとする。<br>一番厄介なのは、実行環境のバージョン違いである。特にプロセス呼び出しで、同じ言語の他のツールを呼び出したりすると突然エラーを吐いたりすることがあった。</p>
+<p>この前、社内でコマンドラインツールを書く機会があり、試しにRustで書いてみることにした。<br>一度コンパイルしてしまいバイナリにしてしまえば、バージョンの違いに苦しむことはないであろう。<br>変更のたびコンパイルする必要があるとはいえ、一度コンパイルさえしてしまえば高速に動作する。<br>実はRustの公式ワーキンググループの中にコマンドラインインターフェース（CLI）のためのチームがあり、ドキュメント・ライブラリが整備されている。</p>
+
+
+<p>ドキュメントは優秀で、コマンドライン引数の処理やエラーハンドリングなどでどういうクレートを使えばいいかを紹介してくれている。</p>
+<a href="https://rust-cli.github.io/book/index.html" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Getting started - Command Line Applications in Rust</div></div></div></a>
+<p>特に<a href="https://docs.rs/structopt/0.3.9/structopt/" target="_blank" rel="noopener"><code>structopt</code></a>をつかったコマンドライン引数の処理は非常に簡単。シリアライズでお馴染みの<code>serde</code>みたいに構造体にアトリビュートをつけていくと、コマンドライン引数を構造体に簡単に落とし込める。ヘルプメッセージなども簡単につくれるし、サブコマンドの定義なども柔軟に対応可能。</p>
+<p>変更のたびコンパイルする手間であるが、<code>cargo run</code>コマンドを使うことである程度緩和できる。<code>cargo run</code>は変更がない限りは特にはコンパイル処理を行わないのでオーバーヘッドは小さい。<br>ただし、生で叩くのは面倒なので、以下のようなシェルスクリプトのラッパーを経由して呼び出すことにした。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">script_path</span>=$(readlink -f <span class="string">"<span class="variable">$0</span>"</span>)</span><br><span class="line"><span class="attribute">manifest_path</span>=<span class="string">"<span class="variable">$(dirname "$script_path")</span>/Cargo.toml"</span></span><br><span class="line"></span><br><span class="line"><span class="attribute">RUSTFLAGS</span>=-Awarnings cargo <span class="builtin-name">run</span> -q --release <span class="attribute">--manifest-path</span>=<span class="variable">$manifest_path</span> -- <span class="string">"<span class="variable">$@</span>"</span></span><br></pre></td></tr></table></figure>
+
+<p><code>RUSTFLAGS</code>はコンパイル時の警告を消すためにつけている。これをプロジェクトのルートディレクトリにおいておき、このスクリプトへのシンボリックリンクをパスの通っているところに配置すればコマンドラインから簡単に実行できる。<br>初回時のみ無言でコンパイルを行うが、その後はインクリメンタルにビルドしてくれるので、無言の期間は比較的短くてすむはずである。<br>もちろん、このようなスクリプトを使わずともバイナリのシンボリックリンクを置くとかでもよいが、そこはお好みで。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2020-02-04T15:00:00.000Z"><a href="/hexo/2020/02/05/rust-graph.html">2020-02-05</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2020/02/05/rust-graph.html">Rustで循環参照を含むグラフをArc/Rcを使ってつくる</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Rustで循環参照を含む場合の処理はかなり面倒くさい。<br>基本的にミュータブルな参照は同時に1つしか持てないのだが、例えば双方向連結リストの場合、あるノードに対してその前のノードとその後ろのノードから参照される必要があるので、この場合どうにかしてミュータブルな参照以外の方法で前後のノードへのアクセス方法を確保する必要がある。</p>
+<p>ということで、前回のRust LT会でそのテーマで発表した方がいらっしゃった</p>
+
+<p>ここで用いられている方法は<code>unsafe</code>を使い、生ポインタとTyped Arenaという動的に同じ生存区間のメモリを確保できるライブラリを使う、または自作のメモリプールを使うというものである。<br>しかし、できれば<code>unsafe</code>は使いたくない。さらにいうとstdだけで実現できると嬉しい。</p>
+<p>Typed Arenaを使う方法は結構有名で、こちらのブログでも紹介されている</p>
+<a href="https://qnighy.hatenablog.com/entry/2017/04/28/070000" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://ogimage.blog.st-hatena.com/13208692334729897634/10328749687239599894/1493330425"></div><div class="descriptions"><div class="og-title">Rustでグラフを表現するにはTyped Arenaが便利 - 簡潔なQ</div><div class="og-description">概要: Rustでグラフのように相互参照を含むデータ構造を表現するには、Typed Arenaという方法が適している。これについて説明する 整数による表現 グラフの表現方法で、最も簡単なのは、ノードを整数で表し、グラフのデータを別に持つ方法である。 fn main() { let…</div></div></div></a>
+<p>ただし、この方法の弱点はメモリを開放する手段がないので、一度ノードをつくってしまうとグラフ全体が生存している間は削除してもメモリが開放されない。<br>ライフタイムの管理も難しく、設計をうまくしてあげる必要もある。</p>
+<p>他の方法としては<code>Rc</code>/<code>Arc</code>を使う方法がある。</p>
+<a href="https://qiita.com/qnighy/items/4bbbb20e71cf4ae527b9#%E5%AF%BE%E7%A7%B0%E3%81%AA%E5%BE%AA%E7%92%B0%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E8%A1%A8%E7%8F%BE%E3%81%99%E3%82%8B" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-user-contents.imgix.net%2Fhttps%253A%252F%252Fcdn.qiita.com%252Fassets%252Fpublic%252Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png%3Fixlib%3Drb-4.0.0%26w%3D1200%26mark64%3DaHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9UnVzdCVFMyU4MSVBRSUyMCU2MEFyYyU2MCUyMCVFMyU4MiU5MiVFOCVBQSVBRCVFMyU4MiU4MCUyODElMjklM0ElMjBBcmMlMkZSYyVFMyU4MSVBRSVFNSU5RiVCQSVFNiU5QyVBQyZ0eHQtY29sb3I9JTIzMjEyMTIxJnR4dC1mb250PUhpcmFnaW5vJTIwU2FucyUyMFc2JnR4dC1zaXplPTU2JnR4dC1jbGlwPWVsbGlwc2lzJnR4dC1hbGlnbj1sZWZ0JTJDdG9wJnM9NjVmZGFkN2E0NmE4N2VkNzFjZjI0MjQ3MDE4MzIyMzk%26mark-x%3D142%26mark-y%3D112%26s%3Dce821c46c1d382b0cc714fc6d4edc66b?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwcW5pZ2h5JnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz1iMjRjOWIzMjFkYjkxYTk0YTJkMTg5ZWI1YzRkZmY4MQ&mark-x=142&mark-y=491&s=8ae280f4e06f7f8a10055db97be955b9"></div><div class="descriptions"><div class="og-title">Rustの `Arc` を読む(1): Arc/Rcの基本 - Qiita</div><div class="og-description">概要: Rustの Arc 型の実装は宝の宝庫です。そこで、これを隅から隅まで解説してみます。
+
+第1回「Arc/Rcの基本」では、実際に Arc のソースを読む前に Arc/Rc の使い方を解説します。
+
+
+
+第1回 Arc/Rcの...</div></div></div></a>
+<p>Rcは参照カウンタ付きのスマートポインタでArcはそのスレッド安全版である。この方法ではRc/Arcのアクセスのための実行時オーバーヘッドおよび参照カウンタ分のメモリオーバーヘッドが発生するが、<br>代わりにライフタイムは比較的自由に管理でき、ノードのメモリも参照がなくなると自動的に開放してくれる。</p>
+<p>注意点としてはRustはメモリリークに関しての保証はないため、Rcで循環参照をつくってしまうとメモリリークを起こすことになる。<br>そのため、ノード間の連結は弱参照<code>Weak</code>で実現し、ノード全体の強参照を保持する親構造体を持つことで、この問題を解決する。<br>この場合、ノードのコンストラクタは直接呼ぶのではなく、親構造体のメソッド呼び出しとして実態をもらうことになる。<br>また、ノード内部構造は晒したくないので、ユーザーが触るノード構造体の実態はノード内部構造体への弱参照のラッパになる。</p>
+<p>弱参照から内部の値にアクセスするのは失敗する可能性があるので、ノードのメソッドは常に<code>Result</code>型で返してあげる必要がある。<br>また、ノード内部になんらかの値を保持させる場合、そこへのアクセスも少々厄介になる。<br>今回は、内部値への直接の参照を返すことは諦め、代わりにクロージャーを渡してもらうことにより、内部値の読み込み及び変更を実現した。<br>実際の実装は以下の通りである。先述のqnighy氏のブログにあった実装をベースにして、ノードの削除、子要素の取得、内部値の読み書きを追加したものである。<br>Arcを使っているのでスレッド安全でもある。</p>
+<a href="https://gist.github.com/garasubo/07f4671a133657ee4f39ff86924c4a54" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://github.githubassets.com/images/modules/gists/gist-og-image.png"></div><div class="descriptions"><div class="og-title">synchronous graph</div><div class="og-description">synchronous graph. GitHub Gist: instantly share code, notes, and snippets.</div></div></div></a>
+
+<p>削除や値の読み書きに対応するために変更した点について説明していく。<br>ノードの削除は<code>Graph</code>の持っている強参照を削除しないとメモリが開放されないため、Graphのメソッドとして実装した。<br>強参照が<code>Vec</code>のどこに格納されているかを指定するため、<code>NodeInner</code>に位置を持っておき、それをもとに削除することにした。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">remove_node</span></span>(&amp;<span class="keyword">self</span>, node: &amp;Node&lt;T&gt;) -&gt; <span class="built_in">Result</span>&lt;(), GraphError&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> lock = <span class="keyword">self</span>.<span class="number">0</span>.lock().unwrap();</span><br><span class="line">    <span class="keyword">let</span> rc = node.<span class="number">0</span>.upgrade().ok_or(GraphError::NodeDead)?;</span><br><span class="line">    <span class="keyword">let</span> id = rc.lock().unwrap().id;</span><br><span class="line">    <span class="keyword">if</span> id &lt; lock.nodes.len() &#123;</span><br><span class="line">        <span class="keyword">let</span> tar_node = lock.nodes[id].<span class="number">0</span>.take();</span><br><span class="line">        <span class="keyword">if</span> tar_node.is_none() &#123;</span><br><span class="line">            <span class="literal">Err</span>(GraphError::InvalidNode)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            lock.nodes[id].<span class="number">1</span> = lock.next;</span><br><span class="line">            lock.next = id;</span><br><span class="line">            <span class="literal">Ok</span>(())</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="literal">Err</span>(GraphError::InvalidNode)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Vecから特定の要素を削除するのはそこそこにめんどくさく、またそれにより他のノードのインデックスがずれると困るので、強参照をもつVecは<code>Option</code>型で値を持っておき、削除された場合は<code>None</code>に置き換えることにした。</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#[derive(Debug, Clone)]</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">GraphInner</span>&lt;<span class="title">T</span>&gt; &#123;</span></span><br><span class="line">    <span class="symbol">nodes:</span> Vec&lt;(Option&lt;Arc&lt;Mutex&lt;NodeInner&lt;T&gt;&gt;&gt;&gt;, usize)&gt;,</span><br><span class="line">    <span class="symbol">next:</span> usize,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">#[derive(Debug, Clone)]</span></span><br><span class="line">pub <span class="class"><span class="keyword">struct</span> <span class="title">Graph</span>&lt;<span class="title">T</span>&gt;(<span class="title">Arc</span>&lt;<span class="title">Mutex</span>&lt;<span class="title">GraphInner</span>&lt;<span class="title">T</span>&gt;&gt;&gt;);</span></span><br></pre></td></tr></table></figure>
+
+<p>削除が頻繁に起こるとVecがNoneで埋め尽くされてしまうので、Noneになった箇所は再利用できるようにした。そのために、グラフには次のNoneの位置を持たせておき、各ノードにはその次のNoneの位置をもたせることで、<br>Noneの連結リストを構成することで要素の再利用を行うようにしている。VecにNoneが存在しない場合、末尾に要素を追加する。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">new_node</span></span>(&amp;<span class="keyword">self</span>, value: T) -&gt; Node&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> lock = <span class="keyword">self</span>.<span class="number">0</span>.lock().unwrap();</span><br><span class="line">    <span class="keyword">let</span> next = lock.next;</span><br><span class="line">    <span class="keyword">let</span> inner = NodeInner &#123;</span><br><span class="line">        value,</span><br><span class="line">        neighbors: <span class="built_in">Vec</span>::new(),</span><br><span class="line">        id: next,</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> node = Arc::new(Mutex::new(inner));</span><br><span class="line">    <span class="keyword">if</span> next &lt; lock.nodes.len() &#123;</span><br><span class="line">        <span class="keyword">let</span> node_weak = Node(Arc::downgrade(&amp;node));</span><br><span class="line">        lock.nodes[next].<span class="number">0</span>.replace(node.clone());</span><br><span class="line">        lock.next = lock.nodes[next].<span class="number">1</span>;</span><br><span class="line">        node_weak</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> node_weak = Node(Arc::downgrade(&amp;node));</span><br><span class="line">        lock.nodes.push((<span class="literal">Some</span>(node.clone()), next + <span class="number">1</span>));</span><br><span class="line">        lock.next += <span class="number">1</span>;</span><br><span class="line">        node_weak</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ただし、あくまで強参照用の要素の再利用であって、ノードそのもののメモリ領域の再利用はしていないので、メモリ効率は改善の余地があると思われる。</p>
+<p>ノードの値の読み書きであるがArcやMutexで囲われているので、そのまま参照を返すことはできない。<br>そこで、内部値の参照を受け取って処理をする関数をもらう、というメソッドをつくっておくことにした。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">read</span></span>&lt;V, F&gt;(&amp;<span class="keyword">self</span>, f: F) -&gt; <span class="built_in">Result</span>&lt;V, GraphError&gt; <span class="keyword">where</span> F: <span class="built_in">Fn</span>(&amp;T) -&gt; V &#123;</span><br><span class="line">    <span class="keyword">let</span> rc = <span class="keyword">self</span>.<span class="number">0</span>.upgrade().ok_or(GraphError::NodeDead)?;</span><br><span class="line">    <span class="keyword">let</span> lock = rc.lock().or(<span class="literal">Err</span>(GraphError::LockFailure))?;</span><br><span class="line">    <span class="keyword">let</span> result = f(&amp;lock.value);</span><br><span class="line">    <span class="literal">Ok</span>(result)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">write</span></span>(&amp;<span class="keyword">self</span>, val: T) -&gt; <span class="built_in">Result</span>&lt;(), GraphError&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> rc = <span class="keyword">self</span>.<span class="number">0</span>.upgrade().ok_or(GraphError::NodeDead)?;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> lock = rc.lock().or(<span class="literal">Err</span>(GraphError::LockFailure))?;</span><br><span class="line">    lock.value = val;</span><br><span class="line">    <span class="literal">Ok</span>(())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">modify</span></span>&lt;F&gt;(&amp;<span class="keyword">self</span>, f: F) -&gt; <span class="built_in">Result</span>&lt;(), GraphError&gt; <span class="keyword">where</span> F: <span class="built_in">Fn</span>(&amp;<span class="keyword">mut</span> T) &#123;</span><br><span class="line">    <span class="keyword">let</span> rc = <span class="keyword">self</span>.<span class="number">0</span>.upgrade().ok_or(GraphError::NodeDead)?;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> lock = rc.lock().or(<span class="literal">Err</span>(GraphError::LockFailure))?;</span><br><span class="line">    f(&amp;<span class="keyword">mut</span> lock.value);</span><br><span class="line">    <span class="literal">Ok</span>(())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意点としては、渡す関数中で同一ノードへのアクセスを試みると、Mutexが衝突してデッドロックないし<code>LockFailure</code>が返ってしまう。<br><code>Node</code>はノードの実態への弱参照であるため、複製が可能であるためにコンパイルそのものは通ってしまう。<br>また、弱参照であるために、削除されたノードである可能性が常に存在するため、すべてのメソッドは<code>Result</code>型で返ってくる。</p>
+<h2 id="弱点・TODO"><a href="#弱点・TODO" class="headerlink" title="弱点・TODO"></a>弱点・TODO</h2><p>強参照は1つしかないため、ノードの実態のメモリリークはないが、Arcの参照カウンタのための領域は弱参照が残り続けている限り開放されない。<br>ノード削除の際、他のノードとの連結情報までは削除をおこなっていないため、連結情報としてその弱参照は生き続ける可能性があるし、そもそも<code>Node</code>型自体は複製可能なので、別の箇所で弱参照が生き続けることもありえる。<br>一応、ノードの子要素の無効な弱参照は適宜消してあげる関数はつくっておいたが、どこで呼び出すかが問題となる。</p>
+<p>また、異なる<code>Graph</code>のノードを識別できていないため、<code>remove_node</code>に別のグラフのノードを渡してあげることで挙動がおかしくなる危険性がある。<br>対策としてはノードになんらかのGraphの識別子をもたせ、それをチェックすることになると思われる（<code>GraphInner</code>への弱参照とか？）。</p>
+<p>あとは、隣接ノード情報周りは作り込みが甘いので、もうちょっとなんとかしたい。</p>
+<p>また、スレッド安全性を捨てればArcがRcになり、Mutexも取れるので実行時オーバーヘッドがマシになると思われるので、そのバージョンもつくってみたい。<br>あと、オーバーヘッドがどうのとか言っているが、ちゃんとパフォーマンス計測はしていないので、他のバージョンもつくってやってみたい。</p>
+<p>進捗ダメです。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2020-01-24T15:00:00.000Z"><a href="/hexo/2020/01/25/xim.html">2020-01-25</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2020/01/25/xim.html">X11環境でIMEの仮入力の情報を取得する</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>LinuxのX11向けのGUIアプリケーションでテキスト入力を扱いたい場合、IMEの存在を意識しなければならない（特に日本人ならば）。<br>IMEなしならば、キーボードイベントを見て、そのキーのアルファベットをプリントするだけで済むが、IMEが存在する場合、IMEから送られてくる文字列をきちんと処理する必要がある。<br>そのためには、X11のIMEフレームワークであるXIMの仕様を知る必要がある。</p>
+<p>これらの仕様について解説し、実際のコードも紹介している記事はすでにある。</p>
+
+
+<p>上記の記事を参考にしたと思われる日本語の記事もある。</p>
+<a href="https://qiita.com/ai56go/items/63abe54f2504ecc940cd" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-user-contents.imgix.net%2Fhttps%253A%252F%252Fcdn.qiita.com%252Fassets%252Fpublic%252Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png%3Fixlib%3Drb-4.0.0%26w%3D1200%26mark64%3DaHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9WElNJTI4WCUyMElucHV0JTIwTWV0aG9kJTI5JUU2JTk3JUE1JUU2JTlDJUFDJUU4JUFBJTlFJUU1JTg1JUE1JUU1JThBJTlCJUUzJTgxJUFFJUU2JUI1JTgxJUUzJTgyJThDJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9NTYmdHh0LWNsaXA9ZWxsaXBzaXMmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz0zYTgxYWNjY2I0MzNhZTExZGJmNWQyNWMxOTQ0ODBkZA%26mark-x%3D142%26mark-y%3D112%26s%3D2b6cc5396cd4aab6657dc7ed29050c03?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwYWk1NmdvJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz00NGExMWFjYTc0MWQ0OTZkMjhmNWRhZmE1NDg1OTg3OA&mark-x=142&mark-y=491&s=e25ba5ccb0682b415d15077d97166cd3"></div><div class="descriptions"><div class="og-title">XIM(X Input Method)日本語入力の流れ - Qiita</div><div class="og-description">2018年3月 作成
+
+「X Window Systemの日本語入力はどうなっているんだろう？」
+そう考えた筆者が、日本語入力の流れを調べてみました。
+　C言語、X11プログラミングに関する文章です。
+　使用OS:ubuntu16.0...</div></div></div></a>
+
+<p>しかし、実はこれらの記事ではIME内で確定した文字列の情報しか取得しておらず、IME内でまだ確定していない仮入力状態の文字列（例えば変換前の元のひらがな）は取得できていない。<br>仮入力の文字列を取得できていないと、それらの文字列は当然描画できないし、例えば変換前の文字列を使った入力補完なんかも実装できない。<br>ある程度ちゃんとしたX11アプリケーションではこれらがちゃんとできていることからも想像がつく通り、XIMではこれらの状態を渡すインターフェースがある。</p>
+<p>先述のブログのコードのうち、IMとの通信のためのコンテキスト構造体であるXICをつくっているところを見てみよう。</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">XIC ic = XCreateIC(xim,</span><br><span class="line">                    <span class="comment">/* the following are in attr, val format, terminated by NULL */</span></span><br><span class="line"><span class="built_in">                    XNInputStyle,</span> XIMPreeditNothing | XIMStatusNothing,</span><br><span class="line"><span class="built_in">                    XNClientWindow,</span> win,</span><br><span class="line">                    NULL)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>XNInputStyle</code>の値として<code>XIMPreeditNothing | XIMStatusNothing</code>を指定している。この<code>XIMPreeditNothing</code>というところが仮入力状態をどう扱いたいかをしてするものである。<br><code>XIMPreeditNothing</code>は仮入力状態を渡すことなく動いてしまう。そのため、代わりに<code>XIMPreeditCallback</code>を指定しなければならない。<br>このオプションを使う場合、クライアント側に仮入力の状態が変化した際のコールバックを<code>XNPreeditAttributes</code>として渡してあげる必要がある。<br>コールバックには<code>XNPreeditStartCallback</code>、<code>XNPreeditDoneCallback</code>、<code>XNPreeditDrawCallback</code>、<code>XNPreeditCaretCallback</code>の4つがある。</p>
+<ul>
+<li><code>XNPreeditStartCallback</code>: 仮入力がスタートしたときに呼ばれる</li>
+<li><code>XNPreeditDoneCallback</code>: 仮入力が終了したときに呼ばれる</li>
+<li><code>XNPreeditDrawCallback</code>: 仮入力状態の文字が更新されたときに呼ばれる。呼び出されたときに変化した文字列の情報が渡されてくる。</li>
+<li><code>XNPreeditCaretCallback</code>: 入力カーソルの位置が変わったときに呼ばれる。呼び出されたときに入力カーソルの位置の変化情報が渡されてくる。</li>
+</ul>
+<p>これらを<code>XVaNestedList</code>型として<code>XNPreeditAttributes</code>として<code>XCreateIC</code>に渡す必要がある。各コールバックは<code>XIMCallback</code>構造体へのポインタとして定義される必要がある。<br><code>XIMCallback</code>構造体の定義は以下の通りである。</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">typedef struct &#123;</span><br><span class="line">    <span class="type">XPointer</span> client_data;</span><br><span class="line">    <span class="type">XIMProc</span> callback;</span><br><span class="line">&#125; <span class="type">XIMCallback</span>;</span><br></pre></td></tr></table></figure>
+
+<p>XPointerは<code>char *</code>、つまり汎用のポインタで、<code>XIMProc</code>の定義は</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">typedef void (*<span class="type">XIMProc</span>)(</span><br><span class="line">    <span class="type">XIM</span>,</span><br><span class="line">    <span class="type">XPointer</span>,</span><br><span class="line">    <span class="type">XPointer</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>となっている。第一引数は<code>XIM</code>型となっているが、<a href="https://www.x.org/releases/X11R7.5/doc/libX11/libX11.html" target="_blank" rel="noopener">こちらのドキュメント</a>では<code>XIC</code>型となっている。どちらが正しいかわからないが、今回はこれは使わないのでスルー。<br>第二引数は<code>XIMCallback</code>の<code>client_data</code>が渡されてきて、第三引数にはコールバックの種類によって必要な情報がサーバー側から送られてくる（以後、<code>call_data</code>と呼ぶ）。<code>XPointer</code>型を適宜キャストして使うことになる。</p>
+<p><code>XNPreeditStartCallback</code>では<code>call_data</code>には<code>NULL</code>が渡されてくる。<code>XIMProc</code>型の関数の返り値は<code>void</code>となっているが、実際はこのコールバックは仮入力文字列の長さの上限を返さなければならない。<code>-1</code>とした場合、上限はない。<br>今回はこのように定義する。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">preedit_start_callback</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    XIM xim,</span></span></span><br><span class="line"><span class="function"><span class="params">    XPointer client_data,</span></span></span><br><span class="line"><span class="function"><span class="params">    XPointer call_data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"preedit start\n"</span>);</span><br><span class="line">    <span class="comment">// no length limit</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>XNPreeditDoneCallback</code>も<code>call_data</code>は<code>NULL</code>が渡されてくる。今回は仮入力中の文字列を出力したいだけなので、特に何もしないでいいだろう。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">preedit_done_callback</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    XIM xim,</span></span></span><br><span class="line"><span class="function"><span class="params">    XPointer client_data,</span></span></span><br><span class="line"><span class="function"><span class="params">    XPointer call_data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"preedit done\n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>XNPreeditDrawCallback</code>が仮入力文字列に変化が起きた場合の処理である。<code>call_data</code>は<code>XIMPreeditDrawCallbackStruct</code>構造体として渡されてくる。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">XIMPreeditDrawCallbackStruct</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> caret;		<span class="comment">/* Cursor offset within pre-edit string */</span></span><br><span class="line">    <span class="keyword">int</span> chg_first;	<span class="comment">/* Starting change position */</span></span><br><span class="line">    <span class="keyword">int</span> chg_length;	<span class="comment">/* Length of the change in character count */</span></span><br><span class="line">    XIMText *text;</span><br><span class="line">&#125; XIMPreeditDrawCallbackStruct;</span><br></pre></td></tr></table></figure>
+
+<p>仮入力中のすべての文字が渡されてくるのではなく、変化した文字列の情報が渡されてくる。<br><code>chg_first</code>から<code>chg_length</code>文字数分が<code>text</code>に変化したという感じである。<br>ただし、筆者の環境のIMEは<code>chg_first</code>に常に0が渡されて、<code>text</code>に仮入力中の文字全部が渡されるような動作をした。<br>しかし、仕様の上では一部しか渡されてこない可能性もあるので、一応注意して実装する。<br>なお、文字数のカウントはバイト数ではなく、システムの文字コード（通常はUTF-8のはず）で解釈した場合の文字の数であることに注意。</p>
+<p><code>XIMText</code>型として文字列の情報が渡されてくる</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">typedef <span class="class"><span class="keyword">struct</span> <span class="title">_XIMText</span> &#123;</span></span><br><span class="line">    unsigned short length;</span><br><span class="line">    XIMFeedback *feedback;</span><br><span class="line">    Bool encoding_is_wchar;</span><br><span class="line">    <span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">	char *multi_byte;</span><br><span class="line">	wchar_t *wide_char;</span><br><span class="line">    &#125; string;</span><br><span class="line">&#125; XIMText;</span><br></pre></td></tr></table></figure>
+
+<p><code>encode_is_wchar</code>のとき、<code>wide_char</code>として文字列が来るが、今回は<code>multi_byte</code>で来る場合のみ扱う（gtkでも対応していない）。<br><code>length</code>はここでもバイト数ではなく、実際の文字の数である。<br><code>XIMFeedback</code>は各文字の装飾に関する情報だが、今回は割愛する。<br>なお、<code>text</code>は<code>NULL</code>になる場合があり、それは<code>chg_first</code>から<code>chg_length</code>までの文字が削除されたことを意味する。<br>C言語にはマルチバイト文字をいい感じに扱うライブラリがないため、真面目に仮入力中の文字すべてを正しく把握しようとすると結構面倒そうなので、今回は来た情報だけを標準出力に吐くだけにしておく</p>
+<figure class="highlight xl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">static void preedit_draw_callback(</span><br><span class="line">    XIM xim,</span><br><span class="line">    XPointer client_data,</span><br><span class="line">    XIMPreeditDrawCallbackStruct *call_data)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    printf(<span class="string">"callback\n"</span>);</span><br><span class="line">    XIMT<span class="function"><span class="title">ext</span> *xim_text = call_data-&gt;</span><span class="keyword">text</span>;</span><br><span class="line">    <span class="keyword">if</span> (xim_text != NULL)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="title">printf</span>("Draw callback string: %s, length: %d, first: %d, caret: %d\n", xim_text-&gt;</span><span class="function"><span class="title">string</span>.multi_byte, call_data-&gt;</span><span class="function"><span class="title">chg_length</span>, call_data-&gt;</span><span class="function"><span class="title">chg_first</span>, call_data-&gt;</span>caret);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="title">printf</span>("Draw callback string: (DELETED), length: %d, first: %d, caret: %d\n", call_data-&gt;</span><span class="function"><span class="title">chg_length</span>, call_data-&gt;</span><span class="function"><span class="title">chg_first</span>, call_data-&gt;</span>caret);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最後の<code>XNPreeditCaretCallback</code>は<code>call_data</code>として以下のような構造体として情報が来る。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">XIMPreeditCaretCallbackStruct</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> position;		 <span class="comment">/* Caret offset within pre-edit string */</span></span><br><span class="line">    XIMCaretDirection direction; <span class="comment">/* Caret moves direction */</span></span><br><span class="line">    XIMCaretStyle style;	 <span class="comment">/* Feedback of the caret */</span></span><br><span class="line">&#125; XIMPreeditCaretCallbackStruct;</span><br></pre></td></tr></table></figure>
+
+<p>カーソルのポジションと移動した方向、カーソルの表示の際の装飾情報が渡されてくる。文字列は変化していないので、文字列に関する情報はない。<br>以下のようなコールバック関数を定義しておく。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">preedit_caret_callback</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    XIM xim,</span></span></span><br><span class="line"><span class="function"><span class="params">    XPointer client_data,</span></span></span><br><span class="line"><span class="function"><span class="params">    XIMPreeditCaretCallbackStruct *call_data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"preedit caret\n"</span>);</span><br><span class="line">    <span class="keyword">if</span> (call_data != <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"direction: %d position: %d\n"</span>, call_data-&gt;direction, call_data-&gt;position);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>さて、これらを<code>XIC</code>をつくるときのパラメータとして渡すために、<code>XVaNestedList</code>として渡すには以下のようにする。</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">XIMCallback draw_callback<span class="comment">;</span></span><br><span class="line">draw_callback.client_data = NULL<span class="comment">;</span></span><br><span class="line">draw_callback.callback = (XIMProc)preedit_draw_callback<span class="comment">;</span></span><br><span class="line">XIMCallback start_callback<span class="comment">;</span></span><br><span class="line">start_callback.client_data = NULL<span class="comment">;</span></span><br><span class="line">start_callback.callback = (XIMProc)preedit_start_callback<span class="comment">;</span></span><br><span class="line">XIMCallback done_callback<span class="comment">;</span></span><br><span class="line">done_callback.client_data = NULL<span class="comment">;</span></span><br><span class="line">done_callback.callback = (XIMProc)preedit_done_callback<span class="comment">;</span></span><br><span class="line">XIMCallback caret_callback<span class="comment">;</span></span><br><span class="line">caret_callback.client_data = NULL<span class="comment">;</span></span><br><span class="line">caret_callback.callback = (XIMProc)preedit_caret_callback<span class="comment">;</span></span><br><span class="line">XVaNestedList preedit_attributes = XVaCreateNestedList(</span><br><span class="line">    <span class="number">0</span>,</span><br><span class="line">    XNPreeditStartCallback, &amp;start_callback,</span><br><span class="line">    XNPreeditDoneCallback, &amp;done_callback,</span><br><span class="line">    XNPreeditDrawCallback, &amp;draw_callback,</span><br><span class="line">    XNPreeditCaretCallback, &amp;caret_callback,</span><br><span class="line">    NULL)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+
+<p>今回は<code>client_data</code>を使わないので、<code>NULL</code>を渡しておいた。ポインタで渡しているだけなので、<code>XIMCallback</code>が<code>XIC</code>の生存中にちゃんと生きていなければならないことには注意<br>そして、<code>XIC</code>をつくる部分のコードを以下のように書き換える。</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">XIC ic = XCreateIC(xim,</span><br><span class="line"><span class="built_in">                   XNInputStyle,</span> XIMPreeditCallbacks | XIMStatusNothing,</span><br><span class="line"><span class="built_in">                   XNClientWindow,</span> win,</span><br><span class="line"><span class="built_in">                   XNPreeditAttributes,</span> preedit_attributes,</span><br><span class="line">                   NULL)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+
+<p>完成品はこちら</p>
+<a href="https://gist.github.com/garasubo/8ebb893f2af1950254df715fcf1de58e" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://github.githubassets.com/images/modules/gists/gist-og-image.png"></div><div class="descriptions"><div class="og-title">Example code to use preedit callbacks in XIM</div><div class="og-description">Example code to use preedit callbacks in XIM. GitHub Gist: instantly share code, notes, and snippets.</div></div></div></a>
+
+
+<p>実行例:</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">preedit start</span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> あ, <span class="string">length:</span> <span class="number">0</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">1</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> あい, <span class="string">length:</span> <span class="number">1</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">2</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> あいう, <span class="string">length:</span> <span class="number">2</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">3</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> あいうえ, <span class="string">length:</span> <span class="number">3</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">4</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> あいうえお, <span class="string">length:</span> <span class="number">4</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">5</span></span><br><span class="line">delievered <span class="string">string:</span> あいうえお</span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> (DELETED), <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">0</span></span><br><span class="line">preedit done</span><br><span class="line">preedit start</span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> お, <span class="string">length:</span> <span class="number">0</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">1</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おｎ, <span class="string">length:</span> <span class="number">1</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">2</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おの, <span class="string">length:</span> <span class="number">2</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">2</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのｒ, <span class="string">length:</span> <span class="number">2</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">3</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれ, <span class="string">length:</span> <span class="number">3</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">3</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれｎ, <span class="string">length:</span> <span class="number">3</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">4</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれの, <span class="string">length:</span> <span class="number">4</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">4</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれのｆ, <span class="string">length:</span> <span class="number">4</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">5</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれのふ, <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">5</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれのふｇ, <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">6</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれのふが, <span class="string">length:</span> <span class="number">6</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">6</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれのふがｋ, <span class="string">length:</span> <span class="number">6</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">7</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれのふがく, <span class="string">length:</span> <span class="number">7</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">7</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれのふがくｗ, <span class="string">length:</span> <span class="number">7</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">8</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれのふがくを, <span class="string">length:</span> <span class="number">8</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">8</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> 己の富嶽を, <span class="string">length:</span> <span class="number">8</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">0</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> 己の富嶽を, <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">2</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> 己の富嶽を, <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">0</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれの富嶽を, <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">0</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> 己の富嶽を, <span class="string">length:</span> <span class="number">7</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">0</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> 己の富嶽を, <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">2</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> 己の富岳を, <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">2</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> 己のフガクを, <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">2</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> 己の不学を, <span class="string">length:</span> <span class="number">6</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">2</span></span><br><span class="line">delievered <span class="string">string:</span> 己の不学を</span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> (DELETED), <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">0</span></span><br><span class="line">preedit done</span><br></pre></td></tr></table></figure>
+
+<h2 id="リファレンス"><a href="#リファレンス" class="headerlink" title="リファレンス"></a>リファレンス</h2><p>一応、以上の仕様は以下のドキュメントにあるのだが、かなり古く読みにくい</p>
+<p>概念的な話はこちら。正直、読み方がわからなかった</p>
+<a href="https://www.x.org/releases/X11R7.6/doc/libX11/specs/XIM/xim.html" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">The Input Method Protocol</div><div class="og-description">This specifies a protocol between IM library and IM (Input Method) Server for internationalized text input, which is indepedent from any spe…</div></div></div></a>
+
+<p>こっちはXlibの実装の解説ではあるが、レイアウトがメチャクチャである</p>
+<p><a href="https://www.x.org/releases/X11R7.5/doc/libX11/libX11.html" target="_blank" rel="noopener">Xlib − C Language X Interface</a></p>
+<p>結局GTKの実装を参照するほうが楽であったが、GTK4（まだリリースはされていない）の最新版ではなんとXIMのサポートが削除されている。</p>
+<a href="https://gitlab.gnome.org/GNOME/gtk/merge_requests/1195" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://gitlab.gnome.org/uploads/-/system/project/avatar/665/gtk-logo.png"></div><div class="descriptions"><div class="og-title">Remove the XIM input method (!1195) · Merge requests · GNOME / gtk</div><div class="og-description">It&#39;s old and busted, and mostly broken in weird ways when it comes to extended input devices. All that XIM does, these days, is make a mess …</div></div></div></a>
+<p>GTK3までならちゃんと生きているので、そちらを参考にすると良い</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2020-01-01T15:00:00.000Z"><a href="/hexo/2020/01/02/tsvd.html">2020-01-02</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2020/01/02/tsvd.html">論文紹介：Efficient scalable thread-safety-violation detection: finding thousands of concurrency bugs during testing</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>元論文: <a href="https://dl.acm.org/doi/10.1145/3341301.3359638" target="_blank" rel="noopener">https://dl.acm.org/doi/10.1145/3341301.3359638</a></p>
+<p>並行システムをテストし、スレッド安全性の違反を効率よく見つけるという論文です。<br>並行システムの検証・テストというトピック自体はかなり有名で様々な方法がすでに提唱はされています。<br>しかし、この論文のポイントは実際のMicrosoft製品のビルドシステムの過程にこのテストシステムを実際に組込み、いくつものバグをちゃんと発見した、というところです。</p>
+<h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
+<li>タイトル：Efficient scalable thread-safety-violation detection: finding thousands of concurrency bugs during testing</li>
+<li>著者: Guanpu Li, Shan Lu et al.</li>
+<li>会議：<a href="https://sosp19.rcs.uwaterloo.ca" target="_blank" rel="noopener">Proceedings of the 27th ACM Symposium on Operating Systems Principles (SOSP’19)</a></li>
+</ul>
+<p>このブログではおなじみのシステム系論文のトップカンファレンスSOSPで発表されたものです。<br>SOSPではこのような検証やバグ発見のようなどうやったら安全なシステムを構築できるかのようなセクションがあり、こういうタイプの論文も一定数あります。<br>筆頭著者のGuanpu Li氏はシカゴ大学所属で、Microsoft Researchとカルフォルニア大学の方々も著者に含まれています。</p>
+<p>この論文では、TSVD（Thread-Safety-Violation Detector）という並行システムのバグ発見システムを提案しています。<br>並行システムはバグ発見や再現が難しいことが知られていて、並行システムの安全性検証・テストは古くからあるテーマです。<br>しかし、並行システムは状態数が多い・様々な並行化モデルが存在しているなどの理由から、実製品できちんと用いるというのは難しいというのが多くの既存手法の抱える問題でした。<br>TSVDのすごいところはMicrosoftの実際の製品のビルドシステムに統合し、ちゃんといくつものバグを発見できたところです。</p>
+<h2 id="動機・目的"><a href="#動機・目的" class="headerlink" title="動機・目的"></a>動機・目的</h2><p>TSVDはテスト実行の際に適当な遅延を埋め込むことでデータ競合を実際に発生させることで、動的にバグを見つけるというのが大まかな仕組みです。<br>データ競合を検出すると、その命令までのスタックトレースを出力します。<br>似たような手法は存在しているのですが、TSVDは現実世界のアプリケーションのビルドに組み込んで使えるように様々な工夫をし、パフォーマンスを高めています。<br>また、実際に競合を発生させることで検出するので、false-positiveは原則起こらないという特徴もあります。</p>
+<p>TSVDでは並行システムのバグの内、Thread-safety violationの発見に特化しています。Thread-safety violationとは、要はデータ競合で、並列にアクセスされることが想定されていないデータ構造に同時にアクセスすることで起きる不整合です。<br>この論文では複数のスレッドから並行に呼び出すことのできるメソッド以外のメソッド呼び出しを指します。<br>この論文では例としてKey-ValueストアのためのDictionaryクラスへの追加と読み込みを同時に行うことを上げています。<br>Dictionaryクラスが２分探索木のようなデータ構造で実装されている場合、読み込みをしている途中で追加処理によって現在探索中のノードの枝が変化するなどされれば、本来見つかるはずのノードに辿り着けない、といったことです。<br>これはデータ競合の全てのケース、というわけではないですが、このように対象を限定することがハイパフォーマンスの理由のひとつになってます。</p>
+<p>データ競合の検出手法として広く知られているもののひとつとしてHappen-Before（HB）分析というものがあります。<br>これは全ての同期命令を集めて、実際にどの命令が並行に実行される可能性があるかというものを分析するものです。<br>しかし、forkやjoinが頻繁に行われる場合、状態数が爆発し、また先行研究ではjoinするタイミングに制約があるなど、広く用いるには難しいという問題があります。</p>
+<h2 id="アルゴリズム"><a href="#アルゴリズム" class="headerlink" title="アルゴリズム"></a>アルゴリズム</h2><p>まず、データ競合の起こりうるメソッド呼び出し（TSVD pointsと呼んでいる）を静的解析で列挙し、これを特殊なcall命令に置き換えます。<br>この命令はスレッドID、オブジェクトID、メソッドIDをもとに、このメソッド呼び出しにディレイを必要に応じて差し込み、データ競合の検出もおこないます（別スレッドから同一オブジェクトに対して同時にメソッド呼び出しが発生し、かつどちらかが書き込み命令だった場合は競合とみなす）。<br>単なるメソッド呼び出し自体は相当数あり、そこにランダムに遅延を発生させるだけではデータ競合を発見させるのは難しいです。<br>そこで、TSVDはデータ競合が発生しそうな箇所を絞り込み、効率よく遅延を差し込むような工夫をしています。</p>
+<p>まず、データ競合になりうるメッソド呼び出しが近い時間で行われた箇所を危険と判断します。<br>つまり、異なるスレッドから同じオブジェクトへのアクセスが一定時間内に行われたかを調べ、その2箇所をdangerous pairとして管理します。</p>
+<p>また、これらのdangerous pairは並列に実行されないとデータ競合は起きません。そのため、各TSVD pointsについて、これらの実行履歴を一定数持っておき、それらの中に異なるスレッドからの実行が存在する場合、そのTSVD pointは並列に実行されていると判断します。<br>dangerous pairの内片方が並行実行されている場合、遅延を差し込むようにします。</p>
+<p>dangerous pairのすべてがデータ競合を起こす訳ではないので、これを更に絞り込む必要があります。<br>まず、Happen-before（HB）関係、つまり片方の命令はもう片方の命令より常に先に実行される関係を推論するといことで絞り込みます。<br>ある同一オブジェクトの実行履歴に注目し、dangerous pair<code>(loc1, loc2)</code>が以下を満たす場合、HB関係にあるとみなしてリストから除外します。</p>
+<ol>
+<li><code>loc1</code>の直前に遅延が差し込まれた</li>
+<li><code>loc2</code>のスレッド上で過去同一オブジェクトへのメソッド実行を行った箇所<code>loc0</code>が存在する</li>
+<li><code>loc0</code>の終了時間は<code>loc1</code>前に差し込まれた遅延の終了時間より前である</li>
+<li>上記の条件を満たす遅延が一定回数以上存在している</li>
+</ol>
+<p>また、各pair毎にprobabilityを設定しておき、遅延を挟むごとにprobabilityを下げる、とすることで、同一箇所に過剰に遅延を設定するということを防ぎます。</p>
+<p>これらの遅延挿入アルゴリズムはテストを実行しながら同時に実行できる、というのがポイントのひとつです。<br>これにより、遅延挿入箇所の決定のための独立したテスト実行は不要なので、テスト時間の短縮になります。<br>もちろん、複数回テストを実行させ、前回のテスト情報を次回に引き継ぐこともできます。</p>
+<p>実装については、.NETアプリケーション（C#やF#のプログラム）に限定されますが、理論的には他のタイプのアプリケーションにも使えるとしています。<br>また、実装はGithub上で公開されています。</p>
+
+
+<h2 id="評価"><a href="#評価" class="headerlink" title="評価"></a>評価</h2><p>1,657のMicrosoftで実際に開発しているアプリケーションのビルドプロセスに組込み、1,134箇所のバグを発見できたとしています。<br>false-positiveは存在しなく、いくつかのバグは実際のプロダクション環境で問題を引き起こしているものであったとしています。</p>
+<p>これらのバグの見つかったアプリケーションの内1000のモジュールとスモールベンチマークを用いて、他の手法とのパフォーマンスの比較も行っています。<br>実行時のオーバーヘッドは平均で33％ほどで、既存手法と比べてもかなり少なく、発見できたバグの数も上でした。</p>
+<p>この手法にはいくつかチューニングすべきパラメータが存在します（dangerous pairを決めるための間隔、HB関係を決定させるための回数など）。<br>これらについても、各パラメータとそれを増減させた際のバグ検出数とそのオーバーヘッドを調べて分析しています。</p>
+<h2 id="まとめ・感想"><a href="#まとめ・感想" class="headerlink" title="まとめ・感想"></a>まとめ・感想</h2><p>TSVDというMicrosoftの製品から並行実行時のデータ競合を検出した手法の紹介をしました。</p>
+<p>実は以前、並行プログラムのバグを検出するというテーマで研究していた時期があって、それだけに興味深い論文でした。<br>この手の話はどちらかというと綺麗なモデルを組んで論理的に検証する話が多く、それが故に制約も多く、実世界に持ち出すという話はあまり見ることがありませんでした。<br>論文全体的にあまり難しい論理の話はないのですが、やはり現実のアプリケーションで少ないコストでバグを見つけられた、というのはインパクトが大きかったのだと思います。<br>Microsoftは少し前に安全性の観点からRustを推すブログを発表していたりと近年、この手の安全性の分野に力を入れているように見えます。</p>
+<p>ところで、今回の対象としているようなバグはRustで書いていれば起きなかったのでしょうかね</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-12-29T15:00:00.000Z"><a href="/hexo/2019/12/30/this-year.html">2019-12-30</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2019/12/30/this-year.html">2019年の振り返り</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>今年は以前より取り組んできた組込みシステム上でのRustプログラミングで一定の成果が出せた。<br>他、ブログも去年より色々書けたし、Twitterのフォロワー数も伸びてきた。</p>
+<h2 id="今年の成果"><a href="#今年の成果" class="headerlink" title="今年の成果"></a>今年の成果</h2><h3 id="ブログ記事"><a href="#ブログ記事" class="headerlink" title="ブログ記事"></a>ブログ記事</h3><p>今年はこの記事を除いて12本のブログ記事を書いた。内2本は英語版を<a href="https://medium.com/@garasubo" target="_blank" rel="noopener">Medium</a>に投稿した。<br>去年は9本だったので、アウトプットの数は増えてきている。<br>また、その関連で各種LT会などに参加して、何回か発表もした。</p>
+<h3 id="自作OSプロジェクト"><a href="#自作OSプロジェクト" class="headerlink" title="自作OSプロジェクト"></a>自作OSプロジェクト</h3><p>今年、一番の成果はRustで組込みOSを書くという個人プロジェクトでとりあえず基本的な形が出来上がり、それを公開できたことだ。</p>
+
+<p>一応、今も機能追加を進めていて、<a href="/hexo/2019/05/15/erkos.html">以前のブログ</a>からだと簡易的なプロセス間通信が実装できた。<br>今はイーサーネットドライバの実装に着手し始めているが、まだ基本的なデバイスの初期化をようやく理解し始めたところなので、まだまだ時間はかかりそう。<br><a href="/hexo/2018/12/30/this-year.html">去年のまとめ</a>ではOLEDモジュールドライバの実装をしたいと言っていたが、それは流れてしまった。<br>正直、この先どういう機能を実装すべきか、というのは結構悩んでいて、というのは自分があまり実際の組込みOSに深く触れたことがないので、どういう機能がどういう構造であるべきなのか、というのがいまいち実感がわかない。<br>一旦、自作OSから離れて、既存の組込みOSで遊んでみる、というのはありなのかなあとぼんやりと計画はしている。</p>
+<h3 id="OSS活動"><a href="#OSS活動" class="headerlink" title="OSS活動"></a>OSS活動</h3><p>OSSのコントリビュートもちょくちょく始めるようにした。<br>組込みRust関連で気がついたことがあったときにPRを送った他、仕事でOSSのコントリビューションを業務時間内にやってもよい、と言われたのでRust製のブラウザエンジンのServoを触り始めている。</p>
+<a href="https://github.com/servo/servo" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://opengraph.githubassets.com/e34e8c013ec2175cbacac0f0691aa48c8d422c648caf296e9d775fdcc6b78c0c/servo/servo"></div><div class="descriptions"><div class="og-title">GitHub - servo/servo: The Servo Browser Engine</div><div class="og-description">The Servo Browser Engine. Contribute to servo/servo development by creating an account on GitHub.</div></div></div></a>
+<p>ブラウザエンジン開発はもちろん、デスクトップのGUIアプリの開発自体ほとんど経験がないので、学ぶべき内容は多い。<br>そのため、現状だと仕様書とにらめっこする時間の方が圧倒的に長く、今年は数行程度の簡単な修正しかできてないが、来年はもうちょっと大きめの変更もできるようになりたい。<br>今はIME周りの実装がまだまだ甘い、ということに気がついたのだが、これを修正するのはかなり大変そうで困っている。</p>
+<h3 id="競技プログラミング"><a href="#競技プログラミング" class="headerlink" title="競技プログラミング"></a>競技プログラミング</h3><p>競技プログラミングもちょくちょく参加するようにした。<br>AtCoderのBeginner Contestをメインで参加するほか、AtCoder Problemsという外部サービスに問題のおすすめ機能がついたので、そのオススメ問題を単体で解く、ということをした。</p>
+<a href="https://kenkoooo.com/atcoder" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">AtCoder Problems</div></div></div></a>
+<p>この推薦システムは結構優秀で頭の体操にはちょうどいいレベルの問題をちゃんと出してくれて、とても重宝している。<br>このサイトを運営してくださっている<a href="https://twitter.com/kenkoooo" target="_blank" rel="noopener">@kenkoooo</a>さんと、この推薦アルゴリズムを実装してくれた<a href="https://twitter.com/pepsin_amylase" target="_blank" rel="noopener">@pepsin_amylase</a>に圧倒的感謝。<br>その他、チームnegainoidoとして<a href="https://icfpcontest2019.github.io/" target="_blank" rel="noopener">ICFPC</a>に出て、一人チームとして<a href="/hexo/2019/09/26/isucon9.html">ISUCON</a>に出場した。<br>前者は去年と比べメンバーが一人欠けた状態だったものの、去年レベルの順位をとれたのでトータルとしてはよかったのかなあと思ったが、ISUCONは惨敗だったので悔しい。<br><a href="https://www.seccon.jp/2019/" target="_blank" rel="noopener">SECCON</a>はそもそも予選があることに気がつかず、参加できなかったという大失態を犯した。</p>
+<h2 id="心がけてたこと"><a href="#心がけてたこと" class="headerlink" title="心がけてたこと"></a>心がけてたこと</h2><p>仕事外でのインプット・アウトプットを増やす、というのが去年からの継続してきた目標なのだが、それに加えて心がけていたこととして</p>
+<ul>
+<li>SNS等での反応を必要以上に狙わない</li>
+<li>「精進」はしない<br>ということに実は気を配っていた。</li>
+</ul>
+<p>これは仕事以外のこういう活動というのをどうしてやっているか、というと一番の理由は自分がやりたいと思った分野であるわけで、それを見失ってしまうと精神衛生上よくないと思ったから。<br>そう考えると、SNS等で反応を貰いたい、という気持ち自体があるのはいいのだが、その優先順位があがりすぎると、そもそもマイナーな低レイヤー系のことをやめろ、という話になりかねないし、そもそも目立つ記事を書くみたいな分野は僕が得意な分野ではない。<br>「精進」という言葉については、なんとなく「つらいことに耐え抜いて努力する」という感じがして、楽しくないならやめればいいわけだし、自分は「精進」といえるほど努力するタイプでもない。<br>あと、つらいことに耐えるというのが目的になり始めると、その先の見返りへの欲求みたいなのも自然と大きくなる気がしたので、あまりにも気がすすまないときは素直に休むことにした。なので今年は「精進」していません。<br>とはいっても、もうちょっと生産ペースは上げていきたいなあ。</p>
+<h2 id="来年について"><a href="#来年について" class="headerlink" title="来年について"></a>来年について</h2><p>Rustでの組込み自作OSは一定の成果は上げられたので、これについてはまとまったドキュメントを書いて、機会があれば製本して技術書典あたりで販売したいと思っている。<br>自作OS作成そのものについては、イーサーネットドライバ周りをある程度作り込んだら、先述のとおり一回戦略を立て直すために別の既存のプロジェクトを触るという方向になると思う。</p>
+<p>ブログ記事も平均月一ペースで書けたので、来年はこれに加えて英語版も増やしていきたい。</p>
+<p>なお、今年から始まったGithub Sponsoredに登録成功したので、もし自分の活動を支援してくださる方がいらっしゃるならば是非お願いします。</p>
+<a href="https://github.com/sponsors/garasubo" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://avatars.githubusercontent.com/u/2667091?s=400&v=4"></div><div class="descriptions"><div class="og-title">Sponsor @garasubo on GitHub Sponsors</div><div class="og-description">Support garasubo’s open source work</div></div></div></a>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-12-06T15:00:00.000Z"><a href="/hexo/2019/12/07/this-year-in-rust.html">2019-12-07</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2019/12/07/this-year-in-rust.html">This Week in Rustで振り返る今年のRust</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>これは<a href="https://qiita.com/advent-calendar/2019/rust2" target="_blank" rel="noopener">Rustその2 Advent Calendar 2019</a>7日目の記事です。<br>去年も参加したRust Advent Calendarなのですが、今年は<a href="https://qiita.com/advent-calendar/2019/rust3" target="_blank" rel="noopener">その3</a>まであるようですね。Rustの人気が年々盛り上がっている証拠でしょうか。</p>
+<h2 id="This-Week-in-Rust"><a href="#This-Week-in-Rust" class="headerlink" title="This Week in Rust"></a>This Week in Rust</h2><p><a href="https://this-week-in-rust.org/" target="_blank" rel="noopener">This Week in Rust</a>とは、毎週Rust関連のブログ記事やRustコンパイラへの変更などを紹介してくれるニュースレターです。<br>すべて英語の記事なので、正直読むのがしんどいのですが、気になったタイトルがあったら読むようにしています。<br>今回は今年のThis Week in Rustで紹介された記事からいくつかピックアップして紹介して、今年のRustコミュニティの動向を振り返ってみようと思います。<br>なお、選んだ記事は自分の興味にものすごく影響を受けているため分野は偏り気味です。</p>
+<h2 id="Rustで既存プロダクトを置き換える話"><a href="#Rustで既存プロダクトを置き換える話" class="headerlink" title="Rustで既存プロダクトを置き換える話"></a>Rustで既存プロダクトを置き換える話</h2><p>C/C++やPythonで書かれたプロジェクトをRustで置き換えるという話をかなり見るようになりました。</p>
+
+<p>Pythonで書かれていたIoTプラットフォームをRustで置き換えたという話です。<br>スケールさせるためにより高速な言語に置き換えねばならなかったこと、様々な技術的負債が溜まってしまったという状況で、Rustに置き換えるという選択をとったようです。<br>当然、C/C++も候補に入りましたが、nullポインタやキャストのバグなど、言語の性質上起こり得るバグを<a href="https://medium.com/dwelo-r-d/abusing-fire-for-light-a6e6774289fd" target="_blank" rel="noopener">Part2</a>で紹介し、<br><a href="https://medium.com/dwelo-r-d/designing-around-our-flaws-e0fccd7070af" target="_blank" rel="noopener">Part3</a>でRustならそれが起こらないことを説明しています。</p>
+<p><a href="https://osfc.io/uploads/talk/paper/23/Oreboot.pdf" target="_blank" rel="noopener">Oreboot (PDF)</a></p>
+<p>CorebootというオープンソースのブートローダーをRustで書き直すOrebootというプロジェクトの紹介です。<br>Rustを選んだ理由から現在のOrebootの設計・進捗状況を説明しています。現状はQEMUのArmやRISC-Vのボードで動いているようです。</p>
+<a href="https://about.houqp.me/posts/rusty-c/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">How to make your C codebase rusty: rewriting keyboard firmware keymap in Rust</div><div class="og-description">Recently, my colleague introduced me to QMK 1, an open-source keyboard firmware. Like many non-trivia C projects, macro is heavily used ever…</div></div></div></a>
+<p>自作キーボードでおなじみのキーボード用ファームウェアのQMKをRustで書き直す話です。<br>C言語で書かれたものをどうRustで表現するか、RustとC言語を連携させるテクニックがまとまっていていいと思いました。</p>
+<h2 id="組込み分野での応用"><a href="#組込み分野での応用" class="headerlink" title="組込み分野での応用"></a>組込み分野での応用</h2><p>Rust Embeddedグループが去年発足したように、組込み分野への応用はRustの用途として注目されている分野のひとつです。</p>
+
+<p>Apache MynewtというリアルタイムOSを用いて、STM32 Blue Pillというマイクロコントローラ上でRustのアプリを動かす話です。<br>なぜC言語ではなくRustがいいのかというところから、実際にどのようにしてプロジェクトに組み込むのかまで詳しく説明されています。</p>
+<h2 id="C言語のとの併用"><a href="#C言語のとの併用" class="headerlink" title="C言語のとの併用"></a>C言語のとの併用</h2><p>Rustの魅力のひとつはC言語と互換性をもたせることができるため、Cで書かれたライブラリを呼び出したり、逆にC言語側からRustのライブラリを呼び出すこともできます。</p>
+<a href="http://hotforknowledge.com/2019/07/14/6-rust-the-new-c/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Rust as the new C. Part 1: building and combining native libs into C API</div><div class="og-description">Evaluating Rust as the common denominator of modern development</div></div></div></a>
+<p>RustのプロジェクトにC言語のライブラリをどのように取り込むか、という話です。<br>LMDB、Blosc、SQLiteという現実のライブラリをプロジェクトに取り込んでみて、ビルドの設定の仕方、機能の呼び出し方などを解説しています。</p>
+<h2 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h2><p>Microsoftが、多くのバグがメモリの安全性の問題に由来しているため、その解決策のひとつとしてRustを提案しているというブログが公開されました。</p>
+<a href="https://msrc-blog.microsoft.com/2019/07/16/a-proactive-approach-to-more-secure-code/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">A proactive approach to more secure code – Microsoft Security Response Center</div></div></div></a>
+
+<p>続くブログでは、なぜRustがC/C++の代わりとして注目しているかが説明されています。</p>
+
+<p>C/C++のように低レベルでのパフォーマンスコントロールができる一方で、C/C++より強力な安全性の保証をしてくれます。<br>また、メモリ関連の安全性を犯しにくい、型システムも強力で表現力が高いことなども理由に挙げられています。</p>
+<p>Amazonも去年、<a href="https://github.com/firecracker-microvm/firecracker" target="_blank" rel="noopener">Firecracker</a>というRust製のVMMをオープンソースプロジェクトとして公開し注目されましたが、様々な大企業がRustに注目しだしている、ということがわかります。</p>
+<h2 id="async-await"><a href="#async-await" class="headerlink" title="async/await"></a>async/await</h2><p>今年のRustの変更で一番大きな注目を集めたのはasync/awaitの追加でしょう。それに関連する記事もいくつか紹介はされていました。<br>が、自分自身がasync/awaitの仕様をまったく追えていないので、今回は紹介しないでおきます。</p>
+<p>Rustは進歩が早く、まだまだ学ぶことが多いですが、来年もRustをやっていきたいと思います。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-11-29T15:00:00.000Z"><a href="/hexo/2019/11/30/linux-perf.html">2019-11-30</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2019/11/30/linux-perf.html">論文紹介：An analysis of performance evolution of Linux&#39;s core operations</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>元論文：<a href="https://dl.acm.org/citation.cfm?id=3359640" target="_blank" rel="noopener">https://dl.acm.org/citation.cfm?id=3359640</a></p>
+<h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
+<li>タイトル：An analysis of performance evolution of Linux’s core operations</li>
+<li>著者： Xiang (Jenny) Ren, Kirk Rodrigues et al.</li>
+<li>会議：<a href="https://sosp19.rcs.uwaterloo.ca" target="_blank" rel="noopener">Proceedings of the 27th ACM Symposium on Operating Systems Principles (SOSP’19)</a></li>
+</ul>
+<p>SOSPという2年に一度のシステム系国際会議のトップカンファレンスのものです。トップカンファレンスだけあって毎回新しい手法をとんでもない実装量でこなす、みたいなとてつもない論文が多い印象なのですが、この論文は地道にLinuxのパフォーマンスの変化を観察し、その原因を探っていくという結構変わり種な論文な気がしました。</p>
+<p>Linux 3.0から3.19、4.0から4.20までのカーネルを用いてマイクロベンチマークで性能測定をして性能変化の原因を調査し、アプリケーションベンチマークでその変化が実アプリケーションに与える影響を調べましたという論文です。<br>実は、システムコールやコンテキストスイッチなどのカーネルのオペレーションのレイテンシは段々と大きくなっているということがわかりました。<br>これらの原因はセキュリティの強化、機能の追加、さらにはカーネルのコンフィグの設定ミスが原因であると突き止めました。<br>また、これらのパフォーマンス低下を緩和させるパッチや、コンフィグの設定を変えることでパフォーマンス低下を避けられることも示しています。</p>
+<h2 id="パフォーマンス低下の原因"><a href="#パフォーマンス低下の原因" class="headerlink" title="パフォーマンス低下の原因"></a>パフォーマンス低下の原因</h2><p>この論文で紹介されていた11の原因を簡単に見ていきます</p>
+<h3 id="セキュリティの強化"><a href="#セキュリティの強化" class="headerlink" title="セキュリティの強化"></a>セキュリティの強化</h3><p>CPUの脆弱性として話題になったMeltdownの対策として導入されたKPTIにより、マイクロベンチマークの性能は22％低下しています。<br>KPTI以前ではアドレス空間をカーネルとユーザー間で共有していたのですが、KPTIの導入により異なるページテーブルを使うようになりました。<br>その影響で、特権モードの切り替えのたびにTLBフラッシュが発生したため性能が大きく低下することとなりました。<br>その後、process context identifire (PCID)を利用することで、TLBフラッシュの範囲を限定することである程度この性能低下は緩和されましたが、PCID書き込みのためのシステムレジスタアクセスのオーバーヘッドも実はかなり大きく、一部のベンチマークでは逆にさらにスコアが下がることになってしまいました。</p>
+<p>Spectreの対策として導入されたRetpolineのパッチも性能に影響を与えています。Retpolineは間接分岐を書き換えることで分岐予測を誤らせるものですが、その影響で分岐予測が上手く働かず性能が低下してしまいます。<br>著者らは<code>select</code>システムコールの性能低下に注目し、<code>select</code>の中で31個もの間接分岐があることに注目し、これらを普通の分岐に書き換えることによって性能低下を抑えることに成功しています。</p>
+<p>SLABのフリーリストのランダム化も影響を与えています。SLABとは同じサイズのメモリ領域のリストを持っておきそれをカーネルオブジェクトのメモリアロケーションに使うというものですが、そのメモリ領域の順番をランダム化させておくことにより、万が一バッファオーバーフローなどの脆弱性があったときでも目的のオブジェクトを攻撃者にアクセスさせにくくさせることができます。<br>しかし、これはフリーリストのランダム化にかかる時間と離れたメモリ領域へのアクセスが増えることによるキャッシュミスの増加というオーバーヘッドを発生させてしまいます。</p>
+<p>同じくバッファオーバーフローを利用した攻撃の対策として導入されたhardened usercopyもオーバーヘッドを生んでいます。これはユーザー空間とカーネル空間間のコピーを行う際、カーネルのポインタを毎回チェックして不正なアクセスがないか検査するというものです。<br>このオーバーヘッド影響はどのようなデータタイプにアクセスするかによって異なります。</p>
+<h3 id="新しい機能導入"><a href="#新しい機能導入" class="headerlink" title="新しい機能導入"></a>新しい機能導入</h3><p>fault-aroundはページフォルト時に対象となったページへのマッピングだけではなく、その周辺のページについてもマッピングしておくことで、ページフォルトの数を減らそうというものです。<br>この変更はページアクセスの局所性を仮定したものですが、大きなファイルへのアクセスはランダムに行われがちでむしろ逆効果なのです。big-pagefaultというテストではこの変更により54%の性能低下が起きました。</p>
+<p>control group (cgroup) メモリコントローラーはcgroup毎のメモリ使用を管理する機能です。この機能はDockerなどのコンテナ型仮想化のために導入されたものです。<br>この変更によりそれぞれのページがcgroup毎に割り当てられ、ページのアロケーション・デアロケーション毎にオーバーヘッドが発生します。</p>
+<p>Transparent Huge Page (THP)は2MBのページを割り当てた後、必要に応じて別スレッドで4KBの通常のページに分割していくというものです。これはページテーブルのサイズを小さくし、TLBミスを少なくする効果があります。<br>しかし、2MB毎にページを割り当ててしまうことでフラグメンテーションが発生し、一部のベンチマークでは性能が低下します。</p>
+<p>Virtual machine monitor(VMM)などのために導入されたユーザー空間ページフォルトハンドリングは、ページフォルト時のエラーハンドリングをユーザー空間で行えるようにしたものです。<br>これはページフォルト時にそのページがユーザー空間で処理されるべきものなのかをチェックする必要があるため、オーバーヘッドを生みます。</p>
+<h3 id="コンフィギュレーションの変更"><a href="#コンフィギュレーションの変更" class="headerlink" title="コンフィギュレーションの変更"></a>コンフィギュレーションの変更</h3><p>Forced Context Tracking (FCT)はデバッグ用の機能で、CPUの利用率をトラッキングしたりするのに使われます。これが一部のバージョンで有効になってしまっていたため、パフォーマンスがその間は低下していました。</p>
+<p>Linux 3.14で導入されたパッチで、second-level TLBのサイズの認識ができるようになりました。それ以前だとサイズの認識ができなかったため、不必要なTLBフラッシュが発生していました。この機能が利用できるようになったのは、second-level TLBを積んだHaswellファミリーのプロセッサがリリースされてから6ヶ月もあとのことでした。</p>
+<p>CPU Idle Power-Stateサポートは、CPUをアイドル状態にする際のアイドル状態のレベルをコントロールするものです。このパッチが充てられる前は常にもっともレベルの高いアイドル状態に突入し、復帰までの時間がかかるためオーバーヘッドが余計にかかってしまっていました。<br>しかし、Xeonプロセッサ上でこのパッチがLTSカーネルで利用できるようになるまで時間がかかってしまい、導入前の間はオーバーヘッドが大きくなってしまっていました。</p>
+<h2 id="まとめ・感想"><a href="#まとめ・感想" class="headerlink" title="まとめ・感想"></a>まとめ・感想</h2><p>カーネルのオペレーションがだんだんと遅くなっていて、適切なパフォーマンスチューニングでそれらが緩和できることを示しました。<br>しかし一方で、このようなパフォーマンスチューニングは非常にコストがかかり、Linuxのように大量の変更が日々されているなかでこのようなことを行うのは難しいということも認めています。<br>実際、Googleのデータセンター用のカーネルは100人以上のエンジニアによってパフォーマンスチューニングが行われているそうです。</p>
+<p>OS開発の世界は厳しい！</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-09-25T15:00:00.000Z"><a href="/hexo/2019/09/26/isucon9.html">2019-09-26</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2019/09/26/isucon9.html">ISUCON9予選に参加しました</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>ISUCONというウェブアプリケーションを高速化させるというコンテストに参加しました。</p>
+
+<p><a href="/hexo/2018/09/17/isucon.html">去年も参加</a>しましたが、結果は惨敗でした。<br>今年もチーム名「ガラスボッチ」で参加しましたが、メンバーは僕一人でした。看板に偽りなし。使用言語はNodejs（Typescript）です。<br>今回は事前に準備を仕込む時間をあまり取れなくまた、メンバー一人ということもあり、結果はGoの初期実装にすら劣るとかいう悲惨な結果でした。</p>
+<h2 id="本戦中にやったこと"><a href="#本戦中にやったこと" class="headerlink" title="本戦中にやったこと"></a>本戦中にやったこと</h2><p>基本的にはMySQLのN+1クエリ問題の解消とCategoryをメモリにキャッシュすることくらいです。<br>マルチサーバー化も試みたのですが、アップロードの画像データの扱いと、MySQLの設定で躓いて手を出せませんでした。</p>
+<p>本番中は<a href="https://github.com/tkuchiki/alp" target="_blank" rel="noopener">alp</a>でアクセスログを解析してボトルネックを探りつつ改善という方針で行きました。<br>本番環境へのデプロイはrsyncコマンドを用いてやりました。リモートのgitレポジトリを仲介させるのは面倒くさい。<br>環境のセットアップとして前回用いた<a href="https://www.ansible.com/" target="_blank" rel="noopener">ansible</a>スクリプトに少々手を加えておいて、必要なツールがすぐに入るようにしておきました。</p>
+<h2 id="敗因分析"><a href="#敗因分析" class="headerlink" title="敗因分析"></a>敗因分析</h2><p>Nodejsの初期実装でのスコアは500程度なのに対して、Go言語での初期実装のスコアは2000ほどありました。<br>確かにGo言語のほうが一般に実行速度が速いのですが、それにしては遅すぎると思い分析してみました。<br>alpでの結果を見てみるとNodejsの場合、<code>/items/&lt;id&gt;.json</code>（<code>getItem</code>メソッド）が時々10倍以上のレベルで遅くなっていることがわかりました。<br>この関数ではSQLの呼び出しくらいしか動作が重くなりそうなものはなく、初期実装でのSQL文に大きな差はありません。<br>原因はNodejsはデフォルトではシングルプロセスで動作していることにありました。<a href="https://www.npmjs.com/package/cluster" target="_blank" rel="noopener"><code>cluster</code></a>でマルチプロセス化したところ性能が安定してGo並のパフォーマンスになることが確認できました。<br>普段、ブラウザで動くフロントエンドのJavascriptしか触っていなかったため、このへんの知識が欠落していたのは痛かったです。</p>
+<p>マルチサーバー化に失敗した原因ですが、MySQLのユーザー権限設定はIPアドレスベースで行えることを忘れていて、デフォルトではlocalhostからのアクセスしか容認していなかったからでした</p>
+<a href="https://dev.mysql.com/doc/refman/5.7/en/grant.html" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">MySQL :: MySQL 5.7 Reference Manual :: 13.7.1.4 GRANT Statement</div></div></div></a>
+<p>また、画像ファイルのアップロードですが、画像アップロードと提供をするサーバーを1つに絞ってしまうか、nginxの<code>try_files</code>をつかうことで回避が可能かと思われます</p>
+<a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#try_files" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Module ngx_http_core_module</div></div></div></a>
+<p>今回はnetdataでCPU使用率がかなり厳しいことが分かっていたので、マルチサーバー化できなかったのは痛手でした。練習不足ですね。</p>
+<p>外部APIを用いて通信している部分もあるのですが、そのうち多くは不要な呼び出しだったらしく、そこにも手を回す必要がありました。<br>サーバーをhttp2対応させることでもパフォーマンスが向上できたようです。http2対応は考えたのですが、効果がどれほどか自信がなく後回しにしてました。nginxの設定をいじり、アプリケーション側の初期設定を変えて、あと必要に応じてリクエストハンドラの型を変更すればできたので、とりあえずやっておいたほうがよかったかもしれません。</p>
+<p>また、bycryptによるパスワード認証が重い、という問題もあります。 実際、ログイン部分の初期実装のレスポンスタイムは他のAPIと比べて高く、特にNodejsの場合、Goに比べてさらに2倍ほど遅い。<br>問題の制約として「パスワードを平文で保存する」ことが禁止されていました。<br>この解決策としては、ログイン専用サーバーをつくってしまい、CPU負荷を分散するという方法が想定解の1つだったようですが、運営の意図的にはシーザー暗号レベルの軽量なハッシュ関数での保存も想定解だったようです。<br>ただし、この「平文で保存する」という文言はかなり曖昧で、何を持って平文保存ではないかが明確でなく、「平文に適当な文字を足して格納する」という方法をとったために失格になりかけたチームがありました。<br>暗号理論などの世界で「平文ではない」とは「平文とは一致しない」だけで十分らしいですが、問題の文脈、すなわちウェブアプリケーションの開発においてカジュアルに「平文で保存しない」といわれたら、「DBのデータが盗まれても大丈夫なような暗号化を施せ」なのかなと自分は考えて、暗号のアルゴリズムを変えるにしても同程度の攻撃耐性を持つものにしか変えられないだろうと考えていました。<br>シーザー暗号のようなアルゴリズムの場合、DBから例えば”abcdefghijk…”といったパスワードがどうハッシュ化されているかを確認する、といった方法で簡単に平文が取得できてしまうという点で、「平文で保存する」と同等なのではという判断です。<br>結局は今回は運営が謝罪して、この制約による失格は全て取り消されましたが、競技者側からするとルールが曖昧な場合、実装の単純さや効果の大きさをとりギリギリを攻めるか、十分に安全をとって最適化を諦めるかは難しい判断です。<br>ISUCONに限らず、競技のルールにはどうしても曖昧性の残り、最後は運営の主観的な采配になってしまうのは仕方のないことだとは思うのですが、今後はもう少しルールを明確化する・（競技性を失わない範囲で）ルールの一部を事前公開してFAQを募るなど、不公平感のない対策があるといいと思いました。</p>
+<h2 id="NodejsでISUCONに勝てるか"><a href="#NodejsでISUCONに勝てるか" class="headerlink" title="NodejsでISUCONに勝てるか"></a>NodejsでISUCONに勝てるか</h2><p>今回、予選参加者のうちNodejsを使っているチームはそこそこいたようですが、決勝にはどのチームをいけていません。決勝に進んだチームではGo言語が圧倒的です。<br>以前からISUCONはGo言語が有利ということは言われていて、前回予選では他の言語を用いたチームもかなり健闘していたのですが、今回はGo言語の強さが色濃く出たのかなあという印象を受けました。<br>bycryptの実行速度はおそらくGoが有利だっただろうし、Nodejsの場合、ISUCONでよく用いられるメモリ上へのキャッシュ化もマルチプロセスするとプロセス間でキャッシュが共有できなくなるので厳しいのかなと思います。<br>私の場合は極端な準備不足だったし、メンバーも一人のみという舐めきった構成だったのでまずはそこをなんとかしなければなのですが…<br>（今年の予選1位と2位は一人チームだったらしいですが、よほど実装力に自信がない限り一人で勝つのは無理でしょう）</p>
+<p>来年開催されるかは未定のようですが、開催されるのであればRustかScalaでの初期実装があるとうれしい</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-07-20T15:00:00.000Z"><a href="/hexo/2019/07/21/unikernel.html">2019-07-21</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2019/07/21/unikernel.html">論文紹介：A Binary-Compatible Unikernel ー Unikernelの解説も添えて</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>元論文：<a href="https://dl.acm.org/citation.cfm?id=3313817" target="_blank" rel="noopener">https://dl.acm.org/citation.cfm?id=3313817</a></p>
+<p>Linuxアプリケーションをそのまま動かせるバイナリコンパチブルなUnikernelを構築しました、という話です。<br><a href="/hexo/2019/06/30/lightvm.html">前回の記事</a>に引き続きUnikernel関連な話題ですが、意外と自分のブログではUnikernelについての話題を触れていなかったので関連論文も合わせて紹介したいと思います。</p>
+<h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
+<li>タイトル：A binary-compatible unikernel</li>
+<li>著者：Pierre Olivier, Pierre Olivier, Pierre Olivier et. al.</li>
+<li>会議：Proceedings of the 15th ACM SIGPLAN/SIGOPS International Conference on Virtual Execution Environments (VEE 2019)</li>
+</ul>
+<p>仮想環境関連のトップカンファレンスであるVEEでの論文です。</p>
+<h2 id="Unikernelについて"><a href="#Unikernelについて" class="headerlink" title="Unikernelについて"></a>Unikernelについて</h2><p>Unikernelという概念が初めてでてきたのはASPLOS 2013でのMirageOSの論文です。<br><a href="https://dl.acm.org/citation.cfm?id=2451167" target="_blank" rel="noopener">Unikernels: library operating systems for the cloud</a><br>仮想環境上でアプリケーションを走らせるために、アプリケーションごとに独立した仮想Linuxマシンを立ち上げるのは、どうしてもたくさんの計算資源を消費してしまいます。<br>しかし、Dockerなどのコンテナ仮想化では、特にマルチテナントな仮想環境ではセキュリティの懸念が残ります。<br>そこで彼らのMirageOS、アプリケーションを走らせるためのOSをライブラリとして直接リンクさせるライブラリOS形式を用います。<br>通常、OSは複数のアプリケーションを動かすために計算資源の仮想化を行うわけですが、シングルアプリケーションのためならそのような抽象化レイヤーはいらないという考えです。<br>ライブラリOSの概念自体は古くからあり、SOSP ‘95で発表された<a href="https://dl.acm.org/citation.cfm?id=224076" target="_blank" rel="noopener">Exokernel</a>でも用いられている概念です。<br>ただし、当時はあまりにも極端すぎるアプローチで、特にそのライブラリOS用のデバイスドライバは個別で開発する必要がありました。<br>しかし、仮想環境上ならば、デバイスは仮想デバイスという形でVMM側から共通のインターフェースで与えられるので、仮想デバイス用のドライバさえつくってしまえばこの問題をクリアできます。<br>要するに、計算資源の仮想化をVMM側に完全に任せることで上に乗っかるOSはさほどがんばる必要がない、という考え方です。<br>このアプローチはかなり強力で、評価では起動時間・バイナリサイズを大幅に削減することが示されています。これはシステムコールが関数呼び出しとして実現できる・必要な関数のみリンクさせることでサイズを小さくできるなどによるものです。<br>MirageOSはOCamlで書かれていてGCのコストや型安全性の保障のためのオーバーヘッドがあるはずですが、それを上回るメリットがMirageOSの設計にはあったというわけです。</p>
+<p>MirageOSには１つ大きな問題があり、それはアプリケーションをOCamlでMirageOS用に書き直さなければならない、ということです。<br>彼らの主張としては、今までの型安全ではない言語でかかれたシステムはバグを含んでいることがしばしばあるので、むしろ積極的に書き直すべきだという立場をとっています。<br>一理あるかもしれませんが、やはり何もかも今までの資産を切り捨てるというのは難しいのがUnikernelの課題としてありました。</p>
+<p>Unikernelやそれに類似したシステムは今までいろいろと提案されてきました。<br>Usenix ATC ‘14で発表された<a href="https://www.usenix.org/node/184012" target="_blank" rel="noopener">OSv</a>では、Linux ABIを提供することでLinuxアプリケーションを動かしたり、JVMを提供したりと、より広く使われている言語をサポートしていますが、アプリケーションそのものは再ビルドする必要があります。<br><a href="http://rumpkernel.org/" target="_blank" rel="noopener">Rumpkernel</a>はNetBSDのデバイスドライバを抽出して、OSなしでもアプリケーションで使うことができるというものですが、これもアプリケーションは再ビルドする必要がありました。<br>つまりこれらの手法はソースコードが入手できることが前提のもので、コンパイル済みのバイナリはサポートできません。</p>
+<p>Unikernelを用いたシステムとしては以前紹介した<a href="/hexo/2015/12/12/advent.html">Jitsu</a>や前回のLightVMの論文でもいくつか提案はされています。<br>Unikernelの小さいバイナリサイズ・実行オーバーヘッドの少なさがあってのシステムなのですが、アプリケーション構築のためのエンジニアリングコストをいかに小さくできるか、という課題があったわけです。<br>LightVMの論文ではTinyxというLinuxディストリビューションを必要最低限に小型化する方法が提案されていましたが、この形式ではUnikernelの恩恵はあまり得られず、論文でもこれは折衷案であるということを認めていました。</p>
+<h2 id="提案手法：HermiTux"><a href="#提案手法：HermiTux" class="headerlink" title="提案手法：HermiTux"></a>提案手法：HermiTux</h2><p>彼らはこのアプリケーションの移植コストというものを減らすために、再ビルドなしで完全なLinuxでのバイナリコンパチビリティを保ちつつUnikernelの恩恵も得られるものという手法を提案しています。<br>提案手法のプロトタイプをHermiTuxと名付けています。これはHermitCoreというUnikernelをベースにつくられているからです。</p>
+<p>HermiTuxはLinuxのABIのルールに従い、ロードおよびランタイムにエミュレートしてあげる必要があります。<br>ソースコードの入手を前提としていないため、Linuxシステムの呼び出しを事前に置き換えておいたり、違うライブラリをリンクすることはできません。<br>また、アプリケーションはライブラリを動的にも静的にもリンクしてある可能性があるので、その両方のパターンを考慮しなければなりません。<br>HermiTuxでは、uHyveという軽量なハイパーバイザをVMM上（今回はKVMを用いている）をまずは知らせ、その上でLinuxアプリケーションとHermiTuxのカーネルを動かしています。</p>
+<p>ロードの仕方も論文には書かれていますが、Linuxシステムコールをどう処理するかが特におもしろかったので、今回はそこだけを見ていきます。<br>システムコールハンドラは通常であれば、特権レベルの切り替えが発生するのですが、HermiTuxではその必要がありません。そのため、その切り替えがない分、システムコールを速く処理できます。<br>しかし、呼び出しそのものはsyscall命令によって行われているため、普通の関数呼び出しとしてい実現される通常のUnikernelよりはどうしても遅くなってしまいます。動的にCライブラリがリンクされている場合は、Cライブラリそのものの中にあるシステムコールを予め関数呼び出しに置き換えることによりこの問題を回避できます。<br>Cライブラリ実装のひとつでであるMuslはシステムコールがマクロを経由して呼び出されているため、<a href="http://coccinelle.lip6.fr/" target="_blank" rel="noopener">Coccinelle</a>というコード変換ツールを使い自動的に置き換えられるとしています。</p>
+<p>静的にリンクされている場合は、実行時にバイナリを置き換えるというテクニックを用いています。x86の命令は残念なことに可変長でsyscallは２バイト、通常の関数呼び出しであるcall命令は5バイトです。<br>そのため、syscall命令の次の命令までまとめて別のスニペットへのjmp命令として置き換えて、スニペット中で関数呼び出しと次の命令を実行して戻ってくるという方法で実現されています。</p>
+<p>ひとつの問題として、システムコールの種類は非常に多く、すべてサポートするのは大変ということです。この研究でもすべてのシステムコールはサポートしきれていませんが、それでもいくつかのメジャーなアプリケーションをサポートできています。<br>システムコールのサポートを追加していくのは実装コストだけでなく、カーネルサイズの増大も引き起こします。そこでこの研究ではそれぞれのシステムコールをモジュール化し、必要なシステムコールのみをカーネルに含められるようにしています。<br>問題はアプリケーションがどのシステムコールを使うかです。straceなどのツールで実際にどのシステムコールが呼ばれるかを解析するのは、そのテスト実行のコードカバレッジに依存するため安全ではありません。<br>静的にライブラリがリンクされている場合、静的解析を行うことでかなりの部分を解析することができます。動的にリンクされる場合は、どのライブラリ関数が呼ばれているかを解析することにより、その関数から呼ばれているシステムコールを解析することにより特定することができます。<br>これらのテクニックにより大幅にカーネルサイズを減らせます。</p>
+<p>また、HermiTux用のデバッガとプロファイラといった開発ツールのサポートも行われています。</p>
+<h2 id="評価"><a href="#評価" class="headerlink" title="評価"></a>評価</h2><p>評価では、通常のLinux VM、Dockerコンテナ、OSv、Rumprunと各種ベンチマークを用いた比較を行っています。<br>ベンチマークにはLMbench、<a href="https://parsec.cs.princeton.edu/" target="_blank" rel="noopener">PARSEC</a>、redis、SQLiteなどが用いられています。<br>Hello Worldアプリケーションではバイナリサイズ・起動時間・メモリ使用量を大幅に減らせることが示されていて、他のベンチマークのパフォーマンスでもかなりの性能を示しています。</p>
+<h2 id="まとめ・感想"><a href="#まとめ・感想" class="headerlink" title="まとめ・感想"></a>まとめ・感想</h2><p>Linuxアプリケーションをバイナリコンパチブルで動かせるHermiTuxの手法について解説しました。</p>
+<p>Unikernelはかなり攻めた手法でなかなか実運用されているケースは聞かないですが、段々とその活用の仕方と移植コストの軽減策が出てきていて非常におもしろいですね。<br>将来、コンテナ型仮想化に代わる選択肢として広く使われることになるのか楽しみです。</p>
+<p>Unikernelについてもっと掘り下げて知りたい方は、<a href="https://en.wikipedia.org/wiki/Unikernel" target="_blank" rel="noopener">Wikipedia（英語）</a>でも記事になっている他、こちらのQitta記事とかがいいかもしれません。</p>
+
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+<nav id="pagination">
+  
+    <a href="/hexo/" class="alignleft prev">前の投稿</a>
+  
+  
+    <a href="/hexo/page/3/" class="alignright next">次の投稿</a>
+  
+  <div class="clearfix"></div>
+</nav></div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

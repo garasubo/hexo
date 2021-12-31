@@ -1,0 +1,333 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>X11環境でIMEの仮入力の情報を取得する | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="LinuxのX11向けのGUIアプリケーションでテキスト入力を扱いたい場合、IMEの存在を意識しなければならない（特に日本人ならば）。IMEなしならば、キーボードイベントを見て、そのキーのアルファベットをプリントするだけで済むが、IMEが存在する場合、IMEから送られてくる文字列をきちんと処理する必">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="X11環境でIMEの仮入力の情報を取得する">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="LinuxのX11向けのGUIアプリケーションでテキスト入力を扱いたい場合、IMEの存在を意識しなければならない（特に日本人ならば）。IMEなしならば、キーボードイベントを見て、そのキーのアルファベットをプリントするだけで済むが、IMEが存在する場合、IMEから送られてくる文字列をきちんと処理する必要がある。そのためには、X11のIMEフレームワークであるXIMの仕様を知る必要がある。 これらの仕">
+<meta name="keywords" content="x11">
+<meta property="og:type" content="article">
+<meta property="og:title" content="X11環境でIMEの仮入力の情報を取得する">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2020/01/25/xim.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="LinuxのX11向けのGUIアプリケーションでテキスト入力を扱いたい場合、IMEの存在を意識しなければならない（特に日本人ならば）。IMEなしならば、キーボードイベントを見て、そのキーのアルファベットをプリントするだけで済むが、IMEが存在する場合、IMEから送られてくる文字列をきちんと処理する必要がある。そのためには、X11のIMEフレームワークであるXIMの仕様を知る必要がある。 これらの仕">
+<meta property="og:locale" content="ja">
+<meta property="og:image" content="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-user-contents.imgix.net%2Fhttps%253A%252F%252Fcdn.qiita.com%252Fassets%252Fpublic%252Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png%3Fixlib%3Drb-4.0.0%26w%3D1200%26mark64%3DaHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9WElNJTI4WCUyMElucHV0JTIwTWV0aG9kJTI5JUU2JTk3JUE1JUU2JTlDJUFDJUU4JUFBJTlFJUU1JTg1JUE1JUU1JThBJTlCJUUzJTgxJUFFJUU2JUI1JTgxJUUzJTgyJThDJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9NTYmdHh0LWNsaXA9ZWxsaXBzaXMmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz0zYTgxYWNjY2I0MzNhZTExZGJmNWQyNWMxOTQ0ODBkZA%26mark-x%3D142%26mark-y%3D112%26s%3D2b6cc5396cd4aab6657dc7ed29050c03?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwYWk1NmdvJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz00NGExMWFjYTc0MWQ0OTZkMjhmNWRhZmE1NDg1OTg3OA&mark-x=142&mark-y=491&s=e25ba5ccb0682b415d15077d97166cd3">
+<meta property="og:image" content="https://github.githubassets.com/images/modules/gists/gist-og-image.png">
+<meta property="og:image" content="https://gitlab.gnome.org/uploads/-/system/project/avatar/665/gtk-logo.png">
+<meta property="og:updated_time" content="2020-01-25T05:53:18.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="X11環境でIMEの仮入力の情報を取得する">
+<meta name="twitter:description" content="LinuxのX11向けのGUIアプリケーションでテキスト入力を扱いたい場合、IMEの存在を意識しなければならない（特に日本人ならば）。IMEなしならば、キーボードイベントを見て、そのキーのアルファベットをプリントするだけで済むが、IMEが存在する場合、IMEから送られてくる文字列をきちんと処理する必要がある。そのためには、X11のIMEフレームワークであるXIMの仕様を知る必要がある。 これらの仕">
+<meta name="twitter:image" content="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-user-contents.imgix.net%2Fhttps%253A%252F%252Fcdn.qiita.com%252Fassets%252Fpublic%252Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png%3Fixlib%3Drb-4.0.0%26w%3D1200%26mark64%3DaHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9WElNJTI4WCUyMElucHV0JTIwTWV0aG9kJTI5JUU2JTk3JUE1JUU2JTlDJUFDJUU4JUFBJTlFJUU1JTg1JUE1JUU1JThBJTlCJUUzJTgxJUFFJUU2JUI1JTgxJUUzJTgyJThDJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9NTYmdHh0LWNsaXA9ZWxsaXBzaXMmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz0zYTgxYWNjY2I0MzNhZTExZGJmNWQyNWMxOTQ0ODBkZA%26mark-x%3D142%26mark-y%3D112%26s%3D2b6cc5396cd4aab6657dc7ed29050c03?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwYWk1NmdvJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz00NGExMWFjYTc0MWQ0OTZkMjhmNWRhZmE1NDg1OTg3OA&mark-x=142&mark-y=491&s=e25ba5ccb0682b415d15077d97166cd3">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2020-01-24T15:00:00.000Z"><a href="/hexo/2020/01/25/xim.html">2020-01-25</a></time>
+      
+      
+  
+    <h1 class="title">X11環境でIMEの仮入力の情報を取得する</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>LinuxのX11向けのGUIアプリケーションでテキスト入力を扱いたい場合、IMEの存在を意識しなければならない（特に日本人ならば）。<br>IMEなしならば、キーボードイベントを見て、そのキーのアルファベットをプリントするだけで済むが、IMEが存在する場合、IMEから送られてくる文字列をきちんと処理する必要がある。<br>そのためには、X11のIMEフレームワークであるXIMの仕様を知る必要がある。</p>
+<p>これらの仕様について解説し、実際のコードも紹介している記事はすでにある。</p>
+
+
+<p>上記の記事を参考にしたと思われる日本語の記事もある。</p>
+<a href="https://qiita.com/ai56go/items/63abe54f2504ecc940cd" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-user-contents.imgix.net%2Fhttps%253A%252F%252Fcdn.qiita.com%252Fassets%252Fpublic%252Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png%3Fixlib%3Drb-4.0.0%26w%3D1200%26mark64%3DaHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9WElNJTI4WCUyMElucHV0JTIwTWV0aG9kJTI5JUU2JTk3JUE1JUU2JTlDJUFDJUU4JUFBJTlFJUU1JTg1JUE1JUU1JThBJTlCJUUzJTgxJUFFJUU2JUI1JTgxJUUzJTgyJThDJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9NTYmdHh0LWNsaXA9ZWxsaXBzaXMmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz0zYTgxYWNjY2I0MzNhZTExZGJmNWQyNWMxOTQ0ODBkZA%26mark-x%3D142%26mark-y%3D112%26s%3D2b6cc5396cd4aab6657dc7ed29050c03?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwYWk1NmdvJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz00NGExMWFjYTc0MWQ0OTZkMjhmNWRhZmE1NDg1OTg3OA&mark-x=142&mark-y=491&s=e25ba5ccb0682b415d15077d97166cd3"></div><div class="descriptions"><div class="og-title">XIM(X Input Method)日本語入力の流れ - Qiita</div><div class="og-description">2018年3月 作成
+
+「X Window Systemの日本語入力はどうなっているんだろう？」
+そう考えた筆者が、日本語入力の流れを調べてみました。
+　C言語、X11プログラミングに関する文章です。
+　使用OS:ubuntu16.0...</div></div></div></a>
+
+<p>しかし、実はこれらの記事ではIME内で確定した文字列の情報しか取得しておらず、IME内でまだ確定していない仮入力状態の文字列（例えば変換前の元のひらがな）は取得できていない。<br>仮入力の文字列を取得できていないと、それらの文字列は当然描画できないし、例えば変換前の文字列を使った入力補完なんかも実装できない。<br>ある程度ちゃんとしたX11アプリケーションではこれらがちゃんとできていることからも想像がつく通り、XIMではこれらの状態を渡すインターフェースがある。</p>
+<p>先述のブログのコードのうち、IMとの通信のためのコンテキスト構造体であるXICをつくっているところを見てみよう。</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">XIC ic = XCreateIC(xim,</span><br><span class="line">                    <span class="comment">/* the following are in attr, val format, terminated by NULL */</span></span><br><span class="line"><span class="built_in">                    XNInputStyle,</span> XIMPreeditNothing | XIMStatusNothing,</span><br><span class="line"><span class="built_in">                    XNClientWindow,</span> win,</span><br><span class="line">                    NULL)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>XNInputStyle</code>の値として<code>XIMPreeditNothing | XIMStatusNothing</code>を指定している。この<code>XIMPreeditNothing</code>というところが仮入力状態をどう扱いたいかをしてするものである。<br><code>XIMPreeditNothing</code>は仮入力状態を渡すことなく動いてしまう。そのため、代わりに<code>XIMPreeditCallback</code>を指定しなければならない。<br>このオプションを使う場合、クライアント側に仮入力の状態が変化した際のコールバックを<code>XNPreeditAttributes</code>として渡してあげる必要がある。<br>コールバックには<code>XNPreeditStartCallback</code>、<code>XNPreeditDoneCallback</code>、<code>XNPreeditDrawCallback</code>、<code>XNPreeditCaretCallback</code>の4つがある。</p>
+<ul>
+<li><code>XNPreeditStartCallback</code>: 仮入力がスタートしたときに呼ばれる</li>
+<li><code>XNPreeditDoneCallback</code>: 仮入力が終了したときに呼ばれる</li>
+<li><code>XNPreeditDrawCallback</code>: 仮入力状態の文字が更新されたときに呼ばれる。呼び出されたときに変化した文字列の情報が渡されてくる。</li>
+<li><code>XNPreeditCaretCallback</code>: 入力カーソルの位置が変わったときに呼ばれる。呼び出されたときに入力カーソルの位置の変化情報が渡されてくる。</li>
+</ul>
+<p>これらを<code>XVaNestedList</code>型として<code>XNPreeditAttributes</code>として<code>XCreateIC</code>に渡す必要がある。各コールバックは<code>XIMCallback</code>構造体へのポインタとして定義される必要がある。<br><code>XIMCallback</code>構造体の定義は以下の通りである。</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">typedef struct &#123;</span><br><span class="line">    <span class="type">XPointer</span> client_data;</span><br><span class="line">    <span class="type">XIMProc</span> callback;</span><br><span class="line">&#125; <span class="type">XIMCallback</span>;</span><br></pre></td></tr></table></figure>
+
+<p>XPointerは<code>char *</code>、つまり汎用のポインタで、<code>XIMProc</code>の定義は</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">typedef void (*<span class="type">XIMProc</span>)(</span><br><span class="line">    <span class="type">XIM</span>,</span><br><span class="line">    <span class="type">XPointer</span>,</span><br><span class="line">    <span class="type">XPointer</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>となっている。第一引数は<code>XIM</code>型となっているが、<a href="https://www.x.org/releases/X11R7.5/doc/libX11/libX11.html" target="_blank" rel="noopener">こちらのドキュメント</a>では<code>XIC</code>型となっている。どちらが正しいかわからないが、今回はこれは使わないのでスルー。<br>第二引数は<code>XIMCallback</code>の<code>client_data</code>が渡されてきて、第三引数にはコールバックの種類によって必要な情報がサーバー側から送られてくる（以後、<code>call_data</code>と呼ぶ）。<code>XPointer</code>型を適宜キャストして使うことになる。</p>
+<p><code>XNPreeditStartCallback</code>では<code>call_data</code>には<code>NULL</code>が渡されてくる。<code>XIMProc</code>型の関数の返り値は<code>void</code>となっているが、実際はこのコールバックは仮入力文字列の長さの上限を返さなければならない。<code>-1</code>とした場合、上限はない。<br>今回はこのように定義する。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">preedit_start_callback</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    XIM xim,</span></span></span><br><span class="line"><span class="function"><span class="params">    XPointer client_data,</span></span></span><br><span class="line"><span class="function"><span class="params">    XPointer call_data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"preedit start\n"</span>);</span><br><span class="line">    <span class="comment">// no length limit</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>XNPreeditDoneCallback</code>も<code>call_data</code>は<code>NULL</code>が渡されてくる。今回は仮入力中の文字列を出力したいだけなので、特に何もしないでいいだろう。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">preedit_done_callback</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    XIM xim,</span></span></span><br><span class="line"><span class="function"><span class="params">    XPointer client_data,</span></span></span><br><span class="line"><span class="function"><span class="params">    XPointer call_data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"preedit done\n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>XNPreeditDrawCallback</code>が仮入力文字列に変化が起きた場合の処理である。<code>call_data</code>は<code>XIMPreeditDrawCallbackStruct</code>構造体として渡されてくる。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">XIMPreeditDrawCallbackStruct</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> caret;		<span class="comment">/* Cursor offset within pre-edit string */</span></span><br><span class="line">    <span class="keyword">int</span> chg_first;	<span class="comment">/* Starting change position */</span></span><br><span class="line">    <span class="keyword">int</span> chg_length;	<span class="comment">/* Length of the change in character count */</span></span><br><span class="line">    XIMText *text;</span><br><span class="line">&#125; XIMPreeditDrawCallbackStruct;</span><br></pre></td></tr></table></figure>
+
+<p>仮入力中のすべての文字が渡されてくるのではなく、変化した文字列の情報が渡されてくる。<br><code>chg_first</code>から<code>chg_length</code>文字数分が<code>text</code>に変化したという感じである。<br>ただし、筆者の環境のIMEは<code>chg_first</code>に常に0が渡されて、<code>text</code>に仮入力中の文字全部が渡されるような動作をした。<br>しかし、仕様の上では一部しか渡されてこない可能性もあるので、一応注意して実装する。<br>なお、文字数のカウントはバイト数ではなく、システムの文字コード（通常はUTF-8のはず）で解釈した場合の文字の数であることに注意。</p>
+<p><code>XIMText</code>型として文字列の情報が渡されてくる</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">typedef <span class="class"><span class="keyword">struct</span> <span class="title">_XIMText</span> &#123;</span></span><br><span class="line">    unsigned short length;</span><br><span class="line">    XIMFeedback *feedback;</span><br><span class="line">    Bool encoding_is_wchar;</span><br><span class="line">    <span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">	char *multi_byte;</span><br><span class="line">	wchar_t *wide_char;</span><br><span class="line">    &#125; string;</span><br><span class="line">&#125; XIMText;</span><br></pre></td></tr></table></figure>
+
+<p><code>encode_is_wchar</code>のとき、<code>wide_char</code>として文字列が来るが、今回は<code>multi_byte</code>で来る場合のみ扱う（gtkでも対応していない）。<br><code>length</code>はここでもバイト数ではなく、実際の文字の数である。<br><code>XIMFeedback</code>は各文字の装飾に関する情報だが、今回は割愛する。<br>なお、<code>text</code>は<code>NULL</code>になる場合があり、それは<code>chg_first</code>から<code>chg_length</code>までの文字が削除されたことを意味する。<br>C言語にはマルチバイト文字をいい感じに扱うライブラリがないため、真面目に仮入力中の文字すべてを正しく把握しようとすると結構面倒そうなので、今回は来た情報だけを標準出力に吐くだけにしておく</p>
+<figure class="highlight xl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">static void preedit_draw_callback(</span><br><span class="line">    XIM xim,</span><br><span class="line">    XPointer client_data,</span><br><span class="line">    XIMPreeditDrawCallbackStruct *call_data)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    printf(<span class="string">"callback\n"</span>);</span><br><span class="line">    XIMT<span class="function"><span class="title">ext</span> *xim_text = call_data-&gt;</span><span class="keyword">text</span>;</span><br><span class="line">    <span class="keyword">if</span> (xim_text != NULL)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="title">printf</span>("Draw callback string: %s, length: %d, first: %d, caret: %d\n", xim_text-&gt;</span><span class="function"><span class="title">string</span>.multi_byte, call_data-&gt;</span><span class="function"><span class="title">chg_length</span>, call_data-&gt;</span><span class="function"><span class="title">chg_first</span>, call_data-&gt;</span>caret);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="title">printf</span>("Draw callback string: (DELETED), length: %d, first: %d, caret: %d\n", call_data-&gt;</span><span class="function"><span class="title">chg_length</span>, call_data-&gt;</span><span class="function"><span class="title">chg_first</span>, call_data-&gt;</span>caret);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最後の<code>XNPreeditCaretCallback</code>は<code>call_data</code>として以下のような構造体として情報が来る。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">XIMPreeditCaretCallbackStruct</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> position;		 <span class="comment">/* Caret offset within pre-edit string */</span></span><br><span class="line">    XIMCaretDirection direction; <span class="comment">/* Caret moves direction */</span></span><br><span class="line">    XIMCaretStyle style;	 <span class="comment">/* Feedback of the caret */</span></span><br><span class="line">&#125; XIMPreeditCaretCallbackStruct;</span><br></pre></td></tr></table></figure>
+
+<p>カーソルのポジションと移動した方向、カーソルの表示の際の装飾情報が渡されてくる。文字列は変化していないので、文字列に関する情報はない。<br>以下のようなコールバック関数を定義しておく。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">preedit_caret_callback</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    XIM xim,</span></span></span><br><span class="line"><span class="function"><span class="params">    XPointer client_data,</span></span></span><br><span class="line"><span class="function"><span class="params">    XIMPreeditCaretCallbackStruct *call_data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"preedit caret\n"</span>);</span><br><span class="line">    <span class="keyword">if</span> (call_data != <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"direction: %d position: %d\n"</span>, call_data-&gt;direction, call_data-&gt;position);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>さて、これらを<code>XIC</code>をつくるときのパラメータとして渡すために、<code>XVaNestedList</code>として渡すには以下のようにする。</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">XIMCallback draw_callback<span class="comment">;</span></span><br><span class="line">draw_callback.client_data = NULL<span class="comment">;</span></span><br><span class="line">draw_callback.callback = (XIMProc)preedit_draw_callback<span class="comment">;</span></span><br><span class="line">XIMCallback start_callback<span class="comment">;</span></span><br><span class="line">start_callback.client_data = NULL<span class="comment">;</span></span><br><span class="line">start_callback.callback = (XIMProc)preedit_start_callback<span class="comment">;</span></span><br><span class="line">XIMCallback done_callback<span class="comment">;</span></span><br><span class="line">done_callback.client_data = NULL<span class="comment">;</span></span><br><span class="line">done_callback.callback = (XIMProc)preedit_done_callback<span class="comment">;</span></span><br><span class="line">XIMCallback caret_callback<span class="comment">;</span></span><br><span class="line">caret_callback.client_data = NULL<span class="comment">;</span></span><br><span class="line">caret_callback.callback = (XIMProc)preedit_caret_callback<span class="comment">;</span></span><br><span class="line">XVaNestedList preedit_attributes = XVaCreateNestedList(</span><br><span class="line">    <span class="number">0</span>,</span><br><span class="line">    XNPreeditStartCallback, &amp;start_callback,</span><br><span class="line">    XNPreeditDoneCallback, &amp;done_callback,</span><br><span class="line">    XNPreeditDrawCallback, &amp;draw_callback,</span><br><span class="line">    XNPreeditCaretCallback, &amp;caret_callback,</span><br><span class="line">    NULL)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+
+<p>今回は<code>client_data</code>を使わないので、<code>NULL</code>を渡しておいた。ポインタで渡しているだけなので、<code>XIMCallback</code>が<code>XIC</code>の生存中にちゃんと生きていなければならないことには注意<br>そして、<code>XIC</code>をつくる部分のコードを以下のように書き換える。</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">XIC ic = XCreateIC(xim,</span><br><span class="line"><span class="built_in">                   XNInputStyle,</span> XIMPreeditCallbacks | XIMStatusNothing,</span><br><span class="line"><span class="built_in">                   XNClientWindow,</span> win,</span><br><span class="line"><span class="built_in">                   XNPreeditAttributes,</span> preedit_attributes,</span><br><span class="line">                   NULL)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+
+<p>完成品はこちら</p>
+<a href="https://gist.github.com/garasubo/8ebb893f2af1950254df715fcf1de58e" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://github.githubassets.com/images/modules/gists/gist-og-image.png"></div><div class="descriptions"><div class="og-title">Example code to use preedit callbacks in XIM</div><div class="og-description">Example code to use preedit callbacks in XIM. GitHub Gist: instantly share code, notes, and snippets.</div></div></div></a>
+
+
+<p>実行例:</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">preedit start</span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> あ, <span class="string">length:</span> <span class="number">0</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">1</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> あい, <span class="string">length:</span> <span class="number">1</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">2</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> あいう, <span class="string">length:</span> <span class="number">2</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">3</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> あいうえ, <span class="string">length:</span> <span class="number">3</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">4</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> あいうえお, <span class="string">length:</span> <span class="number">4</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">5</span></span><br><span class="line">delievered <span class="string">string:</span> あいうえお</span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> (DELETED), <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">0</span></span><br><span class="line">preedit done</span><br><span class="line">preedit start</span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> お, <span class="string">length:</span> <span class="number">0</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">1</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おｎ, <span class="string">length:</span> <span class="number">1</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">2</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おの, <span class="string">length:</span> <span class="number">2</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">2</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのｒ, <span class="string">length:</span> <span class="number">2</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">3</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれ, <span class="string">length:</span> <span class="number">3</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">3</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれｎ, <span class="string">length:</span> <span class="number">3</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">4</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれの, <span class="string">length:</span> <span class="number">4</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">4</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれのｆ, <span class="string">length:</span> <span class="number">4</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">5</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれのふ, <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">5</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれのふｇ, <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">6</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれのふが, <span class="string">length:</span> <span class="number">6</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">6</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれのふがｋ, <span class="string">length:</span> <span class="number">6</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">7</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれのふがく, <span class="string">length:</span> <span class="number">7</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">7</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれのふがくｗ, <span class="string">length:</span> <span class="number">7</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">8</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれのふがくを, <span class="string">length:</span> <span class="number">8</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">8</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> 己の富嶽を, <span class="string">length:</span> <span class="number">8</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">0</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> 己の富嶽を, <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">2</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> 己の富嶽を, <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">0</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> おのれの富嶽を, <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">0</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> 己の富嶽を, <span class="string">length:</span> <span class="number">7</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">0</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> 己の富嶽を, <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">2</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> 己の富岳を, <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">2</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> 己のフガクを, <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">2</span></span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> 己の不学を, <span class="string">length:</span> <span class="number">6</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">2</span></span><br><span class="line">delievered <span class="string">string:</span> 己の不学を</span><br><span class="line">callback</span><br><span class="line">Draw callback <span class="string">string:</span> (DELETED), <span class="string">length:</span> <span class="number">5</span>, <span class="string">first:</span> <span class="number">0</span>, <span class="string">caret:</span> <span class="number">0</span></span><br><span class="line">preedit done</span><br></pre></td></tr></table></figure>
+
+<h2 id="リファレンス"><a href="#リファレンス" class="headerlink" title="リファレンス"></a>リファレンス</h2><p>一応、以上の仕様は以下のドキュメントにあるのだが、かなり古く読みにくい</p>
+<p>概念的な話はこちら。正直、読み方がわからなかった</p>
+<a href="https://www.x.org/releases/X11R7.6/doc/libX11/specs/XIM/xim.html" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">The Input Method Protocol</div><div class="og-description">This specifies a protocol between IM library and IM (Input Method) Server for internationalized text input, which is indepedent from any spe…</div></div></div></a>
+
+<p>こっちはXlibの実装の解説ではあるが、レイアウトがメチャクチャである</p>
+<p><a href="https://www.x.org/releases/X11R7.5/doc/libX11/libX11.html" target="_blank" rel="noopener">Xlib − C Language X Interface</a></p>
+<p>結局GTKの実装を参照するほうが楽であったが、GTK4（まだリリースはされていない）の最新版ではなんとXIMのサポートが削除されている。</p>
+<a href="https://gitlab.gnome.org/GNOME/gtk/merge_requests/1195" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://gitlab.gnome.org/uploads/-/system/project/avatar/665/gtk-logo.png"></div><div class="descriptions"><div class="og-title">Remove the XIM input method (!1195) · Merge requests · GNOME / gtk</div><div class="og-description">It&#39;s old and busted, and mostly broken in weird ways when it comes to extended input devices. All that XIM does, these days, is make a mess …</div></div></div></a>
+<p>GTK3までならちゃんと生きているので、そちらを参考にすると良い</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/x11/">x11</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

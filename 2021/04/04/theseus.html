@@ -1,0 +1,292 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>論文紹介： Theseus: an Experiment in Operating System Structure and State Management | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="先日、Kernel/VM探検隊 onlineというイベントにて、RustでOSを設計するという論文をまとめて紹介するというLTを行いました。
+
+
+しかし、10分間のプレゼンで3本の論文を紹介するとかいう、かなり無茶苦茶な発表だったので説明している箇所もかなり限定的で、解説全体として非常に雑なものにな">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="論文紹介： Theseus: an Experiment in Operating System Structure and State Management">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="先日、Kernel/VM探検隊 onlineというイベントにて、RustでOSを設計するという論文をまとめて紹介するというLTを行いました。   しかし、10分間のプレゼンで3本の論文を紹介するとかいう、かなり無茶苦茶な発表だったので説明している箇所もかなり限定的で、解説全体として非常に雑なものになってしまいました。そこでこの記事で、このLTで触れた論文の1つであるTheseusというOSについて">
+<meta name="keywords" content="osdev,paper">
+<meta property="og:type" content="article">
+<meta property="og:title" content="論文紹介： Theseus: an Experiment in Operating System Structure and State Management">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2021/04/04/theseus.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="先日、Kernel/VM探検隊 onlineというイベントにて、RustでOSを設計するという論文をまとめて紹介するというLTを行いました。   しかし、10分間のプレゼンで3本の論文を紹介するとかいう、かなり無茶苦茶な発表だったので説明している箇所もかなり限定的で、解説全体として非常に雑なものになってしまいました。そこでこの記事で、このLTで触れた論文の1つであるTheseusというOSについて">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2021-04-04T11:28:57.132Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="論文紹介： Theseus: an Experiment in Operating System Structure and State Management">
+<meta name="twitter:description" content="先日、Kernel/VM探検隊 onlineというイベントにて、RustでOSを設計するという論文をまとめて紹介するというLTを行いました。   しかし、10分間のプレゼンで3本の論文を紹介するとかいう、かなり無茶苦茶な発表だったので説明している箇所もかなり限定的で、解説全体として非常に雑なものになってしまいました。そこでこの記事で、このLTで触れた論文の1つであるTheseusというOSについて">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2021-04-03T15:00:00.000Z"><a href="/hexo/2021/04/04/theseus.html">2021-04-04</a></time>
+      
+      
+  
+    <h1 class="title">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>先日、<a href="https://connpass.com/event/201059/" target="_blank" rel="noopener">Kernel/VM探検隊 online</a>というイベントにて、RustでOSを設計するという論文をまとめて紹介するというLTを行いました。</p>
+
+
+<p>しかし、10分間のプレゼンで3本の論文を紹介するとかいう、かなり無茶苦茶な発表だったので説明している箇所もかなり限定的で、解説全体として非常に雑なものになってしまいました。<br>そこでこの記事で、このLTで触れた論文の1つであるTheseusというOSについて説明したものをもう少し詳しくみていきたいと思います。</p>
+<h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
+<li>タイトル： Theseus: an Experiment in Operating System Structure and State Management</li>
+<li>著者： Kevin Boos, Namitha Liyanage, Ramla Ijaz, Lin Zhong</li>
+<li>会議： 14th USENIX Symposium on Operating Systems Design and Implementation (OSDI ‘20)</li>
+</ul>
+<a href="https://www.usenix.org/conference/osdi20/presentation/boos" class="link-preview" target="_blank" rel="noopener"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Theseus: an Experiment in Operating System Structure and State Management | USENIX</div></div></div></a>
+
+<p>USENIX系会議でOS関連のトップカンファレンスの一つであるOSDIの論文です。<br>先日のLTで紹介したうちのReadLeafに関する論文もこの年のこの会議で発表されたものです。</p>
+<p>この論文では、OSのステートスピルというものを減らすことを目的としたOS設計を模索しています。<br>ステートスピルとは、あるコンポーネントの変更可能なステートが他のコンポーネントとのインタラクションでステートの一部が他のコンポーネント内に残ってしまい、その漏れたステートを持ったコンポーネントがクラッシュしてしまうことで、もともとのコンポーネントもその影響を受けてクラッシュするというものです。<br>このステートスピルを減らすOS設計のために、Rustのコンパイラレベルで保証される性質をOSの設計でもなるべく保つことで、ランタイムでおこなうべきことを減らせる、というのがこの論文のポイントです。</p>
+<p>ちなみに「Theseus」の読み方なのですが、ギリシア神話が元ネタなのですが、日本では「テセウス」で知られていますが、著者らは英語読みで「シーシアス」、というように喋っていたので、自分もLTでは「シーシアス」と紹介しました。</p>
+<h2 id="Theseusのデザインの原則"><a href="#Theseusのデザインの原則" class="headerlink" title="Theseusのデザインの原則"></a>Theseusのデザインの原則</h2><p>Theseusはcellと呼ばれるソフトウェアコンポーネントの組み合わせにより成り立ちます（Rustの<code>std::cell</code>とは関係ありません）。<br>デザインの原則として以下の3つを挙げています。</p>
+<ol>
+<li>すべてのcellはランタイムで永続的な（runtime-persistent）境界を持つ</li>
+<li>言語とコンパイラの力を最大限活かす</li>
+<li>cell間のステートスピルをなくす</li>
+</ol>
+<p>順にどういうことかをみていきます</p>
+<p>cellはRustのクレートとして実装され、実行時にはcell間の依存関係についてのメタデータとともにロードされます。<br>ロードされたcellはCellNamespace上で管理されます。<br>各cellをクレートとして実装することで、そのクレートのオブジェクトファイルとcellが直接対応することになります。<br>cellの依存関係はクレートの依存関係と等しくなるので、循環した依存関係は発生しません。<br>このクレートして実装された境界により、後述するcellスワッピングやエラーからの復帰が簡略化されます。</p>
+<p>2つ目の原則である言語とコンパイラのもたらす安全性の保証を活かすために、Theseusのランタイムモデルは言語のランタイムモデルと同じように、シングルアドレススペースで（同じメモリ領域に対して複数のアドレスをマッピングしたりしない）、単一の特権レベルで（途中で実行モードが変わったりしない）、単一のヒープ（グローバルアロケータしか使わない）で実行されるようになっています。<br>これらにより、コンパイル時に行われる型やライフタイムなどの不変条件のチェックをそのまま活用することができ、OS的に他の仕組みを導入する必要がありません。<br>Rustが保証してくれていない性質としてリソースのリーク（resource leakage）の問題があります。実はRustはメモリリークが起きないことは保証してくれません（例えば<code>std::rc::RC</code>で循環参照をつくるとメモリリークになります）。<br>ただし、ここでのリソースリークは広義のメモリリークというより、タスクがなんらかのオブジェクトを抱えたままエラーで異常終了する、といったケースを考えているようです。<br>これを防ぐために、Theseusではクリーンアップのロジックはすべて<code>Drop</code>ハンドラで実装することにし、独自のスタックアンワインディングを実装することで異常終了した場合でもリソースが解放されるようにしています。<br>このスタックアンワインディングで使う情報はすべてコンパイル時に生成されるので、実行時にコストがかかることはありません。</p>
+<p>3つ目の原則であるステートスピルをなくすために、Theseusではopaque exportationという仕組みでクライアント・サーバー間で通信します。従来の場合は、サーバー側でステートを持ちその進捗とかを管理しますが、Theseusではクライアント側にそのようなステートは輸出し、所有権がクライアント側に移ります（exportation）。<br>一方でサーバー側のプライベートなステートは型安全性により守られます（opaque）。<br>こうすることで、クライアント側が所有権を持つため、クリーンアップのロジックも当然クライアント側で自動で行われるので、あえて実装する必要がなくなります。<br>複数クライアントでステートを共有する場合、<code>Arc</code>などのリファレンスカウントを持つオブジェクトを使いますが、このような場合、ステートはヒープ上におかれることになります。<br>これはヒープへのステートスピルのように見えますが、このようなヒープアロケーションそのものは<code>String</code>のようなオブジェクトをつくるときにも起こるのでそもそも避け得ないものであり、ヒープアロケーションを表す<code>Arc</code>などのオブジェクトの所有権はクライアントが持つことになり、そのオブジェクトを辿っていけばヒープにアロケートされたオブジェクトによるステートスピルも検出できるので、ヒープそのものの内部状態を考える必要はない、としています。</p>
+<h2 id="具体例"><a href="#具体例" class="headerlink" title="具体例"></a>具体例</h2><p>原則２、３をLTのスライドには入れたが、発表時間の都合上吹っ飛ばしたメモリ管理の例で見てみましょう。</p>
+<p>Theseusでは<code>MappedPage</code>型で仮想メモリを管理しています。シングルアドレススペースを実現するために、<code>MappedPage</code>型の所有権を保有することが対応するページとフレームの所有権を保有することを意味します。<br>よって、複数からマップされることはページとフレームの所有権を複数箇所で保有することを意味してしまうため、コンパイル時に禁止されます。<br>また、このアロケートされた領域は<code>Drop</code>ハンドラでしか解放されません。これにより、ライフタイムが尽きたときのみページとフレームが解放されるので、use-after-freeのようなバグを防ぐことができます。<br>また、writableやexecutableかも、それぞれ専用の型を用意することで、型レベルで制御しています。<br>この<code>MappedPage</code>オブジェクトをopaque exportationでは所有権ごとクライアントが受け取ることになります。サーバー側は使われている仮想メモリエリア（VMA）のリストを管理するということは必要ありません。</p>
+<h2 id="CellスワッピングによるLive-Evolution"><a href="#CellスワッピングによるLive-Evolution" class="headerlink" title="CellスワッピングによるLive Evolution"></a>CellスワッピングによるLive Evolution</h2><p>Theseusは<code>nano_core</code>と呼ばれる他のcellが動的にロードされていき、cellスワッピングという仕組みで機能を拡張していきます。<br>6章で詳しく説明されているのですが、文章を書くのが疲れたので、このブログではスキップします。</p>
+<h2 id="実験・評価"><a href="#実験・評価" class="headerlink" title="実験・評価"></a>実験・評価</h2><p>CellスワッピングによるLive Evolutionにより、複数のスケジューラを切り替えたり、ネットワーク越しのアップデート機能などを実際に実装しています。</p>
+<p>フォルトリカバリーの仕組みがちゃんと動くかの評価のためにQEMUのエミュレーターで実行時にランダムにフォルトを挿入するという大胆な方法で実験し、MINIX3と比べクラッシュすることが少ないことを確かめています。</p>
+<p>マイクロベンチマークなどを用い、オーバーヘッドが十分に少ないことを確かめていますが、Linux並みの機能を実現しているわけではないことには留意する必要があります。</p>
+<h2 id="限界"><a href="#限界" class="headerlink" title="限界"></a>限界</h2><p>低レイヤーの世界ではどうしても<code>unsafe</code>を使うことが必要になります。<code>unsafe</code>コードは独立性を損ねる場合もあるので問題です。<br>また、Rustのコンパイラとcore/allocライブラリを信用しているのでそれらのsoundness holesの影響を受けてしまいます。<br>Rust言語そのものの性質に大きく依存しているので、他の言語のコンポーネントは残念ながら使えません。</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>いかがでしたか？ちゃんと理解できましたか？僕も正直理解できているか自信がない箇所が結構あります。<br>が、Rustを活用することでのOS設計のメリットというのが垣間見えたと思います。</p>
+<p>Theseusのコードはオープンソースになっていて、実装についてのドキュメントもあるので、そちらも目を通してみるとより理解できるのではないでしょうか。自分はまだ手が回っていませんが…</p>
+<p><a href="https://book.mynavi.jp/ec/products/detail/id=121220" target="_blank" rel="noopener">自作OSに関する新しい書籍</a>が発売されるなど、自作OSに対する関心が高まりつつある（？）今日この頃ですが、従来のOSとは違ったアプローチのOSを探求するというのもまたおもしろいと思います。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/osdev/">osdev</a>, <a href="/hexo/tags/paper/">paper</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

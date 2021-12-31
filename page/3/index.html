@@ -1,0 +1,753 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Page 3 | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta property="og:type" content="website">
+<meta property="og:title" content="己の不学を恥じる">
+<meta property="og:url" content="http://garasubo.github.io/hexo/page/3/index.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:locale" content="ja">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="己の不学を恥じる">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-06-29T15:00:00.000Z"><a href="/hexo/2019/06/30/lightvm.html">2019-06-30</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2019/06/30/lightvm.html">論文紹介：My VM is Lighter (and Safer) than your Container</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>元論文: <a href="https://dl.acm.org/citation.cfm?id=3132763" target="_blank" rel="noopener">https://dl.acm.org/citation.cfm?id=3132763</a></p>
+<p>VM（仮想マシン）をたくさん立ち上げたいとき、VMM（仮想マシンモニタ、ハイパーバイザ）のどういうところがボトルネックになるかを分析した上で、VMMを改善し、Unikernelを用いてコンテナシステムより軽量で（かつセキュアな）システムを構築しました、というような話です。</p>
+<h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
+<li>タイトル：My VM is Lighter (and Safer) than your Container</li>
+<li>著者：Filipe Manco, Costin Lupu, Florian Schmidt　et. al.</li>
+<li>会議：Proceedings of the 26th Symposium on Operating Systems Principles (SOSP ‘17)</li>
+</ul>
+<p>システム系のトップカンファレンスとしておなじみのSOSPで発表された論文です。<br>著者はNEC Laboratories Europeとブカレスト工科大学（ルーマニアの大学）の所属の方々です。</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>DockerやLXCのような軽量な仮想化はひとつのトレンドになっている。例えばGoogleでは自社のサービスを全てコンテナ化して動かしており、Container as a Service（CaaS）としてAmazonやMicrosoftのAzureもコンテナプラットフォームを提供している。<br>コンテナ型仮想化はXenやKVMのようなハードウェアレベルの仮想化に比べると起動が早く、インスタンスごとのメモリ使用量も少なくてすみ、１つのホストによりたくさんのインスタンスを立ち上げられる。<br>しかし、コンテナ型仮想化ではインスタンスはホストOSから400以上ものsyscallのAPIを与えられ、それらをセキュアに保つのは難しい。これらのAPIを利用することでインスタンスがリソースを大量に消費するようなDoS攻撃を他のインスタンスに対してしかけることも考えられる。<br>そのため、複数のユーザーが存在するような状況ではコンテナ型仮想化を使うことはセキュリティ上の懸念から難しい。</p>
+<h2 id="研究の要求仕様"><a href="#研究の要求仕様" class="headerlink" title="研究の要求仕様"></a>研究の要求仕様</h2><p>彼らは既存のハードウェアレベル仮想化のVMMのボトルネックを分析した上で、LightVMという軽量なType-1のハイパーバイザ（XenのようにOSを介在することなくハードウェア上で直接動くVMM）を開発した。<br>ゴールとしてコンテナのような軽量性を目指していて、具体的な仕様としては</p>
+<ul>
+<li>インスタンスの高速な起動</li>
+<li>大量のインスタンスが建てられること（メモリ使用量とインスタンスイメージのサイズが小さい）</li>
+<li>インスタンスの一時停止と再開が高速にできる</li>
+</ul>
+<p>ということを掲げている。</p>
+<h2 id="軽量なVM"><a href="#軽量なVM" class="headerlink" title="軽量なVM"></a>軽量なVM</h2><p>まず第一にVMそのものが軽量である必要がある。多くの場合、VM（ないしコンテナ）は1つのアプリケーションのみを動かすことが多い。<br>そこに注目することで、VMに含まれる機能を削れば軽量なVMをつくることができる。<br>有名な既存研究としてはUnikernelが存在する（参考：<a href="http://anil.recoil.org/papers/2013-asplos-mirage.pdf" target="_blank" rel="noopener">Unikernels: Library Operating Systems for the Cloud</a>）。<br>これはOSをライブラリ化してしまい、対象アプリケーションに直接リンクさせることにより、非常に小さいVMをつくるというものである。<br>OSの機能をシングルアプリケーションを動かすことに特化させられ必要な機能のみをリンクするので強力なアプローチである一方、<br>Unikernelが提供するAPIはLinuxなどの既存のAPIとは互換性がないため、多くの場合、既存のアプリケーションをそのまま動かすのは非常に難しい。</p>
+<p>もう一つの軽量なVMをつくる方法として、Tinyxが存在する。<br>これは特定のアプリケーションを動かすことに特化したLinuxディストリビューションを自動的にビルドするというツールだ。<br>この研究ではこの２種類のVMと通常のLinuxのVMを使い各種実験を行っている。</p>
+<h2 id="既存のVMMのボトルネック"><a href="#既存のVMMのボトルネック" class="headerlink" title="既存のVMMのボトルネック"></a>既存のVMMのボトルネック</h2><p>この研究では著名なType-1ハイパーバイザであるXenを分析して、大量のインスタンスを立ち上げた時のボトルネックを調べている。<br>まず、1000のVMを立ち上げる、という実験をしている。全てのVMは起動後アイドル状態になるようにしてインスタンスが増えてもリソースを消費しないようにしたにもかかわらず、起動時間がインスタンスが増えるに従い激減していることがまずわかった（VMはDebian、Tinyx、Unikernelそれぞれで試している）。<br>原因はXenStoreというVMの情報を管理するツールに自身の情報を登録するフェーズにあることがわかった。</p>
+<p>そこで彼らのLightVMではXenStoreを使わず<code>noxs</code>という新たなVM・VMM間のコミュニケーションを共有メモリを介して行うアーキテクチャを設計した。<br>また、<code>xl/libxl</code>の代わりとして<code>chaos/libchaos</code>というツールスタックも実装した。<br>XenではVM起動時にVM側のデバイス側のインターフェースを初期化するにはまず、dom0がデバイスのバックエンドからイベントチャンネルなどの必要な情報を取り出し、それをXenStoreに格納する。<br>その後、VM側はXenStoreに問い合わせることによってそれらの情報を取り出す。このXenStoreとのインタラクションは頻繁に発生し起動が遅くなる原因となる。<br>LightVMではdom0がバックエンドから取り出した必要な情報をハイパーバイザ内のページに格納する。その後、VM側でハイパーコールを使うことでそれらの情報を取り出しVM側で情報を持つようにする。<br>その後、デバイスのバックエンドとのやり取りはイベントチャンネル介し直接やり取りできるようになる。</p>
+<p>また、彼らは同じようなVM作成時に実行されるコマンドのうち多くは、VM作成前に実行できるということに注目した（例えば同じメモリ容量を割り当てるVMであれば事前にメモリをアロケートしておく）。<br>そこで、libchaosでは作成時のフェーズをprepareとexecuteという2つのフェーズに分け、prepareはVM作成コマンドが発行される前に予め行っておき、VM作成のための土台をプールしておく。<br>VM作成コマンドが実行されると、そのプールから土台を持ってきて、そのVMのためにコンフィギュレーションをチェックした上で実際にVMを起動させる。</p>
+<h2 id="評価"><a href="#評価" class="headerlink" title="評価"></a>評価</h2><p>Dockerとブートタイム、マイグレーション、メモリ使用量などを比較している。詳細は割愛するが、Docker並のパフォーマンスが実現できている。</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>Xenのボトルネックを詳細に分析した上で、LightVMという新しいアーキテクチャのVMMを設計し、Dockerにもひけを取らない軽量な仮想化フレームワークを構築した。<br>ユースケースとしては、モバイルエッジコンピューティング（クラウド上ではなくモバイル端末にプロセスを直接走らせる）やAmazon Lambdaのような短時間の計算リソース提供サービスなどが考えられる。<br>この研究ではXenをターゲットとしたが、KVMなど他のVMMでもこの手法は使えるだろうと論文では主張している。<br>また、用いるVMとしてUnikernelはアプリケーション移植のエンジニアリングコストが高く、Tinyxは通常のLinuxのVMよりはパフォーマンスがいいが、Unikernelほどではなない。<br>そのような面からDocker並の使いやすさはまだ備えていない。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-05-14T15:00:00.000Z"><a href="/hexo/2019/05/15/erkos.html">2019-05-15</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2019/05/15/erkos.html">Rustで自作組込みOSを書くプロジェクト「ErkOS」を公開しました</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>だいぶ前からRustでOSを書こうとしていて、ようやく一山越えて形になってきたのでレポジトリを公開しました（気まぐれでまた非公開にするかもしれませんが）。</p>
+
+
+<h2 id="構造"><a href="#構造" class="headerlink" title="構造"></a>構造</h2><p><code>app</code>ディレクトリに実際のボードで動かしているデモが入っています。ボードはNucleo-F429ZIを利用しています。<br><code>qemu_app</code>はqemu用のデモです。<br>nightlyコンパイラと必要なツールチェーンをインストールすれば<code>cargo build</code>でコンパイルでき、qemuのデモは<code>cargo run</code>とすれば動くと思います。</p>
+<p><code>kernel</code>モジュールがスケジューラだったり、プロセスなどのOSの機能を実装したものになっています、<br><code>arch</code>がARMv7-M固有の機能のためのライブラリ（NVICやSystickなどもこちら）、<code>device</code>はボード固有のペリフェラルドライバとなっています。<br><code>rt</code>と<code>log</code>は<a href="https://docs.rust-embedded.org/embedonomicon/" target="_blank" rel="noopener">The Embedonomicon</a>のチュートリアルでつくったモジュールに手を加えたものです。<br><code>util</code>はアーキテクチャやボードに依存しない機能を入れるためのモジュールです。</p>
+<p>機能としては</p>
+<ul>
+<li>スレッドモードで動くプロセスをラウンドロビンスケジューラでスケジュールできる<ul>
+<li>10ms毎のSystick割り込みでプロセスが切り替わる</li>
+</ul>
+</li>
+<li>プロセスからSVC命令でカーネルの機能を呼び出せる<ul>
+<li>シリアルをつかったprint命令</li>
+<li>プロセス自身を特定のIRQが呼び出されるまでスケジュールされないようにする命令</li>
+</ul>
+</li>
+<li>実行するプロセスがない場合は割り込み待ちのスリープ状態に遷移する<br>あたりが実装できました。こうしてみるとまだまだ機能は足りないですが、おおよその骨格は出来上がってきたのかなあと思ってます。</li>
+</ul>
+<h2 id="実装"><a href="#実装" class="headerlink" title="実装"></a>実装</h2><p>異なる種類のボードで動かすことを想定して、コアとなる機能を実装した<code>kernel</code>モジュールはボード固有の機能に依存しないように気を配りました。また、スケジューラも地味に独立したモジュールにしました。これは将来、スケジューリングポリシをユーザーが選べるようにするのを目標にしたからです（以前つくった<a href="/hexo/2016/05/23/t-visor.html">T-Visor</a>でも同じようなことを目指しました）。<br>本当はアーキテクチャとの依存性もなくし、Arm以外のアーキテクチャへの対応もできるようにしたかったのですが、とりあえずは諦めました。</p>
+<p>ペリフェラルのインターフェースは当初はできるだけRust Embeddedチームの成果物を使う予定でした。svd2rustやcortex-mのクレートはよくできていて、これらを使うことでペリフェラルを簡単に扱ういい感じのインターフェースができます。<br>しかし前に述べたように、独自のモジュールを使っています。これはsvd2rustなどの方針として、ペリフェラルを触るためのインターフェースが実行時にシングルトン化されています。また、各々のインターフェースは実行時にしか取得できません。<br>これがかなり問題で、割り込みハンドラとmain関数で両方でデバイスを触りたい、といった時にどのように共有させるかというのが問題になります。no_std環境のため、MutexやArcといったものは使えないのも厳しいです。一応、Option型のグローバル変数として共有すればいいのですが、unsafeで囲ってnullチェックもしなければならない、とそれなりにめんどくさいです。<br>もちろん、むやみやたらにインターフェースを共有するのもそれはそれでよくないのですが、とりあえず動くものを書きたかったのと、自分の勉強にもなるだろうということで自前のものを使う、という判断にしました。</p>
+<p>Rustはテストのシステムもあるのですが、テストはstdに依存しているためそのままでは実行できません。そこで、<a href="https://os.phil-opp.com/testing/" target="_blank" rel="noopener">Writing an OS in RustのTesting</a>を参考にQEMUを利用してテストが走る環境をつくりました。<br>しかしながら、やはりアーキテクチャやペリフェラルに直接関わるテストはどう書けばいいのか思いつかず、現状QEMUを利用するテストはないです。<br>代わりに、<code>util</code>はstd環境でも動くようにアーキテクチャへの依存を切って普通にテストを書きました。</p>
+<h2 id="今後の展望"><a href="#今後の展望" class="headerlink" title="今後の展望"></a>今後の展望</h2><p>まだまだ機能が足りていないなあという感じです。とりあえず今やりたいと思っていることは</p>
+<ul>
+<li>ヒープ領域が存在しないのでallocを実装する</li>
+<li>プロセス間の通信</li>
+<li>優先度を考慮したスケジューリング</li>
+<li>ペリフェラルドライバの充実</li>
+</ul>
+<p>その他、他のボードやアーキテクチャへの移植もゆくゆくはやっていきたいですね</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-04-24T15:00:00.000Z"><a href="/hexo/2019/04/25/rust-lt.html">2019-04-25</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2019/04/25/rust-lt.html">Rust LT会</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p><a href="https://rust.connpass.com/event/125666/" target="_blank" rel="noopener">Rust LT会 #4</a>にLT登壇枠で参加してきました。<br>この会に参加するのははじめてなので少々ためらったのですが、LT枠が結構余っていたのと、たまにはこういう場で発表して自身のモチベーションあげようということで、簡単ではありましたが、低レイヤープログラミングについての話をしました。</p>
+<p><a href="https://garasubo.github.io/rustlt4/">発表スライド</a></p>
+<p>発表時間には間に合ったものの、会の開始時間には遅刻してしまい運営の方々にはご迷惑をおかけしました。<br>登壇枠で参加するときは特に時間に余裕を持たなければ…</p>
+<h2 id="ちょっとした補足"><a href="#ちょっとした補足" class="headerlink" title="ちょっとした補足"></a>ちょっとした補足</h2><p>いくつか会場で出た質問とか、スライドでは深く突っ込んでいない内容についてちょっとした補足をしておきます</p>
+<h3 id="no-stdプログラミングでのクレート"><a href="#no-stdプログラミングでのクレート" class="headerlink" title="no_stdプログラミングでのクレート"></a>no_stdプログラミングでのクレート</h3><p>低レイヤープログラミングでは基本的にはstdクレートは使えないため、stdクレートに依存している大半のクレートは使用できません。<br>しかし、中にはno_stdでつくられているものもあり、そういうものは<a href="https://rust-embedded.github.io/book/intro/no-std.html" target="_blank" rel="noopener">crate.ioでno_stdキーワードがついています</a>。 
+が、たとえno_stdでつかえるものでも作者がキーワードを設定していないことも多いです…</p>
+<p>追記：<a href="https://crates.io/categories/no-std" target="_blank" rel="noopener">no_stdというカテゴリーをつけるほうが一般的っぽい</a></p>
+<p>それでも個人的にはクレートシステムの存在はありがたく、すでに様々な便利なクレートの存在のおかげで、低レイヤープログラミングといえどもフルスクラッチで書くのを避けることもできます。<br>C言語などではデファクトといえるこういうシステムがなかったのでありがたいと思っています。</p>
+<h3 id="Redoxについて"><a href="#Redoxについて" class="headerlink" title="Redoxについて"></a>Redoxについて</h3><p><a href="https://gitlab.redox-os.org/redox-os/rust" target="_blank" rel="noopener">Redoxのレポジトリ</a>を見ればわかるのですが、なんとRustコンパイラのフォークをサブモジュールとしてとりこんでいます。<br>どこを変更したかは具体的には追えていないのですが、所有権に関する制約を緩和するためにRustコンパイラを変更する必要があったという記述をどこかで見た記憶があります。<br>Rustコンパイラそのものをビルドする必要があるので、Redox全体のビルドは結構大変です。dockerイメージが同梱されているので、そちらを利用するといいでしょう。</p>
+<p>一方で、このブログでも何度か登場したTockはnightlyコンパイラでビルドでき、発表された論文ではその部分が貢献のひとつとして強調されていました。<br>TockはRustで書かれているという以外にも、組込みOSの設計として面白いアーキテクチャをしているので、興味があれば是非みてみるといいと思います。</p>
+<h2 id="スライドについて"><a href="#スライドについて" class="headerlink" title="スライドについて"></a>スライドについて</h2><p><a href="http://jedcn.github.io/reveal-ck/" target="_blank" rel="noopener">reveal-ck</a>というのを使ってつくりました。<br>いつもならばPowerPointかGoogle Docsでつくるのですが、markdown形式でつくれてウェブページとして公開できるのはいいかも、と思い試験的に使ってみました。<br>しかし、スライドの文字の位置や大きさをもっと調整したかったとかを考えると、やはりPower Pointとかでつくったほうがいいのかも、というのが正直な感想です。<br>また次回、LT会等の機会があったら別のシステムもいろいろ検討したいと思います。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-04-16T15:00:00.000Z"><a href="/hexo/2019/04/17/cortexm-mode.html">2019-04-17</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2019/04/17/cortexm-mode.html">ARMv7-Mで動作モードを利用してコンテキストスイッチ</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Cortex-M4のボードで自作OSに挑戦している。<br>Cortex-M4の準拠するARMv7-Mアーキテクチャでは２つの「動作モード」（Operating Mode）が存在する。</p>
+<ul>
+<li>スレッドモード</li>
+<li>ハンドラモード</li>
+</ul>
+<p>リセット状態ではスレッドモードで、割り込みが発生するとハンドラモードに移行して割り込みハンドラが実行される。<br>スレッドモードは特権が存在し、特権・非特権の２つの状態があり、リセット状態では特権状態である。ハンドラモードでは常に特権状態となる。<br>特権の状態を切り替えるにはハンドラモードに突入してから切り替える、もしくは特権状態ならばCONTROLレジスタに書き込むことで非特権状態になれる。</p>
+<p>この特権の状態を利用することで、カーネル（スケジューラ）部分は特権状態で動かして、通常のプロセスに相当する部分は非特権状態で動かすということができる。<br>では、どうやってリセット状態からプロセスを起動するか。<br>ARMv7-Mでは割り込みが発生するとスタックポインタに自動的に一部のレジスタ状態をプッシュし、<br>ハンドラモードからの復帰時にスタックポインタに保存されたレジスタを復元する。<br>スタックポインタはメインとプロセスの2種類あり、通常のスレッドモードでは、特権状態ではメインを、非特権状態ではプロセスを使う。<br>つまりプロセスを初期状態から起動させるには</p>
+<ol>
+<li>プロセススタックポインタにプロセスの初期状態をプッシュしておく</li>
+<li>svc命令でSVCの割り込みハンドラをハンドラモードで実行</li>
+<li>ハンドラから非特権状態のスレッドモードに復帰</li>
+<li>プロセスが起動される</li>
+</ol>
+<p>という流れになる。</p>
+<p>注意するべき点としては</p>
+<ul>
+<li>浮動小数点の機能が有効化されている場合はより多くの状態を保存するため、スタックのフレームサイズが代わる</li>
+<li>スタックはCCR.STKALIGNがセットされていない場合は4バイトに、セットされている場合は8バイトにアラインされている必要がある</li>
+<li>xPSRレジスタのうちThumbモードを有効にするビットは立てる必要がある（ARMv7-Mでは常にThumbモードで実行されなければならない）。よって初期値は0x01000000である必要がある</li>
+<li>スタックに保存されないレジスタに関しては別途なんらかの手段で保存しておかないと複数プロセス間の切り替えができない</li>
+</ul>
+<p>細かい動作はリファレンスマニュアルを参照すること。以下に自分が参考にした章を示す（マニュアルのバージョンはE.b）</p>
+<ul>
+<li>B1.3 Overview of system level terminology and operation<ul>
+<li>動作モードの定義</li>
+</ul>
+</li>
+<li>B1.4.2 The special-purpose program status registers, xPSR<ul>
+<li>xPSRレジスタの詳細</li>
+</ul>
+</li>
+<li>B1.5.6 Exception entry behavior<ul>
+<li>例外発生時の動作について。スタックのレイアウトについても書かれている</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-03-30T12:48:35.000Z"><a href="/hexo/2019/03/30/rust-uefi.html">2019-03-30</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2019/03/30/rust-uefi.html">UEFIアプリケーションをRustで書く（外部クレートなし）</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>このあいだのRustのアップデートで、<code>x86_64-unknown-uefi</code>なるターゲットが追加された、と聞いてRustでUEFIプログラミングに挑戦しました。<br>なお、世の中にはすでに<a href="https://github.com/rust-osdev/uefi-rs" target="_blank" rel="noopener">uefi-rs</a>というものが用意されているので、もっと簡単にUEFIアプリケーションを書くことができます。<br>ただ、このクレートの構造の説明みたいなのがドキュメントとして見当たらず、今までUEFIを触ったことがなかったので、せっかくなのでこのクレートも含め外部クレートなしでのプログラミングをしました。</p>
+<h2 id="UEFIとは"><a href="#UEFIとは" class="headerlink" title="UEFIとは"></a>UEFIとは</h2><p>BIOSに代わるファームウェアに対するソフトウェアインターフェースのこと。詳しくは<a href="https://ja.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface" target="_blank" rel="noopener">Wikipedia</a>ないし、C言語を使っての開発についてはもっと多くの先例があるのでそちらを参考にすればいいと思われる。</p>
+<ul>
+<li><a href="https://qiita.com/tnishinaga/items/40755f414557faf45dcb" target="_blank" rel="noopener">gnu-efiでUEFI遊びをはじめよう - Qiita</a></li>
+<li><a href="http://d.hatena.ne.jp/shina_ecc/20140819/1408434995" target="_blank" rel="noopener">ツールキットを使わずに UEFI アプリケーションの Hello World! を作る - 品川高廣（東京大学）のブログ</a></li>
+<li><a href="http://yuma.ohgami.jp/UEFI-Bare-Metal-Programming/" target="_blank" rel="noopener">フルスクラッチで作る!UEFIベアメタルプログラミング</a></li>
+</ul>
+<p>最新の仕様は直接仕様書を見て確認しましょう。今回はversion 2.7に準拠。<br><a href="https://uefi.org/specifications" target="_blank" rel="noopener">Unified Extensible Firmware Interface Forum</a></p>
+<h2 id="準備"><a href="#準備" class="headerlink" title="準備"></a>準備</h2><p>今回はx86_64のUEFIアプリケーションをつくります。<br>まず、x86_64ターゲットが追加されているRustを使う必要があります。また、ターゲットは追加されたものの、標準ライブラリ(stdではなくcoreとか)がまだ整えられていないのでstableではなくnightlyを使う必要があります。<br>更に、標準ライブラリを組み込むため<a href="https://github.com/rust-osdev/cargo-xbuild" target="_blank" rel="noopener">cargo-xbuild</a>も使う必要があります</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ rustup<span class="built_in"> default </span>nightly-2019-03-23</span><br><span class="line">$ cargo install cargo-xbuild</span><br></pre></td></tr></table></figure>
+
+<p>また、実行環境としてqemu-system-x86_64とqemu用のUEFIファームウェアである<a href="https://github.com/tianocore/tianocore.github.io/wiki/OVMF" target="_blank" rel="noopener">OVMF</a>が必要です。<br>自前でビルドする方法はやってみたのですが、途中で詰まってしまったし、めちゃくちゃ時間もかかるのでビルド済みのものをとってきたほうが早いでしょう<br><a href="https://www.kraxel.org/repos/" target="_blank" rel="noopener">https://www.kraxel.org/repos/</a>からjenkins/edk2以下にあるx64用のrpmをとってきてその中にあるOVMF_VARS-pure-efi.fdとOVMF_CODE-pure-efi.fdをとってきました。</p>
+<h2 id="できたもの"><a href="#できたもの" class="headerlink" title="できたもの"></a>できたもの</h2><p>Githubに置いておきました。<br><a href="https://github.com/garasubo/uefi-practice" target="_blank" rel="noopener">garasubo/uefi-practice</a><br><code>cargo xbuild --target x86_64-unknown-uefi</code>としてビルドし、qemu-run.shでqemu上で走らせます。ただし、OVMF_VARS.fdとOVMF_CODE.fdをプロジェクトのルートディレクトリに置いておく必要があります。</p>
+<p>qemu-run.shを実行するとuefiシェルが立ち上がるので</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Shell</span><span class="bash"> &gt; fs0:</span></span><br><span class="line"><span class="bash">FS0: \&gt; uefi-practice.efi</span></span><br></pre></td></tr></table></figure>
+
+<p>とすると、画面がクリアされた後、Hello Worldします</p>
+<h2 id="解説"><a href="#解説" class="headerlink" title="解説"></a>解説</h2><p><code>efi_main</code>関数がエントリポイントになっています。仕様書で言うと<code>EFI_IMAGE_ENTRY_POINT</code>に相当します。<br>仕様書にはC言語での型宣言が書かれているのですが、これをRustで書いていくことになります。<br>普通にstructやenumを宣言してしまうとRust独自のABIでコンパイルされてしまうので、<code>repr</code>をつけて互換性を保ちます。詳しくはThe Rustonomiconの<a href="https://doc.rust-lang.org/nomicon/data.html" target="_blank" rel="noopener">Data Layoutの章</a>が参考になります。<br>今回の目標はhello worldすることなのですが、UEFIのテキストを出力するためのインターフェースを利用します。<br>仕様書で言うと<code>EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL</code>です。<br>僕のコードではreset関数とoutput_string関数が定義されていますが、本当はもっとあります。<br>他のstructについても今回は使う部分だけ型宣言をして残りはサボりました。使わない関数はusizeでごまかしました。全部実装するのはしんどい。</p>
+<p>output_stringはPROTOCOL自体へのポインタと文字列への先頭ポインタを渡す必要があります。この文字列が少々やっかいでUCS-2でエンコーディングされていないといけません。<br>RustはUTF-8で文字列を扱っているため、1文字が16ビットのUCS-2に変換するのは標準ライブラリだけで簡単にやってくれそうではなかったので、<br>適当なバッファを用意して、実行時に無理やり16ビット配列に変換しました(uefi-rsも内部ではそうやっていた)。</p>
+<p>あとは<code>no_std</code>では<code>panic_handler</code>は自前で用意しなければならないのでそれも忘れずに。</p>
+<h2 id="疑問点"><a href="#疑問点" class="headerlink" title="疑問点"></a>疑問点</h2><p>uefi-rsを参考にしながらつくったのだが、<code>extern &quot;C&quot;</code>と<code>extren &quot;win64&quot;</code>の両方が出てくることがあり、これの違いについてはよくわからなかった。<br>とりあえずuefi-rsに従いこれらの宣言をつけておいたが、本当は<code>extern &quot;C&quot;</code>としておいても問題ないかも？</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>UEFIの仕様は真面目に実装するのは大変なので、おとなしくuefi-rsを使いましょう</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-03-19T15:00:00.000Z"><a href="/hexo/2019/03/20/go-kernel.html">2019-03-20</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2019/03/20/go-kernel.html">論文紹介：The benefits and costs of writing a POSIX kernel in a high-level language</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>元論文: <a href="https://www.usenix.org/conference/osdi18/presentation/cutler" target="_blank" rel="noopener">https://www.usenix.org/conference/osdi18/presentation/cutler</a></p>
+<p>Go言語でPOSIXインターフェースを備えたカーネルを実装し、その利点と欠点を比較してみた、という論文です。</p>
+<h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
+<li>タイトル：The benefits and costs of writing a POSIX kernel in a high-level language</li>
+<li>著者：Cody Cutler, M. Frans Kaashoek, and Robert T. Morris (MIT CSAIL)</li>
+<li>会議：13th USENIX Symposium on Operating Systems Design and Implementation (OSDI ‘18)</li>
+</ul>
+<p>去年のUSENIX OSDIで発表された論文です。USENIXはハイレベルな低レイヤー関連の会議が多く、かつ論文をオープンアクセスで提供してくれるのはアカデミアから離れた身としてはうれしい限りです。</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>著名なOSのカーネルはC言語で書かれている。C言語は直接メモリを操作したり、デバイスのレジスタを操作したりできる。また、ランタイムを介さないためパフォーマンスも高い。一方、安全なコードを書くことが難しく、バッファーオーバーフローやuse-after-freeのようなバグの温床ともなりうる。<br>Go言語などの高級言語は、型検査やメモリの安全性がC言語よりも強く保証されるものの、多くの場合はランタイムを介しての実行となり、ガベージコレクション（GC)に頼るため、パフォーマンスへの懸念が生じる。<br>そこで彼らはBiscuitと名付けたPOSIXのサブセットを備えたカーネルをx86_64プロセッサ用に実装し、評価を行った。</p>
+<p>この論文はカーネルの実装にC言語が用いられるべきか、高級言語が用いられるか、という主張をするものではなく、あくまで高級言語を用いた実装がどのようなものかという指標を提供するものだと著者らは位置づけている</p>
+<h2 id="実装"><a href="#実装" class="headerlink" title="実装"></a>実装</h2><p>Go言語とアセンブラのみで書かれていて、C言語は全く用いていない。<br>Biscuitを動かすにはGo言語を動かすためのランタイムが必要で、通常であればランタイムはカーネルの機能を呼び出す。<br>今回は呼び出すカーネルがないので、代わりの機能を提供するShimというレイヤーを用意している。<br>Goのランタイムは標準のものにGCのタイミングを調整するなどの変更を加えたものを使用している。</p>
+<p>割り込み対応、マルチプロセス、ファイルシステム、ネットワークスタックなどPOSIXのカーネルなら備えている機能はおおよそされている。</p>
+<h2 id="GCとヒープ枯渇問題"><a href="#GCとヒープ枯渇問題" class="headerlink" title="GCとヒープ枯渇問題"></a>GCとヒープ枯渇問題</h2><p>Goはmark-and-sweep方式のGCを持っていて、確保していたメモリがある程度使われるとヒープ領域を適宜拡大していくということをしている。<br>Biscuitではこの通常のヒープ領域拡大を無効化して独自のタイミングでヒープ枯渇問題を回避している。<br>ヒープ領域が足りなくなったとき、Biscuitは</p>
+<ol>
+<li>キャッシュやソフトステイトのような保持する必要のないものを解放する</li>
+<li>システムコールが消費するであろうヒープ領域のサイズをあらかじめ確保しておく</li>
+<li>キラースレッドにより異常にヒープ領域を消費しているプロセスを殺す<br>ということをしている</li>
+</ol>
+<p>システムコールの消費するヒープの量を計算するためにMAXLIVEというツールを開発し、静的解析により事前に必要なヒープの量を計算している。<br>コールグラフからアロケーションの量を計算していくのが基本だが、ループによる繰り返し処理がからんでくるとアノテーションをつけることでヒントを与えたり、例外的な処理をして回避したりしている。</p>
+<h2 id="評価"><a href="#評価" class="headerlink" title="評価"></a>評価</h2><p>この研究では高級言語をカーネルの実装に用いることでの利点・欠点を具体化するのが目的なので、評価軸もそれに沿ったものになっている。</p>
+<p>まずそもそも高級言語の機能がどれくらい用いられているのか、というのを他のGoで書かれたソフトウェアとの比較を行っている。<br>GoのコンパイラとMoby（Dockerがつくったコンテナを用いたシステムのフレームワーク）と比較して同じくらいだとしている。<br>GCで管理されるオブジェクトが有用な場面とそうでない場面もある、と具体例も上げている。<br>有用な例としてはpollのシステムコールでは入力待ちのスレッドを起こすためのヘルパーオブジェクトのを挿入するが、そのヘルパーオブジェクトのフリーのタイミングを気にしなくても競合が起きないことをあげている。<br>一方、TCPのコネクションオブジェクトはTCPのシャットダウンプロトコルを実行することが必要だが、Goのfinalizerではオブジェクト間の循環ができないためそのままでは難しいので、そのようなオブジェクトに対してはBiscuit自身が参照カウントを管理している。<br>また、LinuxのCVEを参照し、Use-after-freeやOut-of-boundsなどのGoでは脆弱性になりえないものとそうでないものを分類している。65個の深刻な脆弱性のうち40個はGoなら防げるとしている。<br>一方、Goのランタイムやパッケージ自体にも14のCVEが報告されて、うち4つはカーネルにとって深刻な脆弱性になりうるとしている。</p>
+<p>アプリケーションベンチマークとしては、CMailbench（メールサーバーをモデルとしたforkとexecにより仮想メモリシステムへのストレス試験）、NGINX、Redisを実際に動かし、Linuxとの比較、ヒープサイズと使用メモリ割合に対するパフォーマンスなどの実験を行っている。</p>
+<h2 id="関連研究"><a href="#関連研究" class="headerlink" title="関連研究"></a>関連研究</h2><p>カーネルの実装に高級言語を用いる例は様々ある。<a href="2018/05/23/tock.html">以前ここでも紹介したRust製カーネルのTock</a>も一例として挙げられている。<br>しかし、これらの研究はC言語との比較というよりも、新しいコンセプトのOSということに重きを置いている。<br>カーネル用に既存の言語を改変して用いるというものもあるが、この研究ではGoそのものに大きな変更は加えないようにしている。</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>Go言語を用いてBiscuitと名付けたPOSIXカーネルを実装し、C言語を用いた場合との比較を行った。<br>高級言語のもたらすパフォーマンス低下は15％を下回るとした一方、だからといってGoを使うべきだと結論づけてはいない。<br>しかし、Go言語でカーネルを実装する際の恩恵やコストを明らかにし、Goのような高級言語を使うべきか否かの判断材料になるであろうとしている</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-02-17T15:00:00.000Z"><a href="/hexo/2019/02/18/tockapp.html">2019-02-18</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2019/02/18/tockapp.html">Rust製組込みOS TockでC言語アプリケーションを動かす</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h2 id="Tockとは"><a href="#Tockとは" class="headerlink" title="Tockとは"></a>Tockとは</h2><p>このブログでも何度か紹介したRust製組込みOSです。<br><a href="/hexo/2018/05/23/tock.html">以前の記事</a><br>ターゲットはCortex-MのようなCPUリソースが限られたようなプロセッサです。<br>Rust Embeddedグループ発足前から公開されていて、Rust純粋でちゃんとしたOSを組む先駆けにもなっています。Rustで書かれているだけでなく、組込みOSの設計としてもおもしろいものになっています。<br>以前は専用ボードへの実装しか公開されていなかったのですが、最近になりSTM社製のNUCLEO-446REボードのサポートが追加されました。<br>手元にあったNUCLEO−429ZIボード用のサポートも追加してもらえるようPRを投げ、無事マージされたことにより、自分の手元でも動かせるようになりました。</p>
+<p>このTockの性質として、ユーザーアプリケーションは独立にビルドする仕組みとなっているため、任意の言語で書くことができるというものがあります。<br>今回はC言語を用いて簡単なアプリケーションを書いてみて、さらにその仕組みを簡単に見ていきたいと思います。</p>
+<h2 id="サンプルアプリケーション"><a href="#サンプルアプリケーション" class="headerlink" title="サンプルアプリケーション"></a>サンプルアプリケーション</h2><p><a href="https://github.com/tock/libtock-c" target="_blank" rel="noopener">libtock-c</a>というライブラリがTockのカーネルを叩くための各種関数を提供しています。<br>これを用いて簡単なアプリケーションを書いてみました</p>
+<p><a href="https://github.com/garasubo/tockapp" target="_blank" rel="noopener">garasubo/tockapp</a></p>
+<p>このアプリケーションはキーボードの入力を受けるとLチカが動き出し、もう一度入力を受けると止まる、というものになっています。<br>サンプルアプリケーションのレポジトリではlibtock-cをgitのサブモジュールとして取り込んで、ビルドはlibtock-c内のAppMakefile.mkに全面的に依存しています。</p>
+<p>libtock-cのレポジトリ自体にもサンプルコードがあります。<br>今回のサンプルでは使っていないのですが、Newlibによって実装されたC標準ライブラリやluaのランタイムもあります。</p>
+<h2 id="ブートプロセス"><a href="#ブートプロセス" class="headerlink" title="ブートプロセス"></a>ブートプロセス</h2><p>サンプルアプリケーションでは普通にmain関数を書いているわけですが、これがTock側からどう呼ばれているかを見てみましょう。<br>リンカスクリプトがlibtock-cのuserland_generic.ldにあります。まずは、アプリケーションがどのようにビルドされるか見てみましょう。</p>
+<a href="https://github.com/tock/libtock-c/blob/master/userland_generic.ld" title="userland_generic.ld" target="_blank" rel="noopener">userland_generic.ld</a>
+
+<p>11行目、<code>ENTRY(_start)</code>となっていますが、これは<code>libtock/crt0.c</code>に定義されています。26行目の.crt0_headerの構造についてもここで定義されています。</p>
+<a href="https://github.com/tock/libtock-c/blob/master/libtock/crt0.c" title="crt0.c" target="_blank" rel="noopener">crt0.c</a>
+
+<p>アプリケーションはメモリ上のどこにおかれるかはビルド時には決定できません。さらにCortex-Mには仮想アドレス機構はないため、すべて物理アドレスで扱う必要があります。<br>そのため、<code>_start</code>関数では4つのメモリレイアウトに関する情報を受けとり、それをもとにアプリケーション上の情報を書き換えるということをやってます。<br>スタックやヒープ領域、デバッグ用の情報などを設定する他に、<a href="https://www.intel.co.jp/content/www/jp/ja/programmable/documentation/iga1420498949526.html#iga1409353027116" target="_blank" rel="noopener">グローバルオフセットテーブル(GOT)</a>の書き換えもやってます。<br>GOTの書き換えは<code>_start</code>で呼び出される<code>_c_start</code>で行われています。<br>159行目のループ中で最上位ビットで場合分けを行っていますが、<br>これはリンカスクリプトでROM領域は0x80000000以上の領域、RAM領域は0x00000000に配置されていることを利用して（17、18行目）、<br>本来アプリケーション領域にある定数を指すものなのか、スタック上に配置されるグローバル変数なのかを判別してアドレスを調整しているためです。</p>
+<h2 id="システムコール"><a href="#システムコール" class="headerlink" title="システムコール"></a>システムコール</h2><p>カーネルとのやりとりは<code>SVC</code>命令を用いたシステムコールにより実現しています。<code>SVC</code>命令を介しているのでそこのインターフェースさえ何らかの方法で実装できれば、Rust以外の言語でもカーネルの機能を呼び出せるという仕組みです。<br>これは<code>libtock/tock.c</code>で実装されていて、サンプルアプリケーションでは直接は呼び出していませんが、<code>libtock-c</code>内の関数を呼び出すことにより間接的に使っています。<br>システムコールは5つのみです。簡単に説明すると</p>
+<ul>
+<li>yield: そのアプリケーションの終了をする。アプリケーションはスケジュールされなくなる</li>
+<li>subscribe: ドライバのコールバック関数を登録する（例：タイマー割り込みで関数を呼び出してもらう）</li>
+<li>command:　ドライバに対して指示を出す（例：LEDを点灯させる）</li>
+<li>allow: カーネルとアプリケーション間で特定のメモリを共有させる（例：タイマードライバにコールバック制御用のデータ構造体を渡す）</li>
+<li>memop: ヒープ領域を変更してもらったり、現在のメモリレイアウトの情報を手に入れるなど、メモリの操作を依頼する</li>
+</ul>
+<h2 id="おまけ"><a href="#おまけ" class="headerlink" title="おまけ"></a>おまけ</h2><p>サンプルアプリケーションで<code>tock_timer_t</code>の実体をユーザーアプリケーション側に持っていて、そのアドレスをカーネルに渡しています。<br>普通の場合はむしろ構造体の実体はカーネル側に持っておき、そのアドレスなりIDなりをユーザーアプリケーションが持つのが一般的だと思いますが、これには理由があります（以前のブログで紹介した論文にも書いてあります）。<br>今回は扱いませんでしたが、Tockでは複数のアプリケーションを動かすこともできます。<br>メモリ領域はアプリケーションごとに独立に持っていて、カーネルや他のアプリケーションとは基本的に共有しません。<br>もしカーネル側が実体を持っているとすると、あるユーザーアプリケーションが大量のタイマーを要求してきた場合、他のアプリケーションがメモリ不足によりタイマーを手に入れられない場合が考えられます。<br>アプリケーション側がタイマーの構造体を抱えれば、大量に要求してきたアプリケーションのみがメモリ不足になり、カーネル及び他のアプリケーションが困るということにはなりません。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://github.com/tock/tock/blob/master/doc/Userland.md" target="_blank" rel="noopener">tock/Userland</a></li>
+<li><a href="https://github.com/tock/tock/blob/master/doc/Syscalls.md" target="_blank" rel="noopener">tock/Syscalls</a></li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-01-07T15:00:00.000Z"><a href="/hexo/2019/01/08/expertise.html">2019-01-08</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2019/01/08/expertise.html">論文紹介： Towards a Theory of Software Development Expertise</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Twitterで見かけたどうやったらソフトウェア開発のプロになれるかの理論を構築したという論文。<br>ソフトウェアエンジニアにはもちろん、その上司だったり経営者とかにも参考になると思う</p>
+<h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
+<li>タイトル：Towards a Theory of Software Development Expertise</li>
+<li>著者：Sebastian Baltes　(University of Trier) et al.</li>
+<li>会議：Engineering Conference and Symposium on the Foundations of Software Engineering (ESEC/FSE ’18)</li>
+</ul>
+<p>FSEというのはソフトウェア工学のトップカンファレンスの1つ。<br>どうすればソフトウェアエンジニアとして成長できるか、という話は本であったりブログであったりとそこらじゅうに溢れているが、このような論文となっているのはなかなかないのではなかろうか。<br>この論文で示されている著者らの構築したソフトウェアエンジニアのプロ（以下、原文に習いSDExp）になるための理論はもちろんのこと、その理論の構築過程もとてもおもしろい。<br>今回のブログでは理論の構築過程については自分の前提知識が足りなくまだ十分に理解できていないので、彼らの導いた理論の要旨、というよりも自分が印象に残った部分だけを紹介する。</p>
+<p>元の論文はarXivで誰でも見られるので、詳しくはそちらへ<br><a href="https://arxiv.org/abs/1807.06087" target="_blank" rel="noopener">https://arxiv.org/abs/1807.06087</a></p>
+<h2 id="手法"><a href="#手法" class="headerlink" title="手法"></a>手法</h2><p>彼らの理論はどのようなコンセプトがSDExpになるためには必要で、そのコンセプトがどのように関係しあっているか、というものをモデル化したものである。<br>この論文では３つのフェーズを経てそのモデルを構築している。</p>
+<p>フェーズ１ではGithubとStack Overflowのアクティブなユーザーをサンプリングしてアンケートを取り、<br>その結果をベースに理論のベースとなるgrounded theory (GT)を構築している。<br>フェーズ２では既存の文献を用いて、GTに対してそれらの理論を埋め込んでいく形で発展させたモデルを構築する。<br>フェーズ３ではフェーズ２までの結果を踏まえて、フェーズ１よりも踏み込んだ形のアンケートをつくり、アクティブなJava開発者と長い開発経験を持つ開発者それぞれを対象として回答を得た。<br>Javaにターゲットを絞ったのは、対象をわかりやすくるため、研究開始時最もメジャーな言語であったJavaを選んだとのこと。<br>その結果を元に彼らの理論を完成させた。</p>
+<h2 id="SDExpになるには"><a href="#SDExpになるには" class="headerlink" title="SDExpになるには"></a>SDExpになるには</h2><p>では、フェーズ３で構築した理論の図を論文から引用して見てみる</p>
+<img src="/hexo/images/fse18figure4.png" title="figure 4">
+
+<p>この巨大な図だけでは意味がわからないので、いくつか印象に残った部分だけを説明する。<br>このモデルはconcepts（コンセプト）とrelationship（関係）の２つからなる。<br>今回はコンセプトと関係の中からいくつか重要なものあるいは印象的だったものについて見ていく。</p>
+<h3 id="Tasks"><a href="#Tasks" class="headerlink" title="Tasks"></a>Tasks</h3><p>このモデルはTaskを中心に据えている。ここでいうTaskというのは要件定義であったりリファクタリングであったりするわけだが、それぞれのTaskには専用の知識であったり経験がある。<br>ソフトウェア開発には人が関わってくるので、人の関わり（Work Context）というのも重要な要素であるが、これもTask毎に違う。</p>
+<p>フェーズ３にて最も重要だと思うTaskはという質問に対して、</p>
+<ol>
+<li>ソフトウェアアーキテクチャのデザイン</li>
+<li>ソースコードを書く</li>
+<li>要求を分析・理解する<br>が最も多い回答だった。</li>
+</ol>
+<h3 id="deliberate-practice"><a href="#deliberate-practice" class="headerlink" title="deliberate practice"></a>deliberate practice</h3><p>この論文でかなり強調されていた関係の１つにdeliberate practice（訳すとすれば計画的実践？）というのがある。<br>単に同じような経験をたくさん積む、というのはパフォーマンスを向上させるのには貢献しない、むしろ逆効果にすらなり得る。<br>経験の年数が能力に比例するのは最初の２年程度なので、その後はタスクの難易度を上げていくことでパフォーマンスをあげていくことが必要になる。これがdeliberate practiceである。<br>このdeliberate practiceにはパフォーマンスをモニターし、フィードバックを与えてあげるメンターなどの存在も必要になる。<br>また、自分の強みや弱みを把握する自己反省の資質も大事である。</p>
+<h3 id="Work-Context-Task-Context"><a href="#Work-Context-Task-Context" class="headerlink" title="Work Context (Task Context)"></a>Work Context (Task Context)</h3><p>ソフトウェア開発にはマネージャーに相談したり、客からの要望に答えたりといったWork Contextが存在する。<br>フェーズ３で経営者が従業員の開発スキルを向上させるためにするべきことという質問に対する答えをカテゴライズすると</p>
+<ol>
+<li>学習を奨励する</li>
+<li>実験することを奨励する</li>
+<li>情報交換をしやすくする</li>
+<li>自由を認める<br>というのが最も多い回答であった。<br>具体的には</li>
+</ol>
+<ul>
+<li>外部のトレーニングコースの受講を勧める</li>
+<li>カンファレンスの参加費を負担する</li>
+<li>“Self-improvement Friday”、”lunch-and-learn session”などのミーティングやイベントで情報交換や学習の機会をつくる</li>
+</ul>
+<h3 id="Performance-Decline"><a href="#Performance-Decline" class="headerlink" title="Performance Decline"></a>Performance Decline</h3><p>年を経るごとにパフォーマンスが落ちていくということがあるが、これについても分析している。<br>フェーズ３での回答をカテゴライズすると</p>
+<ol>
+<li>モチベーションの低下</li>
+<li>仕事の環境の変化</li>
+<li>年齢による衰え</li>
+<li>態度の変化</li>
+<li>他のTaskへの移動<br>となった。<br>同じような仕事をやらされ続けてモチベーションを失う、きつい締切へのプレッシャー、マネージャーのコミュニケーション不足などなどが具体例として挙げられている。</li>
+</ol>
+<p>年齢による衰えについてはいくつかの実際の回答を引用している。例えば、「50代のころから新しい言語やフレームワークについていけなくなった」、「物忘れがひどくなってプログラムを書く速度が落ちた」、といったものであるが、<br>「40歳からritalinのような薬を飲むようにした。これは年老いたプログラマーの間では極めて一般的」などという回答まであった。<br>ritalinとは、どうやら多動性障害（ADHD）のための向精神剤らしいが（参考：<a href="https://ja.wikipedia.org/wiki/%E3%83%A1%E3%83%81%E3%83%AB%E3%83%95%E3%82%A7%E3%83%8B%E3%83%87%E3%83%BC%E3%83%88" target="_blank" rel="noopener">メチルフェニデール</a>）本当に広く使われていたりするのだろうか…</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>SDExpになるための理論を構築したという論文から、構築した理論についてその要素部分をかいつまんで紹介した。<br>紹介しきれなかったところ、また構築するまでの過程も非常におもしろかったので、興味があれば是非元論文を読んでもらいたい。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-12-30T13:05:52.000Z"><a href="/hexo/2018/12/30/this-year.html">2018-12-30</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2018/12/30/this-year.html">今年の振り返り</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>今年は仕事以外でのインプット・アウトプットを増やすというのを1つ目標にして過ごしてきて、まだまだ少ないけれど去年よりは増えているのでいい傾向かなあと思っている</p>
+<h2 id="RustでArmベアメタルプログラミング"><a href="#RustでArmベアメタルプログラミング" class="headerlink" title="RustでArmベアメタルプログラミング"></a>RustでArmベアメタルプログラミング</h2><p>以前から興味があったRustでArmベアメタルプログラミングができるようになってきたと聞いて、今年はいろいろな技術資料を漁りつつCortex-Mボードでのプログラミングを始めた。<br>現状だとUARTモジュールを動かしたり、タイマー割り込みを使ったり程度でまだまだなのだが、ゆくゆくは簡単なOSくらいにまでは進めていきたい。<br>とりあえず、目下の課題としてはSSD1306のOLEDモジュールを購入したので、それの動作用のライブラリ作成となりそう</p>
+<h2 id="ブログ"><a href="#ブログ" class="headerlink" title="ブログ"></a>ブログ</h2><p>今年は技術関連であれば9件投稿した。本当は月一ペースで出したかったが、去年は2件しかなかったのでだいぶマシ。<br>とはいっても内容もまだまだなので、もうちょっとがんばりたい。<br>モチベーションをあげるためにGoogle Analysticも最近になってようやく導入した。<br>一応、ネタのストックはあるので、来年の早いうちに1件は出そうと思う。</p>
+<h2 id="プログラミングコンテスト"><a href="#プログラミングコンテスト" class="headerlink" title="プログラミングコンテスト"></a>プログラミングコンテスト</h2><p>学生時代は頻繁に参加していたが、最近は参加する気が起きなくてスルーしていた。<br>しかし、なんだか簡単なプログラムを一気に書く瞬発力的なものが衰えてきた気がするので、Rustの勉強も兼ねてAtCoderのBeginner ContestのC問題を中心に時々解くようにした。<br>今後はちゃんとコンテストに参加してみようと思う。</p>
+<h2 id="LFCE"><a href="#LFCE" class="headerlink" title="LFCE"></a>LFCE</h2><p>Linux Foundationの提供する<a href="https://training.linuxfoundation.org/certification/linux-foundation-certified-engineer-lfce/" target="_blank" rel="noopener">Linux Foundation Certified Engineer</a>(LFCE)の試験とそのためのオンラインレッスンを受講した。<br>結果は合格からは程遠かった。試験内容は口外できないのだが、レッスンに含まれていない内容もかなり出してきて、試験中は外部ネットアクセス禁止でmanしかアクセスできないというハードな内容だった。<br>一応、もう一回試験を受ける権利はあるのだが、そもそも合格してもメリットが少なそうだし、分野がそこまでしっかり勉強したい部分ではないので見送ると思う。<br>とはいっても、自分のLinuxシステムの理解の浅さや、すぐにとりあえずGoogle検索に頼ってしまう自分の姿勢は反省すべきだと思った。</p>
+<h2 id="その他"><a href="#その他" class="headerlink" title="その他"></a>その他</h2><p><a href="https://turingcomplete.fm/" target="_blank" rel="noopener">TCFM</a>は低レイヤ関係の話を聞けるいい機会なのでモチベーション向上に役立った。<br>低レイヤプログラミングをがっつりやっているコミュニティに属していないので、情報交換の意味でもそういうコミュニティへの参加を増やせたらなあと思う</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-12-12T15:00:00.000Z"><a href="/hexo/2018/12/13/rust-arm.html">2018-12-13</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2018/12/13/rust-arm.html">RustでArm Cortex-Mプログラミングをする 2018</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>この記事は<a href="https://adventar.org/calendars/2915" target="_blank" rel="noopener">自作OS Advent Calendar 2018</a>および<a href="https://qiita.com/advent-calendar/2018/rust2" target="_blank" rel="noopener">Rust その2 Advent Calendar 2018</a>の記事です。</p>
+<p>ベアメタルプログラミングといえばC言語であったが、C言語でプログラミングするのはつらい、ということでその代わりとなる言語としてRustが注目されてきている。<br>Rust+Armのベアメタルプログラミングに関しては<a href="https://qiita.com/tatsuya6502/items/7d8aaf3792bdb5b66f93" target="_blank" rel="noopener">去年のRustアドベントカレンダーにも記事</a>があったほか、自分も何件かすでにブログを書いているが、今年はRust Embeded Working Groupが発足し、資料も充実してきた（参考：<a href="https://rust-embedded.github.io/blog/2018-11-14-this-year-in-embedded-rust/" target="_blank" rel="noopener">This Year in Embedded Rust</a>）</p>
+<h2 id="Rustでベアメタル"><a href="#Rustでベアメタル" class="headerlink" title="Rustでベアメタル"></a>Rustでベアメタル</h2><p>Rust Embeddedチームがすでにドキュメントをつくっているので（執筆中の章も存在するが）、これに従えば誰でもCortex-Mのベアメタルプログラミングできる<br><a href="https://rust-embedded.github.io/book/" target="_blank" rel="noopener">The Embedded Rust Book</a><br>ベースとなっているのはjaparic氏のブログなので、それの正式版と思ってもらえば良い。<br>チュートリアルはSTM32F3DISCOVERYをハードウェアと用いていて、<a href="http://akizukidenshi.com/catalog/g/gM-06268/" target="_blank" rel="noopener">秋月電子通商</a>などで日本でも2000円程度で手に入る。<br>以前、<a href="https://garasubo.github.io/hexo/2018/05/28/rust-qemu.html">QEMUで実行する方法</a>もブログにしたが、タイマーなどの一部ペリフェラルが動かない他、やはりLEDが手元で光っている方が楽しいと思うので、がっつりとやりたいのなら実機の購入をおすすめする<br>一応、後述する通り他のcortex-mボードを用いても十分に開発できると思われる。現に僕はSTM社製の他のボードを使っている。</p>
+<h2 id="cortex-m-quickstart"><a href="#cortex-m-quickstart" class="headerlink" title="cortex-m-quickstart"></a>cortex-m-quickstart</h2><p>では実際にArm Cortex-Mでのベアメタルプログラミングの話に入ろうと思うのだが、<br>ベアメタルプログラミングするための手順だけであればThe Embedded Rust Bookがよくまとまっているので、それを読め、で終了してしまう。</p>
+<p>なので今回はThe Embedded Rust Bookでも用いられている<a href="https://github.com/rust-embedded/cortex-m-quickstart" target="_blank" rel="noopener">cortex-m-quickstart</a>からサンプルコードを抜粋して大体なにをしているかを見ていくことにする。</p>
+<h3 id="hello-world"><a href="#hello-world" class="headerlink" title="hello world"></a>hello world</h3><p>example/hello.rsを見てみよう。いわゆるhello worldである。<br>hprintln関数はセミホスティングを利用した出力を利用している。セミホスティングとはSVC命令などを利用することでデバッガに対してメッセージを送る機能である（参考:<a href="https://developer.arm.com/products/software-development-tools/compilers/arm-compiler-5/docs/dui0471/f/semihosting/what-is-semihosting" target="_blank" rel="noopener">https://developer.arm.com/products/software-development-tools/compilers/arm-compiler-5/docs/dui0471/f/semihosting/what-is-semihosting</a>）。<br>なので、UARTなどを利用したものでないため、本来ならデバッガをボードにつなぐ必要がある。が、DISCOVERYボードは基板にデバッガも内蔵しているので簡単に利用できる。</p>
+<p>この<code>#[entry]</code>というアトリビュートがついたものが実質的なmain関数となる。ブートコードはどこにあるか、というとこのcortex-m-quickstartが依存しているライブラリの一つ、<a href="https://rust-embedded.github.io/cortex-m-rt/0.6.1/cortex_m_rt/index.html" target="_blank" rel="noopener">cortex-m-rt</a>が担っている。<br>このライブラリはビルド時のリンカスクリプトの生成もしていて、このアトリビュートをつけた関数を展開し、ブートのための処理を行った後呼び出す、という流れになっている。<br>大まかな仕組みとしてはライブラリに含まれるlink.x.inというスクリプトをベースに<a href="https://doc.rust-lang.org/cargo/reference/build-scripts.html" target="_blank" rel="noopener">build.rs</a>がスタックサイズのチェックや必要に応じて他のライブラリのリンカスクリプトを読み込んだりしている。<br>その他、例外発生時のハンドラの登録用マクロも用意されている。<br>詳しい仕組みはドキュメントを参照。</p>
+<p>このテンプレートが依存しているもう一つのライブラリであるcortex-mライブラリはアセンブラ命令を呼び出すためのラッパやシステムレジスタの抽象化レイヤなどがふくまれている。<br><a href="https://github.com/rust-lang/rust/issues/29722" target="_blank" rel="noopener">インラインのアセンブラはまだ安定版ではないため</a>、対応していない場合、予めコンパイルしてあるアセンブラを関数をextern Cで呼び出している<br>その際のArmのバージョンごとの違いはbuild.rsが指定されたターゲットを見てどのバイナリをリンクするかで吸収している。</p>
+<h3 id="panic"><a href="#panic" class="headerlink" title="panic"></a>panic</h3><p>example/panic.rsはpanicを発生させるだけのコードである。no_std環境でもpanicが発生した際の処理を実装しておかなければならない。<br>これは<a href="https://github.com/rust-lang/rust/issues/44489" target="_blank" rel="noopener">最近安定化されたfeature</a>のひとつでもある。<br>このサンプルコードではpanicハンドラを実装したクレートを読み込むことで動作を決定している。</p>
+<h3 id="allocator"><a href="#allocator" class="headerlink" title="allocator"></a>allocator</h3><p>example/allocator.rsは自前で動的メモリ確保を実装することでno_std環境下でも動的配列を利用する例である。<br>基本的に組込みで動的メモリ確保は行わないほうがいいのだが、どうしても必要というケースは出てくる。<br>これも<a href="https://github.com/rust-lang/rust/issues/27389" target="_blank" rel="noopener">最近安定化されたfeature</a>のひとつでもある。<br>外部クレートで実装されたallocであるが、中身は空き領域をリスト形式で持っておき、要求に応じて空き領域リストを探索して返す、というシンプルなものになっている。<br>ただし、stdに含まれるvecは使えないので、allocクレート内のvecを使ってあげる必要がある。こちらはまだ<a href="https://github.com/rust-lang/rfcs/pull/2480" target="_blank" rel="noopener">unstableなfeature</a>。
+allocクレートの中にはBoxやArcなど、所有権周りの問題を解決するのにおなじみの構造体も含まれている。</p>
+<h3 id="device"><a href="#device" class="headerlink" title="device"></a>device</h3><p>マイコンのペリフェラルを使う例。stm32f103xxというクレートを使っているが、これはチップのMMIOのマッピングを記述したSVDファイルから<a href="https://docs.rs/svd2rust/0.14.0/svd2rust/" target="_blank" rel="noopener">svd2rust</a>を使って自動生成されたものである。<br>そのため、他のタイプのボードを使ってもSVDファイルさえ手に入れれば割と簡単に再現できる。<br>svd2rustはペリフェラルからの割り込みハンドラをリンクするためのcortex-m-rt用のリンカスクリプトもつくっている。<br>これはsvd2rustの生成したライブラリがCARGO_FEATURE_DEVICEというフラグをオンにすることで、device.xをcortex-m-rtが持つリンカスクリプトをインクルードさせている。</p>
+<h2 id="その他の資料"><a href="#その他の資料" class="headerlink" title="その他の資料"></a>その他の資料</h2><p>Armではないが、RISC-V向けの記事が今年の自作OS Advent Calendarに上がってる<br><a href="https://qiita.com/tomoyuki-nakabayashi/items/76f912adb6b7da6030c7" target="_blank" rel="noopener">RustでRISC-V OS自作！はじめの一歩</a></p>
+<p>また、以前も紹介したが、別のアプローチとしてTockという組込みOSが存在しており、そちらのデザインはなかなか工夫されている。<br><a href="https://www.tockos.org/" target="_blank" rel="noopener">Tock</a><br>ただし、こちらは専用ボード向けの実装しかないため、始めるにはハードルが高かったため、自分はまだ手が出ていない。</p>
+<p>また、Cortex-Mではないが、Rasberry Pi 3でのチュートリアルも提供されている<br><a href="https://github.com/rust-embedded/rust-raspi3-tutorial" target="_blank" rel="noopener">Bare Metal Rust Programming on Raspberry Pi 3</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+<nav id="pagination">
+  
+    <a href="/hexo/page/2/" class="alignleft prev">前の投稿</a>
+  
+  
+    <a href="/hexo/page/4/" class="alignright next">次の投稿</a>
+  
+  <div class="clearfix"></div>
+</nav></div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

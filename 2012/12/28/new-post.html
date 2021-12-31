@@ -1,0 +1,255 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Gitでのミスリカバリー | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="##マージコミットをリバートうっかり間違ったブランチで–no-ffでmergeを打ってしまった場合、revertでそのコミットの変更を消すコミットをつくることができる。ただし、このときどちらのブランチを残すのかという事を指示してあげる必要がある。git logなどで、その時のマージコミットのログを見">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Gitでのミスリカバリー">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="##マージコミットをリバートうっかり間違ったブランチで–no-ffでmergeを打ってしまった場合、revertでそのコミットの変更を消すコミットをつくることができる。ただし、このときどちらのブランチを残すのかという事を指示してあげる必要がある。git logなどで、その時のマージコミットのログを見ると、どのコミット同士をマージしたのかということが書いてある。それを見てどちらを残すかを-mオプショ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gitでのミスリカバリー">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2012/12/28/new-post.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="##マージコミットをリバートうっかり間違ったブランチで–no-ffでmergeを打ってしまった場合、revertでそのコミットの変更を消すコミットをつくることができる。ただし、このときどちらのブランチを残すのかという事を指示してあげる必要がある。git logなどで、その時のマージコミットのログを見ると、どのコミット同士をマージしたのかということが書いてある。それを見てどちらを残すかを-mオプショ">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2014-12-24T13:38:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Gitでのミスリカバリー">
+<meta name="twitter:description" content="##マージコミットをリバートうっかり間違ったブランチで–no-ffでmergeを打ってしまった場合、revertでそのコミットの変更を消すコミットをつくることができる。ただし、このときどちらのブランチを残すのかという事を指示してあげる必要がある。git logなどで、その時のマージコミットのログを見ると、どのコミット同士をマージしたのかということが書いてある。それを見てどちらを残すかを-mオプショ">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-130790601-1', 'auto');
+	ga('send', 'pageview');
+
+</script>
+
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2012-12-28T10:21:00.000Z"><a href="/hexo/2012/12/28/new-post.html">2012-12-28</a></time>
+      
+      
+  
+    <h1 class="title">Gitでのミスリカバリー</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>##マージコミットをリバート<br>うっかり間違ったブランチで–no-ffでmergeを打ってしまった場合、<br>revertでそのコミットの変更を消すコミットをつくることができる。<br>ただし、このときどちらのブランチを残すのかという事を指示してあげる必要がある。<br>git logなどで、その時のマージコミットのログを見ると、どのコミット同士をマージしたのかということが書いてある。<br>それを見てどちらを残すかを-mオプションで指定する。</p>
+<p>詳しくは<a href="http://books.google.co.jp/books?id=8DAvoM4OMxEC&printsec=frontcover&hl=ja#v=onepage&q&f=false" target="_blank" rel="noopener">ここ</a>の80ページ目あたりが親切。</p>
+<p>##リモートレポジトリに対してリセットをする<br><a href="http://tmtms.hatenablog.com/entry/20101221/git" target="_blank" rel="noopener">Gitでリモートリポジトリを巻き戻す - @tmtms のメモ</a>を参考にした。</p>
+<p>まず、リセットしたいレポジトリのバックアップレポジトリをつくる。<br>これはいざ間違えた時の対策。<br>    git push origin tar_bak</p>
+<p>つづいてgit reflogして戻したい地点を見つける<br>    <strong>***</strong> HEAD@{0}: hoge<br>    <strong>***</strong> HEAD@{1}: hogehoge<br>    <strong>***</strong> HEAD@{2}: hogehogehoge<br>    <strong>***</strong> HEAD@{3}: hogehogehogehoge<br>    …<br>hogehogehogeの地点まで戻りたいとして、<br>    git push -f origin HEAD@{2}:tar<br>とすればよい。こうすると、origin/tarの指すコミットが移動する。</p>
+<p>他の人にも影響することなので、やるときは注意。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 garasubo
+  
+</div>
+<div class="clearfix"></div>
+<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
+
+</footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
