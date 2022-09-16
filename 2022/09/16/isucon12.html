@@ -1,0 +1,285 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>ISUCON12予選敗戦記 | 己の不学を恥じる</title>
+  <meta name="author" content="garasubo">
+  
+  <meta name="description" content="すでにずいぶんと時間が経ってしまったのですが、ISUCON12の予選に参加していました。結果は思わしくなく、予選敗退に終わってしまいました。もう記憶がおぼろげになってしまっている部分もあるのですが、覚えている部分だけでも振り返って反省していきたいと思います。
+ISUCON12 まとめ : ISUCO">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="ISUCON12予選敗戦記">
+  <meta property="og:site_name" content="己の不学を恥じる">
+
+  
+    <meta property="og:image" content="undefined">
+  
+  <meta name="description" content="すでにずいぶんと時間が経ってしまったのですが、ISUCON12の予選に参加していました。結果は思わしくなく、予選敗退に終わってしまいました。もう記憶がおぼろげになってしまっている部分もあるのですが、覚えている部分だけでも振り返って反省していきたいと思います。 ISUCON12 まとめ : ISUCON公式Blog参加受付開始 ・6月1日(水) 10:00 第一期 ・6月6日(月) 20:00 第二">
+<meta name="keywords" content="isucon,rust">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ISUCON12予選敗戦記">
+<meta property="og:url" content="http://garasubo.github.io/hexo/2022/09/16/isucon12.html">
+<meta property="og:site_name" content="己の不学を恥じる">
+<meta property="og:description" content="すでにずいぶんと時間が経ってしまったのですが、ISUCON12の予選に参加していました。結果は思わしくなく、予選敗退に終わってしまいました。もう記憶がおぼろげになってしまっている部分もあるのですが、覚えている部分だけでも振り返って反省していきたいと思います。 ISUCON12 まとめ : ISUCON公式Blog参加受付開始 ・6月1日(水) 10:00 第一期 ・6月6日(月) 20:00 第二">
+<meta property="og:locale" content="ja">
+<meta property="og:image" content="https://parts.blog.livedoor.jp/img/usr/cmn/ogp_image/livedoor.png">
+<meta property="og:image" content="https://opengraph.githubassets.com/4a9a5d4bbea989419a321e877d16b0067bdb3b8593589a6d7567b64f690eaddc/Romira915/private-isu-rust">
+<meta property="og:image" content="https://res.cloudinary.com/zenn/image/upload/s--92for2m7--/co_rgb:222%2Cg_south_west%2Cl_text:notosansjp-medium.otf_37_bold:%25E5%25A4%25A7%25E6%25A8%25B9%2Cx_203%2Cy_98/c_fit%2Cco_rgb:222%2Cg_north_west%2Cl_text:notosansjp-medium.otf_70_bold:ISUCON12%25E4%25BA%2588%25E9%2581%25B8%25E5%258F%2582%25E5%258A%25A0%25E8%25A8%2598%2520Rust%25E3%2581%25A7%25E4%25BA%2588%25E9%2581%25B8%25E7%25AA%2581%25E7%25A0%25B4%25E3%2581%2597%25E3%2581%259F%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9yZXMuY2xvdWRpbmFyeS5jb20vemVubi9pbWFnZS9mZXRjaC9zLS1OMEZMdUJpUy0tL2NfbGltaXQlMkNmX2F1dG8lMkNmbF9wcm9ncmVzc2l2ZSUyQ3FfYXV0byUyQ3dfNzAvaHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyL2M0OTkyOGRlYjMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_72/v1627274783/default/og-base_z4sxah.png">
+<meta property="og:image" content="https://cdn.blog.st-hatena.com/images/theme/og-image-1500.png">
+<meta property="og:updated_time" content="2022-09-16T14:10:30.266Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ISUCON12予選敗戦記">
+<meta name="twitter:description" content="すでにずいぶんと時間が経ってしまったのですが、ISUCON12の予選に参加していました。結果は思わしくなく、予選敗退に終わってしまいました。もう記憶がおぼろげになってしまっている部分もあるのですが、覚えている部分だけでも振り返って反省していきたいと思います。 ISUCON12 まとめ : ISUCON公式Blog参加受付開始 ・6月1日(水) 10:00 第一期 ・6月6日(月) 20:00 第二">
+<meta name="twitter:image" content="https://parts.blog.livedoor.jp/img/usr/cmn/ogp_image/livedoor.png">
+<meta name="twitter:creator" content="@garasubo">
+
+  <link href="/hexo/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
+  <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/hexo/">己の不学を恥じる</a></h1>
+  <h2><a href="/hexo/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/hexo/">Home</a></li>
+    
+      <li><a href="/hexo/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2022-09-15T15:00:00.000Z"><a href="/hexo/2022/09/16/isucon12.html">2022-09-16</a></time>
+      
+      
+  
+    <h1 class="title">ISUCON12予選敗戦記</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>すでにずいぶんと時間が経ってしまったのですが、ISUCON12の予選に参加していました。結果は思わしくなく、予選敗退に終わってしまいました。<br>もう記憶がおぼろげになってしまっている部分もあるのですが、覚えている部分だけでも振り返って反省していきたいと思います。</p>
+<a href="https://isucon.net/archives/56571716.html" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://parts.blog.livedoor.jp/img/usr/cmn/ogp_image/livedoor.png"></div><div class="descriptions"><div class="og-title">ISUCON12 まとめ : ISUCON公式Blog</div><div class="og-description">参加受付開始 ・6月1日(水) 10:00 第一期 ・6月6日(月) 20:00 第二期 ・6月11日(土) 10:00 第三期 ・7月 8日(金) 14:00 キャンセル枠分の追加募集  オンライン予選 ・7月23日(土) 10:00-18:00 　参加チーム数 698組（学生…</div></div></div></a>
+
+<h2 id="事前準備"><a href="#事前準備" class="headerlink" title="事前準備"></a>事前準備</h2><p>今回はメンバーは2人でした。</p>
+<p>事前練習用にはさくらインターネットさんのご厚意でさくらインターネットのクーポンが参加者に配布されて練習環境を整備することができたので、ありがたく使わせていただきました。<br>練習課題としては「達人が教えるWebパフォーマンスチューニング 〜ISUCONから学ぶ高速化の実践」の題材である<a href="https://github.com/catatsuy/private-isu" target="_blank" rel="noopener">private-isu</a>を用いました。<br>ただし、Rust実装は公式ではなかったので他の人が実装したものを使いました。</p>
+<a href="https://github.com/Romira915/private-isu-rust" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://opengraph.githubassets.com/4a9a5d4bbea989419a321e877d16b0067bdb3b8593589a6d7567b64f690eaddc/Romira915/private-isu-rust"></div><div class="descriptions"><div class="og-title">GitHub - Romira915/private-isu-rust: Add Rust on private-isu</div><div class="og-description">Add Rust on private-isu. Contribute to Romira915/private-isu-rust development by creating an account on GitHub.</div></div></div></a>
+
+<p>この練習会で、ansibleで最低限のbashrcや各種ツールをリモート環境にセットアップするものや、slackにalpでのログの結果を集計してアップロードするスクリプトなどを整備しました。</p>
+<p>連絡はslackを用いることにしました。</p>
+<h2 id="予選本番"><a href="#予選本番" class="headerlink" title="予選本番"></a>予選本番</h2><p>時刻は大体の時間です。</p>
+<p>10:00 予選開始。ルール確認やコードをgithubに上げる作業などを行う。</p>
+<p>10:33 Rustの初期実装でベンチを回す。Score: 2504</p>
+<p>11:10 Docker上で動いていたアプリケーションを直接動くように変更。 Score: 2775</p>
+<p>昔のDockerだとローカルホスト間のネットワーク通信のパフォーマンスが悪かったはずなのだが、解説でもそこは重要ではないとのことだったので、多分もう関係ない話だと思われる。<br>ただし、自分たちはRustのコンパイル済みのバイナリを手元からアップロードするデプロイ形式をとっていて、そのままのDockerスクリプトだとまずコンパイルが走ってしまうという仕組みになっていて非常にデプロイが遅くなってしまうため、外すという判断をした。<br>他のチームだとサーバーでコンパイルしてしまうとメモリ不足で困ったとかいう話も聞いたので、この判断は正解だったと思う。</p>
+<p>11:31 DBアクセス時のロック周りが怪しいということで適当にはずしてみる変更をする。</p>
+<p>何回か走らせて確かにパフォーマンスは上がるが、failedになるケースがあるのでむやみに外せないということになった。</p>
+<p>ここで、ロックをファイルを用いる形式からRedisを使う形式に変更するという判断をして、自分が実装することになった。<br>しかし、Redisの習熟度が十分でなく、実装にかなり手こずってしまう。</p>
+<p>11:42 もう1人のメンバーがMySQLの<code>id_generator</code>を使っていた箇所をuuidを用いてIDを生成する変更する。 Score: 4639</p>
+<p>このへんでロックを適当に外したりとか自明にいらないクエリを削除したりなどを相方が試すがたいしてスコアは改善せず。</p>
+<p>14:18 ロックを改善する実装がようやく出来上がる。 Score: 4376でたいして改善せず</p>
+<p>このへんから自分は<code>visit_history</code>が<code>min(created_at)</code>なものしか引っ張ってきていないことを利用した最適化の実装にとりかかる。<br>相方はsqliteを使っている箇所をMySQLにしようとする。</p>
+<p>15:43 MySQLを別サーバーに分離 Score: 4315</p>
+<p>スコアこそ改善していないが、CPU使用率などのメトリックは改善していたので、将来的には有利なるはずと判断。</p>
+<p>しかし、これ以降、やりたい改善の実装がうまく動かず、小手先の細かい改善をいくつか入れる程度で予選終了。なんの成果も得られませんでした。</p>
+<h2 id="延長戦"><a href="#延長戦" class="headerlink" title="延長戦"></a>延長戦</h2><p>まず自分が担当していたvisit_historyの最適化ですが、DBのトランザクションを貼った時commitをし忘れるとかいうイージーミスでした。<br>書いていたときの気分としてはdropハンドラでやってくれるだろうと思っていたのですが、実際に呼ばれるのはrollbackです。冷静に考えればそのとおりですよね。</p>
+<p>sqliteの移植作業の方はほぼほぼ完成していたものの、<code>player_score</code>テーブルが巨大でインスタンス起動時にすべてインサートできないという問題がありました。<br>しかし、<code>player_score</code>は<code>row_num</code>が最大のものしか利用されないという性質があるので、それを利用することでインサートする量を圧倒的に減らせます。<br>これには本番中には気がついていたのですが、実装が間に合いませんでした。</p>
+<p>これらを直して<code>player_score</code>のCSV入稿による一括insertをbulk insertにしたり、transactionを取ることによって不要な自前ロックを外す、MySQL化できたのでN+1だった箇所を撲滅する、Redisでキャッシュするなどを実装することで最終的には5万点以上の点数をとることができました。</p>
+<p>bulk insertをする場合、たまにMySQL側でデッドロックを起こすことに気が付きました。どうやらおなじテーブルへのbulk insertが複数スレッドで実行されると、トランザクションを貼っている状態でもindex更新のためのロックを取り合ってdead lockを起こすようです。<br>正直なんでMySQLがこれを正しくハンドルできないかはよくわからなかったのですが、Mutexを使いbulk insertできるのを1スレッドに限定することでなんとか回避しました。</p>
+<h2 id="反省"><a href="#反省" class="headerlink" title="反省"></a>反省</h2><p>まず、素振りが足りていなかったのが大きかったかなと思います。<br>ライブラリを使い慣れていればtransactionがdropでrollbackされるなどでつまずくことはなかったし、<br>Redisでファイルロックを置き換える作業ももっとスムーズにできたはずです。</p>
+<p>また、チームメイトを悪い意味で信頼しすぎていて、作業を任せっきりにしてしまったのもよくなかったです。<br>コンテスト中はどうしても焦りが出てしまったり、そもそも知識が足りていない分野だと気づきが共有できていなかったりします。<br>ロックについて相方とじっくり挙動を調べたりすれば、Redis置き換えなどという無駄なステップを踏まずにすんだかもしれないし、<br>SQLite移行ももう少しすんなりいったかもしれません。<br>ペアプロや一緒に考える時間はもう少し積極的にとって良いと思いました。</p>
+<p>RustのWebアプリケーションでのプロファイリング手法についてもちゃんと検討したいなと思いました。<br>MySQLやnginxのログ解析は<code>pt-query-digest</code>や<code>mysqldumpslow</code>や<code>alp</code>などで確立されていますが、各関数でどれくらいの処理がかかっているかのデータを知りたい場面はそこそこにあります。<br>他の予選通過チームは自前のmacroを用意してOpenTelemetryでプロファイリングをとっているようだった。</p>
+<a href="https://zenn.dev/daiju/articles/165da7a5589434" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://res.cloudinary.com/zenn/image/upload/s--92for2m7--/co_rgb:222%2Cg_south_west%2Cl_text:notosansjp-medium.otf_37_bold:%25E5%25A4%25A7%25E6%25A8%25B9%2Cx_203%2Cy_98/c_fit%2Cco_rgb:222%2Cg_north_west%2Cl_text:notosansjp-medium.otf_70_bold:ISUCON12%25E4%25BA%2588%25E9%2581%25B8%25E5%258F%2582%25E5%258A%25A0%25E8%25A8%2598%2520Rust%25E3%2581%25A7%25E4%25BA%2588%25E9%2581%25B8%25E7%25AA%2581%25E7%25A0%25B4%25E3%2581%2597%25E3%2581%259F%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9yZXMuY2xvdWRpbmFyeS5jb20vemVubi9pbWFnZS9mZXRjaC9zLS1OMEZMdUJpUy0tL2NfbGltaXQlMkNmX2F1dG8lMkNmbF9wcm9ncmVzc2l2ZSUyQ3FfYXV0byUyQ3dfNzAvaHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyL2M0OTkyOGRlYjMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_72/v1627274783/default/og-base_z4sxah.png"></div><div class="descriptions"><div class="og-title">ISUCON12予選参加記 Rustで予選突破した</div></div></div></a>
+
+<p>著名なライブラリである<code>tracing</code>でもSQLの文字列とかはキャプチャできないが、最低限関数呼び出しのトレースは取れるはずなので次回は活用したい。</p>
+<p>他チームで参考になりそうな戦略としてはSQL文を一旦すべてスプレッドシートに洗い出すという戦略はよさそうと思いました。</p>
+<a href="https://diary.hatenablog.jp/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://cdn.blog.st-hatena.com/images/theme/og-image-1500.png"></div><div class="descriptions"><div class="og-title">Write and Run</div><div class="og-description">it&#39;s a simple way, but the only way.</div></div></div></a>
+
+<p>狙いとしてはアクセスパターンを一覧にすることで、不要なDB操作を洗い出したり、今回の場合はSQLite移行の難易度を見積もったりとslow query分析だけでは見えてこないものを発見しやすくするというもので、これはシンプルながら強力そうな戦略に感じました。<br>やはり冷静になってアプリを分析する時間は必要。</p>
+<p>来年はちゃんと3人メンバーを集めて予選通過を狙いたいです。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/hexo/tags/isucon/">isucon</a>, <a href="/hexo/tags/rust/">rust</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">コメント</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="検索">
+    <input type="hidden" name="q" value="site:garasubo.github.io/hexo">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最近の投稿</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/hexo/2022/09/16/isucon12.html">ISUCON12予選敗戦記</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/11/07/rust-memory.html">Rustのメモリ管理機能とその特徴</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/08/26/isucon11.html">ISUCON11予選参加記（予選敗退）</a>
+      </li>
+    
+      <li>
+        <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+<a class="twitter-timeline" data-height="600" href="https://twitter.com/garasubo">Tweets by garasubo</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">タグ</h3>
+  <ul class="entry">
+  
+    <li><a href="/hexo/tags/Arm/">Arm</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/CLI/">CLI</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/Cortex-M/">Cortex-M</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Kernel-VM/">Kernel/VM</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/Rust/">Rust</a><small>16</small></li>
+  
+    <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
+  
+    <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
+  
+    <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/rust/">rust</a><small>1</small></li>
+  
+    <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
+  
+    <li><a href="/hexo/tags/x11/">x11</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2022 garasubo
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/hexo/js/jquery.imagesloaded.min.js"></script>
+<script src="/hexo/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'garasubo';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/hexo/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/hexo/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

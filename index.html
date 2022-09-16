@@ -28,19 +28,6 @@
   <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
   <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  
-<script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-	ga('create', 'UA-130790601-1', 'auto');
-	ga('send', 'pageview');
-
-</script>
-
-
 </head>
 </html>
 
@@ -59,11 +46,81 @@
   </ul>
   <div class="clearfix"></div>
 </nav>
-<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
 <div class="clearfix"></div>
 </header>
   <div id="content" class="inner">
     <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2022-09-15T15:00:00.000Z"><a href="/hexo/2022/09/16/isucon12.html">2022-09-16</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2022/09/16/isucon12.html">ISUCON12予選敗戦記</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>すでにずいぶんと時間が経ってしまったのですが、ISUCON12の予選に参加していました。結果は思わしくなく、予選敗退に終わってしまいました。<br>もう記憶がおぼろげになってしまっている部分もあるのですが、覚えている部分だけでも振り返って反省していきたいと思います。</p>
+<a href="https://isucon.net/archives/56571716.html" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://parts.blog.livedoor.jp/img/usr/cmn/ogp_image/livedoor.png"></div><div class="descriptions"><div class="og-title">ISUCON12 まとめ : ISUCON公式Blog</div><div class="og-description">参加受付開始 ・6月1日(水) 10:00 第一期 ・6月6日(月) 20:00 第二期 ・6月11日(土) 10:00 第三期 ・7月 8日(金) 14:00 キャンセル枠分の追加募集  オンライン予選 ・7月23日(土) 10:00-18:00 　参加チーム数 698組（学生…</div></div></div></a>
+
+<h2 id="事前準備"><a href="#事前準備" class="headerlink" title="事前準備"></a>事前準備</h2><p>今回はメンバーは2人でした。</p>
+<p>事前練習用にはさくらインターネットさんのご厚意でさくらインターネットのクーポンが参加者に配布されて練習環境を整備することができたので、ありがたく使わせていただきました。<br>練習課題としては「達人が教えるWebパフォーマンスチューニング 〜ISUCONから学ぶ高速化の実践」の題材である<a href="https://github.com/catatsuy/private-isu" target="_blank" rel="noopener">private-isu</a>を用いました。<br>ただし、Rust実装は公式ではなかったので他の人が実装したものを使いました。</p>
+<a href="https://github.com/Romira915/private-isu-rust" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://opengraph.githubassets.com/4a9a5d4bbea989419a321e877d16b0067bdb3b8593589a6d7567b64f690eaddc/Romira915/private-isu-rust"></div><div class="descriptions"><div class="og-title">GitHub - Romira915/private-isu-rust: Add Rust on private-isu</div><div class="og-description">Add Rust on private-isu. Contribute to Romira915/private-isu-rust development by creating an account on GitHub.</div></div></div></a>
+
+<p>この練習会で、ansibleで最低限のbashrcや各種ツールをリモート環境にセットアップするものや、slackにalpでのログの結果を集計してアップロードするスクリプトなどを整備しました。</p>
+<p>連絡はslackを用いることにしました。</p>
+<h2 id="予選本番"><a href="#予選本番" class="headerlink" title="予選本番"></a>予選本番</h2><p>時刻は大体の時間です。</p>
+<p>10:00 予選開始。ルール確認やコードをgithubに上げる作業などを行う。</p>
+<p>10:33 Rustの初期実装でベンチを回す。Score: 2504</p>
+<p>11:10 Docker上で動いていたアプリケーションを直接動くように変更。 Score: 2775</p>
+<p>昔のDockerだとローカルホスト間のネットワーク通信のパフォーマンスが悪かったはずなのだが、解説でもそこは重要ではないとのことだったので、多分もう関係ない話だと思われる。<br>ただし、自分たちはRustのコンパイル済みのバイナリを手元からアップロードするデプロイ形式をとっていて、そのままのDockerスクリプトだとまずコンパイルが走ってしまうという仕組みになっていて非常にデプロイが遅くなってしまうため、外すという判断をした。<br>他のチームだとサーバーでコンパイルしてしまうとメモリ不足で困ったとかいう話も聞いたので、この判断は正解だったと思う。</p>
+<p>11:31 DBアクセス時のロック周りが怪しいということで適当にはずしてみる変更をする。</p>
+<p>何回か走らせて確かにパフォーマンスは上がるが、failedになるケースがあるのでむやみに外せないということになった。</p>
+<p>ここで、ロックをファイルを用いる形式からRedisを使う形式に変更するという判断をして、自分が実装することになった。<br>しかし、Redisの習熟度が十分でなく、実装にかなり手こずってしまう。</p>
+<p>11:42 もう1人のメンバーがMySQLの<code>id_generator</code>を使っていた箇所をuuidを用いてIDを生成する変更する。 Score: 4639</p>
+<p>このへんでロックを適当に外したりとか自明にいらないクエリを削除したりなどを相方が試すがたいしてスコアは改善せず。</p>
+<p>14:18 ロックを改善する実装がようやく出来上がる。 Score: 4376でたいして改善せず</p>
+<p>このへんから自分は<code>visit_history</code>が<code>min(created_at)</code>なものしか引っ張ってきていないことを利用した最適化の実装にとりかかる。<br>相方はsqliteを使っている箇所をMySQLにしようとする。</p>
+<p>15:43 MySQLを別サーバーに分離 Score: 4315</p>
+<p>スコアこそ改善していないが、CPU使用率などのメトリックは改善していたので、将来的には有利なるはずと判断。</p>
+<p>しかし、これ以降、やりたい改善の実装がうまく動かず、小手先の細かい改善をいくつか入れる程度で予選終了。なんの成果も得られませんでした。</p>
+<h2 id="延長戦"><a href="#延長戦" class="headerlink" title="延長戦"></a>延長戦</h2><p>まず自分が担当していたvisit_historyの最適化ですが、DBのトランザクションを貼った時commitをし忘れるとかいうイージーミスでした。<br>書いていたときの気分としてはdropハンドラでやってくれるだろうと思っていたのですが、実際に呼ばれるのはrollbackです。冷静に考えればそのとおりですよね。</p>
+<p>sqliteの移植作業の方はほぼほぼ完成していたものの、<code>player_score</code>テーブルが巨大でインスタンス起動時にすべてインサートできないという問題がありました。<br>しかし、<code>player_score</code>は<code>row_num</code>が最大のものしか利用されないという性質があるので、それを利用することでインサートする量を圧倒的に減らせます。<br>これには本番中には気がついていたのですが、実装が間に合いませんでした。</p>
+<p>これらを直して<code>player_score</code>のCSV入稿による一括insertをbulk insertにしたり、transactionを取ることによって不要な自前ロックを外す、MySQL化できたのでN+1だった箇所を撲滅する、Redisでキャッシュするなどを実装することで最終的には5万点以上の点数をとることができました。</p>
+<p>bulk insertをする場合、たまにMySQL側でデッドロックを起こすことに気が付きました。どうやらおなじテーブルへのbulk insertが複数スレッドで実行されると、トランザクションを貼っている状態でもindex更新のためのロックを取り合ってdead lockを起こすようです。<br>正直なんでMySQLがこれを正しくハンドルできないかはよくわからなかったのですが、Mutexを使いbulk insertできるのを1スレッドに限定することでなんとか回避しました。</p>
+<h2 id="反省"><a href="#反省" class="headerlink" title="反省"></a>反省</h2><p>まず、素振りが足りていなかったのが大きかったかなと思います。<br>ライブラリを使い慣れていればtransactionがdropでrollbackされるなどでつまずくことはなかったし、<br>Redisでファイルロックを置き換える作業ももっとスムーズにできたはずです。</p>
+<p>また、チームメイトを悪い意味で信頼しすぎていて、作業を任せっきりにしてしまったのもよくなかったです。<br>コンテスト中はどうしても焦りが出てしまったり、そもそも知識が足りていない分野だと気づきが共有できていなかったりします。<br>ロックについて相方とじっくり挙動を調べたりすれば、Redis置き換えなどという無駄なステップを踏まずにすんだかもしれないし、<br>SQLite移行ももう少しすんなりいったかもしれません。<br>ペアプロや一緒に考える時間はもう少し積極的にとって良いと思いました。</p>
+<p>RustのWebアプリケーションでのプロファイリング手法についてもちゃんと検討したいなと思いました。<br>MySQLやnginxのログ解析は<code>pt-query-digest</code>や<code>mysqldumpslow</code>や<code>alp</code>などで確立されていますが、各関数でどれくらいの処理がかかっているかのデータを知りたい場面はそこそこにあります。<br>他の予選通過チームは自前のmacroを用意してOpenTelemetryでプロファイリングをとっているようだった。</p>
+<a href="https://zenn.dev/daiju/articles/165da7a5589434" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://res.cloudinary.com/zenn/image/upload/s--92for2m7--/co_rgb:222%2Cg_south_west%2Cl_text:notosansjp-medium.otf_37_bold:%25E5%25A4%25A7%25E6%25A8%25B9%2Cx_203%2Cy_98/c_fit%2Cco_rgb:222%2Cg_north_west%2Cl_text:notosansjp-medium.otf_70_bold:ISUCON12%25E4%25BA%2588%25E9%2581%25B8%25E5%258F%2582%25E5%258A%25A0%25E8%25A8%2598%2520Rust%25E3%2581%25A7%25E4%25BA%2588%25E9%2581%25B8%25E7%25AA%2581%25E7%25A0%25B4%25E3%2581%2597%25E3%2581%259F%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9yZXMuY2xvdWRpbmFyeS5jb20vemVubi9pbWFnZS9mZXRjaC9zLS1OMEZMdUJpUy0tL2NfbGltaXQlMkNmX2F1dG8lMkNmbF9wcm9ncmVzc2l2ZSUyQ3FfYXV0byUyQ3dfNzAvaHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyL2M0OTkyOGRlYjMuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_72/v1627274783/default/og-base_z4sxah.png"></div><div class="descriptions"><div class="og-title">ISUCON12予選参加記 Rustで予選突破した</div></div></div></a>
+
+<p>著名なライブラリである<code>tracing</code>でもSQLの文字列とかはキャプチャできないが、最低限関数呼び出しのトレースは取れるはずなので次回は活用したい。</p>
+<p>他チームで参考になりそうな戦略としてはSQL文を一旦すべてスプレッドシートに洗い出すという戦略はよさそうと思いました。</p>
+<a href="https://diary.hatenablog.jp/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://cdn.blog.st-hatena.com/images/theme/og-image-1500.png"></div><div class="descriptions"><div class="og-title">Write and Run</div><div class="og-description">it&#39;s a simple way, but the only way.</div></div></div></a>
+
+<p>狙いとしてはアクセスパターンを一覧にすることで、不要なDB操作を洗い出したり、今回の場合はSQLite移行の難易度を見積もったりとslow query分析だけでは見えてこないものを発見しやすくするというもので、これはシンプルながら強力そうな戦略に感じました。<br>やはり冷静になってアプリを分析する時間は必要。</p>
+<p>来年はちゃんと3人メンバーを集めて予選通過を狙いたいです。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
   <article class="post">
   
   <div class="post-content">
@@ -82,7 +139,7 @@
       
         <p>年末恒例、今年の自分の振り返りをやっていく。<br>普段は避けているやや政治的な意見にも踏み込むので苦手な方はブラウザバックを推奨。<br>またお約束ではあるが、個人の見解であり、所属する団体を代表するものではない。</p>
 <h2 id="今年の成果"><a href="#今年の成果" class="headerlink" title="今年の成果"></a>今年の成果</h2><p>自作OSに関する成果については以前の記事にまとめた</p>
-
+<a href="https://zenn.dev/garasubo/articles/dcfc888668a739" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://res.cloudinary.com/zenn/image/upload/s--6Ga8CRIj--/co_rgb:222%2Cg_south_west%2Cl_text:notosansjp-medium.otf_37_bold:%25E3%2582%25AC%25E3%2583%25A9%25E3%2582%25B9%25E3%2583%259C%25E3%2583%25BC%2Cx_203%2Cy_98/c_fit%2Cco_rgb:222%2Cg_north_west%2Cl_text:notosansjp-medium.otf_70_bold:Rust%25E3%2581%25A7%25E3%2581%25AE%25E4%25BD%258E%25E3%2583%25AC%25E3%2582%25A4%25E3%2583%25A4%25E3%2583%25BC%25E3%2583%2597%25E3%2583%25AD%25E3%2582%25B0%25E3%2583%25A9%25E3%2583%259F%25E3%2583%25B3%25E3%2582%25B0%25202021%2Cw_1010%2Cx_90%2Cy_100/g_south_west%2Ch_90%2Cl_fetch:aHR0cHM6Ly9yZXMuY2xvdWRpbmFyeS5jb20vemVubi9pbWFnZS9mZXRjaC9zLS04ZWZiNGN4ci0tL2NfbGltaXQlMkNmX2F1dG8lMkNmbF9wcm9ncmVzc2l2ZSUyQ3FfYXV0byUyQ3dfNzAvaHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3plbm4tdXNlci11cGxvYWQvYXZhdGFyLzFiYWY4YTQ4NjEuanBlZw==%2Cr_max%2Cw_90%2Cx_87%2Cy_72/v1627274783/default/og-base_z4sxah.png"></div><div class="descriptions"><div class="og-title">Rustでの低レイヤープログラミング 2021</div></div></div></a>
 
 <h3 id="ブログ記事などのアウトプット"><a href="#ブログ記事などのアウトプット" class="headerlink" title="ブログ記事などのアウトプット"></a>ブログ記事などのアウトプット</h3><p>今年はこのブログにこの記事を除いて4本、<a href="https://zenn.dev/garasubo" target="_blank" rel="noopener">Zenn</a>のほうに3本の記事を投稿した。<br>これは去年よりも少ないことになるのだが、代わりに技術書展において去年執筆した自作OSドキュメントを改訂して同人誌として販売した</p>
 <a href="https://techbookfest.org/product/6484983722016768?productVariantID=4877729004519424" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://techbookfest.org/api/product/ogp/image/6484983722016768"></div><div class="descriptions"><div class="og-title">Rustで始める自作組込みOS入門：己の不学を恥じる</div><div class="og-description">組込みデバイス向けのOSをRustでつくってみませんか？
@@ -360,7 +417,7 @@ Wio Terminalを題材にOS自作への第一歩を解説します。
     <div class="entry">
       
         <p>先日、<a href="https://connpass.com/event/201059/" target="_blank" rel="noopener">Kernel/VM探検隊 online</a>というイベントにて、RustでOSを設計するという論文をまとめて紹介するというLTを行いました。</p>
-
+<a href="https://docs.google.com/presentation/d/1RRccgmR-EsnfanWrpyywvx4fDbohEHWuqsAoMAT6YUY/edit?usp=sharing" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://lh3.googleusercontent.com/TXzwKrUO09y9YnyCyQnJeC5gkwowPTUi7JQqiJq4XUrWyCQI87TMXf6uAXk1PTdACk5YuoeGwIOR1A=w1200-h630-p"></div><div class="descriptions"><div class="og-title">RustはOS界の銀の弾丸になりうるか</div><div class="og-description">RustはOS界の 銀の弾丸になりうるか 論文で見るRustで変わるOS設計 1</div></div></div></a>
 
 <p>しかし、10分間のプレゼンで3本の論文を紹介するとかいう、かなり無茶苦茶な発表だったので説明している箇所もかなり限定的で、解説全体として非常に雑なものになってしまいました。<br>そこでこの記事で、このLTで触れた論文の1つであるTheseusというOSについて説明したものをもう少し詳しくみていきたいと思います。</p>
 <h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
@@ -426,7 +483,7 @@ Wio Terminalを題材にOS自作への第一歩を解説します。
     <div class="entry">
       
         <p>STM32ボードのイーサネットドライバのRust実装である<code>stm32-eth</code>クレートの送信部分のロジックの解説をしていきます。</p>
-
+<a href="https://github.com/stm32-rs/stm32-eth/tree/v0.1.2" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://opengraph.githubassets.com/af7ad731bc458977ea3c74e8efc77a3752aeeda23d0df5f70372c6c82f5b53d1/stm32-rs/stm32-eth"></div><div class="descriptions"><div class="og-title">GitHub - stm32-rs/stm32-eth at v0.1.2</div><div class="og-description">Embedded Ethernet driver in Rust. Contribute to stm32-rs/stm32-eth development by creating an account on GitHub.</div></div></div></a>
 
 <p><a href="/hexo/2020/12/20/ether.html">前回の記事</a>では受信部分を解説しました。<br>そのときは、自分のOS用のドライバでの送信が成功していなかったため、受信のみの解説になってしまったのですが、<br>今回晴れて送信部分のバグがとれたので、安心して記事を書けるようになりました。</p>
 <p>イーサネットモジュールの初期化部分のロジックは受信とかぶっているので省略していきます。<br>仕様書も前回記事で用いたものを使います。</p>
@@ -501,10 +558,10 @@ Wio Terminalを題材にOS自作への第一歩を解説します。
 <p>大手メディアの報道もかなりいい加減で、かなり信憑性が低い言説であったり、専門家のメッセージもかなり歪に切り取られることも少なくなかった。<br>このあたりはそこまで驚きではなかったが、 自分の観測範囲のそこそこ知識もきちんとあると思っている人たちですら、怪しい言説をシェアしたり、流行初期にあった日本は意図的に感染者数を隠しているのような陰謀説に加担するひとすらいたのは正直驚いた。<br>なので、自分は分科会が上げる資料を時々目を通したり、感染者数の動向の生データをみたり、こういう専門家と矛盾していない解説をしてくれるTwitterアカウントを非公開リストにいれて（信憑性はだいぶ落ちるであろうことに留意しつつ）ウォッチしている。</p>
 <p>自分は幸いにも大きく収入が落ち込むということはなかったが、人との接触が歓迎されないという状況が長く続くというのは気分がよくない。在宅勤務も正直そこまで好きじゃない。<br>おそらく来年中にコロナ問題が完全解決とはならず、一定の制限が続くのではないかなと理解しているが、一日も早く事態が好転するのを願わずにはいられない。</p>
 <h3 id="Coinhive裁判"><a href="#Coinhive裁判" class="headerlink" title="Coinhive裁判"></a>Coinhive裁判</h3><p>Coinhiveを設置したウェブアプリケーション製作者が逮捕され裁判になるという事件があり、地裁では無罪になったが今年2月の高裁判決では逆転有罪となってしまった。<br>自分はこのケースを無罪になるべきだと思っている。<br>詳しい説明は日本ハッカー協会の寄稿などがわかりやすいと思うので、ここでは詳しく解説しない。</p>
-
+<a href="https://www.hacker.or.jp/coinhiveopinion/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">【寄稿】コインハイブ事件　意見書ご協力のお願い - 一般社団法人日本ハッカー協会</div></div></div></a>
 
 <p>Coinhiveに関しては知り合いでも有罪になるべきではないか、という意見の人が少なからずいたりする。<br>そういう主張の背景にはCoinhiveを設置するのは金儲けのためで悪意に満ちたものという思い込みであったり、あるいは倫理観にかけた行為であるという点でそういう意見になっていると思っている。<br>しかしながら、ウェブアプリケーションを運営するにあたってなんらかの収益化は必要不可欠だし、倫理観にかける＝違法であるわけではないしそこは議論をきちんと分けるべきと思う。<br>もうちょっと踏み込むと、そもそも倫理観にかけた行為であったのか、という点も議論の残る点ではある。<br>例えば有名なセキュリティソフトの開発元のNortonは、自社製品でこのようなマイニングスクリプトをブロックするようにしてはいるものの、100％悪として断罪はできないだろうとしている。</p>
-<a href="https://japan.norton.com/coinhive-9678" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://japan.norton.com/blog/wp-content/uploads/2018/05/coinhive-00.jpg"></div><div class="descriptions"><div class="og-title">自分のPCやスマホが使われるCoinhiveとは？その特徴と防衛策</div><div class="og-description">そもそもcoinhiveとは何かという基本の解説から、coinhiveがなぜ問題視されているのか、そしてcoinhiveに勝手なことをされたくないという方のための対処法などをまとめました。</div></div></div></a>
+<a href="https://japan.norton.com/coinhive-9678" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://now.symassets.com/content/dam/norton/ja/images/blog/malware/coinhive-00-730x382.jpg"></div><div class="descriptions"><div class="og-title">自分のPCやスマホが使われるCoinhiveとは？その特徴と防衛策</div><div class="og-description">そもそもcoinhiveとは何かという基本の解説から、coinhiveがなぜ問題視されているのか、そしてcoinhiveに勝手なことをされたくないという方のための対処法などをまとめました。</div></div></div></a>
 
 <p>そもそもウェブ関連の倫理観というのはまだまだ成熟が甘く、どこからがアウトでどこまでがセーフかという線引きが難しい事案は多くあると思う。<br>他の産業の倫理観を引き合いに非難するというのも、ブラウザというサンドボックス内で実行されるアプリケーションという性質を考えると適当ではないだろう。<br>もっとも今ではブラウザ標準でこのようなスクリプトは弾かれるようになっているし、こういう手法は今なら倫理的ではないと言えるかもしれない。</p>
 <p>たしかに、ウェブ関連のアプリケーションはかなりの大手ですら倫理的にどうなの、と思うようなことを平気でやっていたりするので、健全な状態とは言い難いとは思う。<br>しかしながら、このようにぽっと出の技術を使った個人開発者を叩いても、このような現状が好転するようなながれにはならないとは思う。</p>
@@ -554,7 +611,7 @@ Wio Terminalを題材にOS自作への第一歩を解説します。
         <p>この記事は<a href="https://adventar.org/calendars/4954" target="_blank" rel="noopener">自作OS Advent Calendar 2020</a>の20日目の記事です。</p>
 <p><a href="/hexo/2019/05/15/erkos.html">RustでSTM32ボード用の自作OS</a>をしていて、アプリケーションの幅を増やしたくて、イーサネットドライバを組むことにしました。<br>使用しているのはNucleo-429ZIボードで、イーサネットモジュールが付属しています。<br>去年から取り組みはじめてはいたものの、今までのペリフェラルとは違い仕様が複雑で何度も挫折して中断しまくったのですが、ようやく受信部分だけ完成したので解説していきたいと思います。</p>
 <p>参照するコードは自分が組んだコードでもよかったのですが、送信部分がバグっているのと、参考にしてきた<code>stm32-eth</code>クレートのほうがずっと出来が良いのでそちらを使います。<br>なお、バージョンはv0.1.2とちょっと古いバージョンです。なお、<code>stm32-eth</code>のこのバージョンではいくつか立てる必要のないと思われるビットを立てていたりするので、実際に参考にする場合はちゃんと仕様書で確認しながら見ることをおすすめします。</p>
-
+<a href="https://github.com/stm32-rs/stm32-eth/tree/v0.1.2" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://opengraph.githubassets.com/af7ad731bc458977ea3c74e8efc77a3752aeeda23d0df5f70372c6c82f5b53d1/stm32-rs/stm32-eth"></div><div class="descriptions"><div class="og-title">GitHub - stm32-rs/stm32-eth at v0.1.2</div><div class="og-description">Embedded Ethernet driver in Rust. Contribute to stm32-rs/stm32-eth development by creating an account on GitHub.</div></div></div></a>
 
 <h2 id="仕様書を入手する"><a href="#仕様書を入手する" class="headerlink" title="仕様書を入手する"></a>仕様書を入手する</h2><p>仕様書なくしてドライバはつくれません。今回はCPUのリファレンスマニュアルとデータシート、ボードのユーザーマニュアルがまず必要です。<br>更に、イーサネット通信は外部物理層(PHY)に対してIEEE 802.3で定義されているインターフェスを介してCPUのイーサーネットモジュールと通信することで実現されています。<br>このPHYに関するマニュアルも必要です。ユーザーマニュアルによるとこのボードではLAN8742A-CZ-TRを使っているとのことなので、これの仕様書も入手しましょう。</p>
 <ul>
@@ -759,7 +816,7 @@ Wio Terminalを題材にOS自作への第一歩を解説します。
 </li>
 </ul>
 <h2 id="9-14-追記"><a href="#9-14-追記" class="headerlink" title="9/14 追記"></a>9/14 追記</h2><p>チームメイトの@kenkooooさん視点の参加記です。</p>
-
+<a href="https://kenkoooo.hatenablog.com/entry/2020/09/13/090517" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://ogimage.blog.st-hatena.com/8454420450081554074/26006613627179021/1599962419"></div><div class="descriptions"><div class="og-title">ISUCON10参加記 - 宇宙ツイッタラーXの憂鬱</div><div class="og-description">ISUCON10に garasubo さんと GolDDranks さんとチーム「勉強不足の分は有り余る才能でカバーでカバーしようかなと思っております」で参加して予選通過しました。チーム名がtypoしているのですが、一度登録すると修正できない仕様なので、カバーでカバーするしかない…</div></div></div></a>
 
 <p>他のチームの参戦記もいろいろ読ませてもらって、自分たちのできてなかった改善点はだいたいこんなところだと思います</p>
 <ul>
@@ -779,67 +836,10 @@ Wio Terminalを題材にOS自作への第一歩を解説します。
 </li>
 </ul>
 <p>その他、他のチームの参戦記は以下の公式のブログにまとめられるそうです。</p>
-<a href="http://isucon.net/archives/55007694.html" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://livedoor.blogimg.jp/isucon/imgs/8/3/83930b51-s.png"></div><div class="descriptions"><div class="og-title">ISUCON10 関連エントリまとめ : ISUCON公式Blog</div><div class="og-description">2020.10.16 11:09 最新更新2020.10.5 本選も含むよう変更2020.9.14 11:55 初版公開---ISUCON10にご参加いただいた皆さん、ありがとうございました！こちらでは感想エントリや何をしたかに言及されたエントリをまとめていきます。見つけた順です…</div></div></div></a>
+<a href="http://isucon.net/archives/55007694.html" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://livedoor.blogimg.jp/isucon/imgs/8/3/83930b51-s.png"></div><div class="descriptions"><div class="og-title">ISUCON10 関連エントリまとめ : ISUCON公式Blog</div><div class="og-description">2020.10.16 11:09 最新更新 2020.10.5 本選も含むよう変更 2020.9.14 11:55 初版公開 --- ISUCON10にご参加いただいた皆さん、ありがとうございました！ こちらでは感想エントリや何をしたかに言及されたエントリをまとめていきます。見つ…</div></div></div></a>
 
 <p>今回、はじめて初期実装としてRust言語が追加されたことに関しては運営の皆様とそれに協力してくださったボランティアの方に深く感謝します。<br>初期実装がない状態だと敗戦濃厚でした。また、実装自体もちゃんとしていて不利になることがありませんでした。</p>
 <p>一方で、今回の大会ではポータルの不調が例年に比べると目立ち、多くのチームが混乱しているように見えました。<br>自分たちもキャッシュロジックの追加時、ポータルの不調に出会い、アプリが悪いかベンチマークが悪いかでかなり混乱してしまいました。<br>アクセスができない時間帯もありましたが、僕個人としては、そういう時間は冷静に次に何ができるかを見直せる時間になったりしたので、大きくは影響しなかったのかなと思ってます。<br>特に今年は予選が一日に集中している関係でかかる負荷が想定よりも重かったなどの事情もあったのでしょうか。<br>この点は少々、残念ではありましたが、毎年多大な労力をかけて開催していただけることは非常にありがたいと思っています。<br>運営の皆様には改めて感謝の気持ちを伝えたいと思います。ほんとうにありがとうございます。</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2020-05-05T15:00:00.000Z"><a href="/hexo/2020/05/06/rust-os.html">2020-05-06</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/hexo/2020/05/06/rust-os.html">Rustで組込みプログラミングや自作OS作成をするには</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>「Rustで始める自作組込みOS入門」という本というかドキュメントの公開を始めました。</p>
-
-
-<p>これは以前からつくっていた<a href="/hexo/2019/05/15/erkos.html">ErkOS</a>という自作OSでの経験を元にして、どうやったらRustで自作組込みOSの最初の一歩を踏み出せるか、というものをドキュメントにしたものです。<br>このドキュメントはこの前の技術書展の告知が来たあたりから構想を練っていて、すきま時間にちまちまと書き進めていたものですが、とりあえず、プロセスの切り替えっぽいところまでの説明を終えることができたので公開しました。</p>
-<p>組込みでRustをやる話や自作OSを書く話というのは先駆者がたくさんいて、僕自身もそれらの資料を参考にしつつ書き進めて来ました。<br>一応、それらの既存のものとは差別化はしているつもりではあるものの、既存のものを完全に上回るというものではないです。内容もまだまだ足りない。</p>
-<p>以前、<a href="/hexo/2017/11/05/rust-os.html">RustでOSを書くプロジェクトもろもろ</a>でいくつかOSを書く際に参考になりそうなプロジェクトをまとめましたが、情報も古くなってきたので、改めて参考になるプロジェクトを紹介していきたいと思います。</p>
-<h2 id="Redox"><a href="#Redox" class="headerlink" title="Redox"></a>Redox</h2><a href="https://www.redox-os.org/jp/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Redox - Your Next(Gen) OS - Redox - Your Next(Gen) OS</div><div class="og-description">The Redox official website</div></div></div></a>
-<p>RustでデスクトップOSを書くというプロジェクト。完成度はかなり高く、GUIツールなどもすべてRustで書き直す、とかなり本格的。<br><a href="https://www.redox-os.org/jp/news/focusing-on-rustc/" target="_blank" rel="noopener">最近のブログポスト</a>によると実際のハードウェアで動くための課題はかなりクリアできているようで、<br>今はコンパイラそのものを改良してRedox上でRedoxをビルドすることを目指しているらしい。</p>
-<p>このRedoxプロジェクトから派生したクレートも役に立つものが多い</p>
-<h2 id="Tock"><a href="#Tock" class="headerlink" title="Tock"></a>Tock</h2><a href="https://www.tockos.org/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Tock Embedded Operating System</div><div class="og-description">Tock is a safe, multitasking operating system for low-power, low-memory microcontrollers.</div></div></div></a>
-<p>Rustで書かれたCortex-M向けの組込みOS。SOSPで<a href="/hexo/2018/05/23/tock.html">論文</a>を出していいたりとOSそのもの構造も興味深い。<br>かつてはRustコンパイラに手を加えたりするものが主流でしたが、このTockはnightlyコンパイラだけでコンパイルできるのも特徴。</p>
-<p>最近、Googleが発表した<a href="https://github.com/google/OpenSK" target="_blank" rel="noopener">OpenSK</a>というUSBのセキュリティキーのオープンな実装を発表したが、そこで使われているのもこのTockです。</p>
-<h2 id="Rust-Embeddedグループ"><a href="#Rust-Embeddedグループ" class="headerlink" title="Rust Embeddedグループ"></a>Rust Embeddedグループ</h2><a href="https://github.com/rust-embedded/wg" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://opengraph.githubassets.com/2deef68f1d9d92f818075be457cd066d6933c14d8963466386c17a087f625fe5/rust-embedded/wg"></div><div class="descriptions"><div class="og-title">GitHub - rust-embedded/wg: Coordination repository of the embedded devices Working Group</div><div class="og-description">Coordination repository of the embedded devices Working Group - GitHub - rust-embedded/wg: Coordination repository of the embedded devices W…</div></div></div></a>
-<p>Rustにはいくつかの公式ワーキンググループがあって、そのうちの１つがこのEmbeddedワーキンググループです。<br>各種ドキュメントや組込み開発で使えるクレートを公開しています。<br>主にCortex-MやCortex-A、RISC-Vをターゲットにしています。</p>
-<p><a href="https://docs.rust-embedded.org/embedonomicon/" target="_blank" rel="noopener">The Embedonomicon</a>は一からベアメタルプログラミングするための手引になっていてとても参考になります。</p>
-<p><a href="https://github.com/rust-embedded/rust-raspberrypi-OS-tutorials" target="_blank" rel="noopener">RaspberryPiを使ったOS開発のチュートリアル</a>はGICv2にも対応しているようなので、Cortex-Aで自作OSしたい人は参考になるかもしれません。</p>
-<p>OS開発ということにフォーカスしているわけではないですが、個々のコンポーネントを書く際はかなり参考になります。</p>
-<h2 id="Rust-OSDev"><a href="#Rust-OSDev" class="headerlink" title="Rust OSDev"></a>Rust OSDev</h2><a href="https://github.com/rust-osdev" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://avatars.githubusercontent.com/u/35896598?s=280&v=4"></div><div class="descriptions"><div class="og-title">Rust OSDev</div><div class="og-description">Operating System Development in Rust. Rust OSDev has 23 repositories available. Follow their code on GitHub.</div></div></div></a>
-<p>非公式グループですが、OSを書く、ということに焦点を置いたグループです。<br>こちらはx86系のアーキテクチャをたーゲットにしています。</p>
-<p>UEFIのアプリケーションを書くのに便利な<a href="https://github.com/rust-osdev/uefi-rs" target="_blank" rel="noopener">uefiクレート</a>など、x86系の自作OSに役立つクレートを多く出しています。</p>
-<p>特にこのグループのメンバーの一人であるPhilippさんの自作OSブログは内容が充実していて、自作OSでのテストの書き方やヒープアロケータのデザインと実装といった他のアーキテクチャでも使える項目の解説も充実しています。</p>
-<a href="https://os.phil-opp.com/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Writing an OS in Rust</div><div class="og-description">This blog series creates a small operating system in the Rust programming language. Each post is a small tutorial and includes all needed co…</div></div></div></a>
-
-<h2 id="日本語の資料"><a href="#日本語の資料" class="headerlink" title="日本語の資料"></a>日本語の資料</h2><p>今まで紹介したものはほとんどが英語のものでしたが、日本語のリソースとして<a href="https://twitter.com/LDScell" target="_blank" rel="noopener">@LDScell</a>さんがEmbeddedグループのドキュメントの和訳を公開している他、<br>「組込み/ベアメタルRustクックブック」という資料を公開しています。</p>
-<a href="https://booth.pm/ja/items/1478032" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://booth.pximg.net/c/620x620/e47cf4ad-5f00-4211-90a2-ee0e5a07ef12/i/1478032/9fdc0ed2-32b0-4c0d-9db9-38193b660280_base_resized.jpg"></div><div class="descriptions"><div class="og-title">組込み/ベアメタルRustクックブック（電子版） - emb-sabi - BOOTH</div><div class="og-description">こちらで公開している内容と同じものです。 https://tomoyuki-nakabayashi.github.io/embedded-rust-techniques/ Rustを組込みで使うためのテクニック集です。 HTML版での閲覧をお勧めしています。HTML版を開くには、…</div></div></div></a>
 
       
     </div>
@@ -878,6 +878,10 @@ Wio Terminalを題材にOS自作への第一歩を解説します。
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2022/09/16/isucon12.html">ISUCON12予選敗戦記</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
       </li>
     
@@ -891,10 +895,6 @@ Wio Terminalを題材にOS自作への第一歩を解説します。
     
       <li>
         <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
   </ul>
@@ -927,13 +927,15 @@ Wio Terminalを題材にOS自作への第一歩を解説します。
   
     <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
   
-    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>6</small></li>
   
     <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
     <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/rust/">rust</a><small>1</small></li>
   
     <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
   
@@ -949,13 +951,10 @@ Wio Terminalを題材にOS自作への第一歩を解説します。
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2021 garasubo
+  &copy; 2022 garasubo
   
 </div>
-<div class="clearfix"></div>
-<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
-
-</footer>
+<div class="clearfix"></div></footer>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script src="/hexo/js/jquery.imagesloaded.min.js"></script>
 <script src="/hexo/js/gallery.js"></script>

@@ -28,19 +28,6 @@
   <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
   <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  
-<script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-	ga('create', 'UA-130790601-1', 'auto');
-	ga('send', 'pageview');
-
-</script>
-
-
 </head>
 </html>
 
@@ -59,11 +46,71 @@
   </ul>
   <div class="clearfix"></div>
 </nav>
-<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
 <div class="clearfix"></div>
 </header>
   <div id="content" class="inner">
     <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-07-20T15:00:00.000Z"><a href="/hexo/2019/07/21/unikernel.html">2019-07-21</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2019/07/21/unikernel.html">論文紹介：A Binary-Compatible Unikernel ー Unikernelの解説も添えて</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>元論文：<a href="https://dl.acm.org/citation.cfm?id=3313817" target="_blank" rel="noopener">https://dl.acm.org/citation.cfm?id=3313817</a></p>
+<p>Linuxアプリケーションをそのまま動かせるバイナリコンパチブルなUnikernelを構築しました、という話です。<br><a href="/hexo/2019/06/30/lightvm.html">前回の記事</a>に引き続きUnikernel関連な話題ですが、意外と自分のブログではUnikernelについての話題を触れていなかったので関連論文も合わせて紹介したいと思います。</p>
+<h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
+<li>タイトル：A binary-compatible unikernel</li>
+<li>著者：Pierre Olivier, Pierre Olivier, Pierre Olivier et. al.</li>
+<li>会議：Proceedings of the 15th ACM SIGPLAN/SIGOPS International Conference on Virtual Execution Environments (VEE 2019)</li>
+</ul>
+<p>仮想環境関連のトップカンファレンスであるVEEでの論文です。</p>
+<h2 id="Unikernelについて"><a href="#Unikernelについて" class="headerlink" title="Unikernelについて"></a>Unikernelについて</h2><p>Unikernelという概念が初めてでてきたのはASPLOS 2013でのMirageOSの論文です。<br><a href="https://dl.acm.org/citation.cfm?id=2451167" target="_blank" rel="noopener">Unikernels: library operating systems for the cloud</a><br>仮想環境上でアプリケーションを走らせるために、アプリケーションごとに独立した仮想Linuxマシンを立ち上げるのは、どうしてもたくさんの計算資源を消費してしまいます。<br>しかし、Dockerなどのコンテナ仮想化では、特にマルチテナントな仮想環境ではセキュリティの懸念が残ります。<br>そこで彼らのMirageOS、アプリケーションを走らせるためのOSをライブラリとして直接リンクさせるライブラリOS形式を用います。<br>通常、OSは複数のアプリケーションを動かすために計算資源の仮想化を行うわけですが、シングルアプリケーションのためならそのような抽象化レイヤーはいらないという考えです。<br>ライブラリOSの概念自体は古くからあり、SOSP ‘95で発表された<a href="https://dl.acm.org/citation.cfm?id=224076" target="_blank" rel="noopener">Exokernel</a>でも用いられている概念です。<br>ただし、当時はあまりにも極端すぎるアプローチで、特にそのライブラリOS用のデバイスドライバは個別で開発する必要がありました。<br>しかし、仮想環境上ならば、デバイスは仮想デバイスという形でVMM側から共通のインターフェースで与えられるので、仮想デバイス用のドライバさえつくってしまえばこの問題をクリアできます。<br>要するに、計算資源の仮想化をVMM側に完全に任せることで上に乗っかるOSはさほどがんばる必要がない、という考え方です。<br>このアプローチはかなり強力で、評価では起動時間・バイナリサイズを大幅に削減することが示されています。これはシステムコールが関数呼び出しとして実現できる・必要な関数のみリンクさせることでサイズを小さくできるなどによるものです。<br>MirageOSはOCamlで書かれていてGCのコストや型安全性の保障のためのオーバーヘッドがあるはずですが、それを上回るメリットがMirageOSの設計にはあったというわけです。</p>
+<p>MirageOSには１つ大きな問題があり、それはアプリケーションをOCamlでMirageOS用に書き直さなければならない、ということです。<br>彼らの主張としては、今までの型安全ではない言語でかかれたシステムはバグを含んでいることがしばしばあるので、むしろ積極的に書き直すべきだという立場をとっています。<br>一理あるかもしれませんが、やはり何もかも今までの資産を切り捨てるというのは難しいのがUnikernelの課題としてありました。</p>
+<p>Unikernelやそれに類似したシステムは今までいろいろと提案されてきました。<br>Usenix ATC ‘14で発表された<a href="https://www.usenix.org/node/184012" target="_blank" rel="noopener">OSv</a>では、Linux ABIを提供することでLinuxアプリケーションを動かしたり、JVMを提供したりと、より広く使われている言語をサポートしていますが、アプリケーションそのものは再ビルドする必要があります。<br><a href="http://rumpkernel.org/" target="_blank" rel="noopener">Rumpkernel</a>はNetBSDのデバイスドライバを抽出して、OSなしでもアプリケーションで使うことができるというものですが、これもアプリケーションは再ビルドする必要がありました。<br>つまりこれらの手法はソースコードが入手できることが前提のもので、コンパイル済みのバイナリはサポートできません。</p>
+<p>Unikernelを用いたシステムとしては以前紹介した<a href="/hexo/2015/12/12/advent.html">Jitsu</a>や前回のLightVMの論文でもいくつか提案はされています。<br>Unikernelの小さいバイナリサイズ・実行オーバーヘッドの少なさがあってのシステムなのですが、アプリケーション構築のためのエンジニアリングコストをいかに小さくできるか、という課題があったわけです。<br>LightVMの論文ではTinyxというLinuxディストリビューションを必要最低限に小型化する方法が提案されていましたが、この形式ではUnikernelの恩恵はあまり得られず、論文でもこれは折衷案であるということを認めていました。</p>
+<h2 id="提案手法：HermiTux"><a href="#提案手法：HermiTux" class="headerlink" title="提案手法：HermiTux"></a>提案手法：HermiTux</h2><p>彼らはこのアプリケーションの移植コストというものを減らすために、再ビルドなしで完全なLinuxでのバイナリコンパチビリティを保ちつつUnikernelの恩恵も得られるものという手法を提案しています。<br>提案手法のプロトタイプをHermiTuxと名付けています。これはHermitCoreというUnikernelをベースにつくられているからです。</p>
+<p>HermiTuxはLinuxのABIのルールに従い、ロードおよびランタイムにエミュレートしてあげる必要があります。<br>ソースコードの入手を前提としていないため、Linuxシステムの呼び出しを事前に置き換えておいたり、違うライブラリをリンクすることはできません。<br>また、アプリケーションはライブラリを動的にも静的にもリンクしてある可能性があるので、その両方のパターンを考慮しなければなりません。<br>HermiTuxでは、uHyveという軽量なハイパーバイザをVMM上（今回はKVMを用いている）をまずは知らせ、その上でLinuxアプリケーションとHermiTuxのカーネルを動かしています。</p>
+<p>ロードの仕方も論文には書かれていますが、Linuxシステムコールをどう処理するかが特におもしろかったので、今回はそこだけを見ていきます。<br>システムコールハンドラは通常であれば、特権レベルの切り替えが発生するのですが、HermiTuxではその必要がありません。そのため、その切り替えがない分、システムコールを速く処理できます。<br>しかし、呼び出しそのものはsyscall命令によって行われているため、普通の関数呼び出しとしてい実現される通常のUnikernelよりはどうしても遅くなってしまいます。動的にCライブラリがリンクされている場合は、Cライブラリそのものの中にあるシステムコールを予め関数呼び出しに置き換えることによりこの問題を回避できます。<br>Cライブラリ実装のひとつでであるMuslはシステムコールがマクロを経由して呼び出されているため、<a href="http://coccinelle.lip6.fr/" target="_blank" rel="noopener">Coccinelle</a>というコード変換ツールを使い自動的に置き換えられるとしています。</p>
+<p>静的にリンクされている場合は、実行時にバイナリを置き換えるというテクニックを用いています。x86の命令は残念なことに可変長でsyscallは２バイト、通常の関数呼び出しであるcall命令は5バイトです。<br>そのため、syscall命令の次の命令までまとめて別のスニペットへのjmp命令として置き換えて、スニペット中で関数呼び出しと次の命令を実行して戻ってくるという方法で実現されています。</p>
+<p>ひとつの問題として、システムコールの種類は非常に多く、すべてサポートするのは大変ということです。この研究でもすべてのシステムコールはサポートしきれていませんが、それでもいくつかのメジャーなアプリケーションをサポートできています。<br>システムコールのサポートを追加していくのは実装コストだけでなく、カーネルサイズの増大も引き起こします。そこでこの研究ではそれぞれのシステムコールをモジュール化し、必要なシステムコールのみをカーネルに含められるようにしています。<br>問題はアプリケーションがどのシステムコールを使うかです。straceなどのツールで実際にどのシステムコールが呼ばれるかを解析するのは、そのテスト実行のコードカバレッジに依存するため安全ではありません。<br>静的にライブラリがリンクされている場合、静的解析を行うことでかなりの部分を解析することができます。動的にリンクされる場合は、どのライブラリ関数が呼ばれているかを解析することにより、その関数から呼ばれているシステムコールを解析することにより特定することができます。<br>これらのテクニックにより大幅にカーネルサイズを減らせます。</p>
+<p>また、HermiTux用のデバッガとプロファイラといった開発ツールのサポートも行われています。</p>
+<h2 id="評価"><a href="#評価" class="headerlink" title="評価"></a>評価</h2><p>評価では、通常のLinux VM、Dockerコンテナ、OSv、Rumprunと各種ベンチマークを用いた比較を行っています。<br>ベンチマークにはLMbench、<a href="https://parsec.cs.princeton.edu/" target="_blank" rel="noopener">PARSEC</a>、redis、SQLiteなどが用いられています。<br>Hello Worldアプリケーションではバイナリサイズ・起動時間・メモリ使用量を大幅に減らせることが示されていて、他のベンチマークのパフォーマンスでもかなりの性能を示しています。</p>
+<h2 id="まとめ・感想"><a href="#まとめ・感想" class="headerlink" title="まとめ・感想"></a>まとめ・感想</h2><p>Linuxアプリケーションをバイナリコンパチブルで動かせるHermiTuxの手法について解説しました。</p>
+<p>Unikernelはかなり攻めた手法でなかなか実運用されているケースは聞かないですが、段々とその活用の仕方と移植コストの軽減策が出てきていて非常におもしろいですね。<br>将来、コンテナ型仮想化に代わる選択肢として広く使われることになるのか楽しみです。</p>
+<p>Unikernelについてもっと掘り下げて知りたい方は、<a href="https://en.wikipedia.org/wiki/Unikernel" target="_blank" rel="noopener">Wikipedia（英語）</a>でも記事になっている他、こちらのQitta記事とかがいいかもしれません。</p>
+<a href="https://qiita.com/t-imada/items/ed6a76f5b257f5608ad0" class="link-preview" target="_blank" rel="nofollow"><div class="link-area"><div class="og-image"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9VW5pa2VybmVsJUUzJTgxJUFBJUU2JTgzJTg1JUU1JUEwJUIxJTIwJTI4aW4lMjBKYXBhbmVzZSUyOSZ0eHQtY29sb3I9JTIzMjEyMTIxJnR4dC1mb250PUhpcmFnaW5vJTIwU2FucyUyMFc2JnR4dC1zaXplPTU2JnR4dC1jbGlwPWVsbGlwc2lzJnR4dC1hbGlnbj1sZWZ0JTJDdG9wJnM9MTNlZDg3OThkOWZlMDg1ODA4NjUzYzNmZDQwMjhlMzM&mark-x=142&mark-y=112&blend64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwdC1pbWFkYSZ0eHQtY29sb3I9JTIzMjEyMTIxJnR4dC1mb250PUhpcmFnaW5vJTIwU2FucyUyMFc2JnR4dC1zaXplPTM2JnR4dC1hbGlnbj1sZWZ0JTJDdG9wJnM9NGZjYTU5MTE2MGQ5NGQ3N2M1OTczYzBhZGU0MWEwM2E&blend-x=142&blend-y=491&blend-mode=normal&s=56e752f10ef51ac0a995196a9a08ee3b"></div><div class="descriptions"><div class="og-title">Unikernelな情報 (in Japanese) - Qiita</div><div class="og-description">
+
+はじめに
+
+「Unikernelって知ってますか!?」という質問を日本で(というか海外でも)聞くとだいたい「知らない」と冷たい回答が返ってくるので、啓蒙活動の一環としてこの記事を書いてみることにしました。
+
+サーバ仮想化用ハイパバ...</div></div></div></a>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
   <article class="post">
   
   <div class="post-content">
@@ -136,7 +183,7 @@
     <div class="entry">
       
         <p>だいぶ前からRustでOSを書こうとしていて、ようやく一山越えて形になってきたのでレポジトリを公開しました（気まぐれでまた非公開にするかもしれませんが）。</p>
-
+<a href="https://github.com/garasubo/erkos" class="link-preview" target="_blank" rel="nofollow"><div class="link-area"><div class="og-image"><img src="https://opengraph.githubassets.com/9b9cbc7f9ccd00d9e157d7adb6da8477323b73730f83ff8f2c34abe4412a5048/garasubo/erkos"></div><div class="descriptions"><div class="og-title">GitHub - garasubo/erkos: A prototype embedded operating system written in Rust</div><div class="og-description">A prototype embedded operating system written in Rust - GitHub - garasubo/erkos: A prototype embedded operating system written in Rust</div></div></div></a>
 
 <h2 id="構造"><a href="#構造" class="headerlink" title="構造"></a>構造</h2><p><code>app</code>ディレクトリに実際のボードで動かしているデモが入っています。ボードはNucleo-F429ZIを利用しています。<br><code>qemu_app</code>はqemu用のデモです。<br>nightlyコンパイラと必要なツールチェーンをインストールすれば<code>cargo build</code>でコンパイルでき、qemuのデモは<code>cargo run</code>とすれば動くと思います。</p>
 <p><code>kernel</code>モジュールがスケジューラだったり、プロセスなどのOSの機能を実装したものになっています、<br><code>arch</code>がARMv7-M固有の機能のためのライブラリ（NVICやSystickなどもこちら）、<code>device</code>はボード固有のペリフェラルドライバとなっています。<br><code>rt</code>と<code>log</code>は<a href="https://docs.rust-embedded.org/embedonomicon/" target="_blank" rel="noopener">The Embedonomicon</a>のチュートリアルでつくったモジュールに手を加えたものです。<br><code>util</code>はアーキテクチャやボードに依存しない機能を入れるためのモジュールです。</p>
@@ -573,53 +620,6 @@
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2018-12-12T15:00:00.000Z"><a href="/hexo/2018/12/13/rust-arm.html">2018-12-13</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/hexo/2018/12/13/rust-arm.html">RustでArm Cortex-Mプログラミングをする 2018</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>この記事は<a href="https://adventar.org/calendars/2915" target="_blank" rel="noopener">自作OS Advent Calendar 2018</a>および<a href="https://qiita.com/advent-calendar/2018/rust2" target="_blank" rel="noopener">Rust その2 Advent Calendar 2018</a>の記事です。</p>
-<p>ベアメタルプログラミングといえばC言語であったが、C言語でプログラミングするのはつらい、ということでその代わりとなる言語としてRustが注目されてきている。<br>Rust+Armのベアメタルプログラミングに関しては<a href="https://qiita.com/tatsuya6502/items/7d8aaf3792bdb5b66f93" target="_blank" rel="noopener">去年のRustアドベントカレンダーにも記事</a>があったほか、自分も何件かすでにブログを書いているが、今年はRust Embeded Working Groupが発足し、資料も充実してきた（参考：<a href="https://rust-embedded.github.io/blog/2018-11-14-this-year-in-embedded-rust/" target="_blank" rel="noopener">This Year in Embedded Rust</a>）</p>
-<h2 id="Rustでベアメタル"><a href="#Rustでベアメタル" class="headerlink" title="Rustでベアメタル"></a>Rustでベアメタル</h2><p>Rust Embeddedチームがすでにドキュメントをつくっているので（執筆中の章も存在するが）、これに従えば誰でもCortex-Mのベアメタルプログラミングできる<br><a href="https://rust-embedded.github.io/book/" target="_blank" rel="noopener">The Embedded Rust Book</a><br>ベースとなっているのはjaparic氏のブログなので、それの正式版と思ってもらえば良い。<br>チュートリアルはSTM32F3DISCOVERYをハードウェアと用いていて、<a href="http://akizukidenshi.com/catalog/g/gM-06268/" target="_blank" rel="noopener">秋月電子通商</a>などで日本でも2000円程度で手に入る。<br>以前、<a href="https://garasubo.github.io/hexo/2018/05/28/rust-qemu.html">QEMUで実行する方法</a>もブログにしたが、タイマーなどの一部ペリフェラルが動かない他、やはりLEDが手元で光っている方が楽しいと思うので、がっつりとやりたいのなら実機の購入をおすすめする<br>一応、後述する通り他のcortex-mボードを用いても十分に開発できると思われる。現に僕はSTM社製の他のボードを使っている。</p>
-<h2 id="cortex-m-quickstart"><a href="#cortex-m-quickstart" class="headerlink" title="cortex-m-quickstart"></a>cortex-m-quickstart</h2><p>では実際にArm Cortex-Mでのベアメタルプログラミングの話に入ろうと思うのだが、<br>ベアメタルプログラミングするための手順だけであればThe Embedded Rust Bookがよくまとまっているので、それを読め、で終了してしまう。</p>
-<p>なので今回はThe Embedded Rust Bookでも用いられている<a href="https://github.com/rust-embedded/cortex-m-quickstart" target="_blank" rel="noopener">cortex-m-quickstart</a>からサンプルコードを抜粋して大体なにをしているかを見ていくことにする。</p>
-<h3 id="hello-world"><a href="#hello-world" class="headerlink" title="hello world"></a>hello world</h3><p>example/hello.rsを見てみよう。いわゆるhello worldである。<br>hprintln関数はセミホスティングを利用した出力を利用している。セミホスティングとはSVC命令などを利用することでデバッガに対してメッセージを送る機能である（参考:<a href="https://developer.arm.com/products/software-development-tools/compilers/arm-compiler-5/docs/dui0471/f/semihosting/what-is-semihosting" target="_blank" rel="noopener">https://developer.arm.com/products/software-development-tools/compilers/arm-compiler-5/docs/dui0471/f/semihosting/what-is-semihosting</a>）。<br>なので、UARTなどを利用したものでないため、本来ならデバッガをボードにつなぐ必要がある。が、DISCOVERYボードは基板にデバッガも内蔵しているので簡単に利用できる。</p>
-<p>この<code>#[entry]</code>というアトリビュートがついたものが実質的なmain関数となる。ブートコードはどこにあるか、というとこのcortex-m-quickstartが依存しているライブラリの一つ、<a href="https://rust-embedded.github.io/cortex-m-rt/0.6.1/cortex_m_rt/index.html" target="_blank" rel="noopener">cortex-m-rt</a>が担っている。<br>このライブラリはビルド時のリンカスクリプトの生成もしていて、このアトリビュートをつけた関数を展開し、ブートのための処理を行った後呼び出す、という流れになっている。<br>大まかな仕組みとしてはライブラリに含まれるlink.x.inというスクリプトをベースに<a href="https://doc.rust-lang.org/cargo/reference/build-scripts.html" target="_blank" rel="noopener">build.rs</a>がスタックサイズのチェックや必要に応じて他のライブラリのリンカスクリプトを読み込んだりしている。<br>その他、例外発生時のハンドラの登録用マクロも用意されている。<br>詳しい仕組みはドキュメントを参照。</p>
-<p>このテンプレートが依存しているもう一つのライブラリであるcortex-mライブラリはアセンブラ命令を呼び出すためのラッパやシステムレジスタの抽象化レイヤなどがふくまれている。<br><a href="https://github.com/rust-lang/rust/issues/29722" target="_blank" rel="noopener">インラインのアセンブラはまだ安定版ではないため</a>、対応していない場合、予めコンパイルしてあるアセンブラを関数をextern Cで呼び出している<br>その際のArmのバージョンごとの違いはbuild.rsが指定されたターゲットを見てどのバイナリをリンクするかで吸収している。</p>
-<h3 id="panic"><a href="#panic" class="headerlink" title="panic"></a>panic</h3><p>example/panic.rsはpanicを発生させるだけのコードである。no_std環境でもpanicが発生した際の処理を実装しておかなければならない。<br>これは<a href="https://github.com/rust-lang/rust/issues/44489" target="_blank" rel="noopener">最近安定化されたfeature</a>のひとつでもある。<br>このサンプルコードではpanicハンドラを実装したクレートを読み込むことで動作を決定している。</p>
-<h3 id="allocator"><a href="#allocator" class="headerlink" title="allocator"></a>allocator</h3><p>example/allocator.rsは自前で動的メモリ確保を実装することでno_std環境下でも動的配列を利用する例である。<br>基本的に組込みで動的メモリ確保は行わないほうがいいのだが、どうしても必要というケースは出てくる。<br>これも<a href="https://github.com/rust-lang/rust/issues/27389" target="_blank" rel="noopener">最近安定化されたfeature</a>のひとつでもある。<br>外部クレートで実装されたallocであるが、中身は空き領域をリスト形式で持っておき、要求に応じて空き領域リストを探索して返す、というシンプルなものになっている。<br>ただし、stdに含まれるvecは使えないので、allocクレート内のvecを使ってあげる必要がある。こちらはまだ<a href="https://github.com/rust-lang/rfcs/pull/2480" target="_blank" rel="noopener">unstableなfeature</a>。
-allocクレートの中にはBoxやArcなど、所有権周りの問題を解決するのにおなじみの構造体も含まれている。</p>
-<h3 id="device"><a href="#device" class="headerlink" title="device"></a>device</h3><p>マイコンのペリフェラルを使う例。stm32f103xxというクレートを使っているが、これはチップのMMIOのマッピングを記述したSVDファイルから<a href="https://docs.rs/svd2rust/0.14.0/svd2rust/" target="_blank" rel="noopener">svd2rust</a>を使って自動生成されたものである。<br>そのため、他のタイプのボードを使ってもSVDファイルさえ手に入れれば割と簡単に再現できる。<br>svd2rustはペリフェラルからの割り込みハンドラをリンクするためのcortex-m-rt用のリンカスクリプトもつくっている。<br>これはsvd2rustの生成したライブラリがCARGO_FEATURE_DEVICEというフラグをオンにすることで、device.xをcortex-m-rtが持つリンカスクリプトをインクルードさせている。</p>
-<h2 id="その他の資料"><a href="#その他の資料" class="headerlink" title="その他の資料"></a>その他の資料</h2><p>Armではないが、RISC-V向けの記事が今年の自作OS Advent Calendarに上がってる<br><a href="https://qiita.com/tomoyuki-nakabayashi/items/76f912adb6b7da6030c7" target="_blank" rel="noopener">RustでRISC-V OS自作！はじめの一歩</a></p>
-<p>また、以前も紹介したが、別のアプローチとしてTockという組込みOSが存在しており、そちらのデザインはなかなか工夫されている。<br><a href="https://www.tockos.org/" target="_blank" rel="noopener">Tock</a><br>ただし、こちらは専用ボード向けの実装しかないため、始めるにはハードルが高かったため、自分はまだ手が出ていない。</p>
-<p>また、Cortex-Mではないが、Rasberry Pi 3でのチュートリアルも提供されている<br><a href="https://github.com/rust-embedded/rust-raspi3-tutorial" target="_blank" rel="noopener">Bare Metal Rust Programming on Raspberry Pi 3</a></p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
 
 <nav id="pagination">
   
@@ -644,6 +644,10 @@ allocクレートの中にはBoxやArcなど、所有権周りの問題を解決
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2022/09/16/isucon12.html">ISUCON12予選敗戦記</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
       </li>
     
@@ -657,10 +661,6 @@ allocクレートの中にはBoxやArcなど、所有権周りの問題を解決
     
       <li>
         <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
   </ul>
@@ -693,13 +693,15 @@ allocクレートの中にはBoxやArcなど、所有権周りの問題を解決
   
     <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
   
-    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>6</small></li>
   
     <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
     <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/rust/">rust</a><small>1</small></li>
   
     <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
   
@@ -715,13 +717,10 @@ allocクレートの中にはBoxやArcなど、所有権周りの問題を解決
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2021 garasubo
+  &copy; 2022 garasubo
   
 </div>
-<div class="clearfix"></div>
-<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
-
-</footer>
+<div class="clearfix"></div></footer>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script src="/hexo/js/jquery.imagesloaded.min.js"></script>
 <script src="/hexo/js/gallery.js"></script>

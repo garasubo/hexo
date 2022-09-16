@@ -25,29 +25,18 @@
 <meta property="og:site_name" content="己の不学を恥じる">
 <meta property="og:description" content="コマンドラインツールをつくる際、今まではPythonやRubyなどのスクリプト言語をつかうことが多かった。スクリプト言語はコンパイルする必要がなく、普通のシェルスクリプトよりかは書きやすいし、外部のライブラリも組込みやすい。Java・ScalaなどのJVM系言語はC言語系よりかは書きやすいが、JVMの起動の時間が気になってしまいあまり向いていないように思われる。 しかしながら、スクリプト言語での開">
 <meta property="og:locale" content="ja">
-<meta property="og:updated_time" content="2020-02-26T13:30:42.000Z">
+<meta property="og:image" content="https://www.rust-lang.org/static/images/rust-social-wide.jpg">
+<meta property="og:updated_time" content="2020-02-26T13:30:42.175Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rustでコマンドラインツールを開発する">
 <meta name="twitter:description" content="コマンドラインツールをつくる際、今まではPythonやRubyなどのスクリプト言語をつかうことが多かった。スクリプト言語はコンパイルする必要がなく、普通のシェルスクリプトよりかは書きやすいし、外部のライブラリも組込みやすい。Java・ScalaなどのJVM系言語はC言語系よりかは書きやすいが、JVMの起動の時間が気になってしまいあまり向いていないように思われる。 しかしながら、スクリプト言語での開">
+<meta name="twitter:image" content="https://www.rust-lang.org/static/images/rust-social-wide.jpg">
 <meta name="twitter:creator" content="@garasubo">
 
   <link href="/hexo/favicon.png" rel="icon">
   <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
   <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  
-<script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-	ga('create', 'UA-130790601-1', 'auto');
-	ga('send', 'pageview');
-
-</script>
-
-
 </head>
 </html>
 
@@ -66,7 +55,6 @@
   </ul>
   <div class="clearfix"></div>
 </nav>
-<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
 <div class="clearfix"></div>
 </header>
   <div id="content" class="inner">
@@ -89,7 +77,7 @@
         <p>コマンドラインツールをつくる際、今まではPythonやRubyなどのスクリプト言語をつかうことが多かった。<br>スクリプト言語はコンパイルする必要がなく、普通のシェルスクリプトよりかは書きやすいし、外部のライブラリも組込みやすい。<br>Java・ScalaなどのJVM系言語はC言語系よりかは書きやすいが、JVMの起動の時間が気になってしまいあまり向いていないように思われる。</p>
 <p>しかしながら、スクリプト言語での開発にも問題はある。<br>動的に型がついて危ない、というのは小さくなりがちなちょっとしたツールでは比較的無視しやすいのでいいとする。<br>一番厄介なのは、実行環境のバージョン違いである。特にプロセス呼び出しで、同じ言語の他のツールを呼び出したりすると突然エラーを吐いたりすることがあった。</p>
 <p>この前、社内でコマンドラインツールを書く機会があり、試しにRustで書いてみることにした。<br>一度コンパイルしてしまいバイナリにしてしまえば、バージョンの違いに苦しむことはないであろう。<br>変更のたびコンパイルする必要があるとはいえ、一度コンパイルさえしてしまえば高速に動作する。<br>実はRustの公式ワーキンググループの中にコマンドラインインターフェース（CLI）のためのチームがあり、ドキュメント・ライブラリが整備されている。</p>
-
+<a href="https://www.rust-lang.org/governance/wgs/cli" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://www.rust-lang.org/static/images/rust-social-wide.jpg"></div><div class="descriptions"><div class="og-title">Command-line interfaces (CLI) working group</div><div class="og-description">A language empowering everyone to build reliable and efficient software.</div></div></div></a>
 
 <p>ドキュメントは優秀で、コマンドライン引数の処理やエラーハンドリングなどでどういうクレートを使えばいいかを紹介してくれている。</p>
 <a href="https://rust-cli.github.io/book/index.html" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Getting started - Command Line Applications in Rust</div></div></div></a>
@@ -158,6 +146,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2022/09/16/isucon12.html">ISUCON12予選敗戦記</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
       </li>
     
@@ -171,10 +163,6 @@
     
       <li>
         <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
   </ul>
@@ -207,13 +195,15 @@
   
     <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
   
-    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>6</small></li>
   
     <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
     <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/rust/">rust</a><small>1</small></li>
   
     <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
   
@@ -229,13 +219,10 @@
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2021 garasubo
+  &copy; 2022 garasubo
   
 </div>
-<div class="clearfix"></div>
-<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
-
-</footer>
+<div class="clearfix"></div></footer>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script src="/hexo/js/jquery.imagesloaded.min.js"></script>
 <script src="/hexo/js/gallery.js"></script>

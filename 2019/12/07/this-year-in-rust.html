@@ -26,29 +26,18 @@ This Week in RustThis Week in Rust">
 <meta property="og:site_name" content="己の不学を恥じる">
 <meta property="og:description" content="これはRustその2 Advent Calendar 20197日目の記事です。去年も参加したRust Advent Calendarなのですが、今年はその3まであるようですね。Rustの人気が年々盛り上がっている証拠でしょうか。 This Week in RustThis Week in Rustとは、毎週Rust関連のブログ記事やRustコンパイラへの変更などを紹介してくれるニュースレターです">
 <meta property="og:locale" content="ja">
+<meta property="og:image" content="https://miro.medium.com/max/1200/1*qVIA9q5OBKlDQPsZ2efZFg.jpeg">
 <meta property="og:updated_time" content="2019-12-07T09:29:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="This Week in Rustで振り返る今年のRust">
 <meta name="twitter:description" content="これはRustその2 Advent Calendar 20197日目の記事です。去年も参加したRust Advent Calendarなのですが、今年はその3まであるようですね。Rustの人気が年々盛り上がっている証拠でしょうか。 This Week in RustThis Week in Rustとは、毎週Rust関連のブログ記事やRustコンパイラへの変更などを紹介してくれるニュースレターです">
+<meta name="twitter:image" content="https://miro.medium.com/max/1200/1*qVIA9q5OBKlDQPsZ2efZFg.jpeg">
 <meta name="twitter:creator" content="@garasubo">
 
   <link href="/hexo/favicon.png" rel="icon">
   <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
   <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  
-<script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-	ga('create', 'UA-130790601-1', 'auto');
-	ga('send', 'pageview');
-
-</script>
-
-
 </head>
 </html>
 
@@ -67,7 +56,6 @@ This Week in RustThis Week in Rust">
   </ul>
   <div class="clearfix"></div>
 </nav>
-<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
 <div class="clearfix"></div>
 </header>
   <div id="content" class="inner">
@@ -90,7 +78,7 @@ This Week in RustThis Week in Rust">
         <p>これは<a href="https://qiita.com/advent-calendar/2019/rust2" target="_blank" rel="noopener">Rustその2 Advent Calendar 2019</a>7日目の記事です。<br>去年も参加したRust Advent Calendarなのですが、今年は<a href="https://qiita.com/advent-calendar/2019/rust3" target="_blank" rel="noopener">その3</a>まであるようですね。Rustの人気が年々盛り上がっている証拠でしょうか。</p>
 <h2 id="This-Week-in-Rust"><a href="#This-Week-in-Rust" class="headerlink" title="This Week in Rust"></a>This Week in Rust</h2><p><a href="https://this-week-in-rust.org/" target="_blank" rel="noopener">This Week in Rust</a>とは、毎週Rust関連のブログ記事やRustコンパイラへの変更などを紹介してくれるニュースレターです。<br>すべて英語の記事なので、正直読むのがしんどいのですが、気になったタイトルがあったら読むようにしています。<br>今回は今年のThis Week in Rustで紹介された記事からいくつかピックアップして紹介して、今年のRustコミュニティの動向を振り返ってみようと思います。<br>なお、選んだ記事は自分の興味にものすごく影響を受けているため分野は偏り気味です。</p>
 <h2 id="Rustで既存プロダクトを置き換える話"><a href="#Rustで既存プロダクトを置き換える話" class="headerlink" title="Rustで既存プロダクトを置き換える話"></a>Rustで既存プロダクトを置き換える話</h2><p>C/C++やPythonで書かれたプロジェクトをRustで置き換えるという話をかなり見るようになりました。</p>
-
+<a href="https://medium.com/dwelo-r-d/we-rewrote-our-iot-platform-in-rust-and-got-away-with-it-2c8867c61b67?" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://miro.medium.com/max/1200/1*qVIA9q5OBKlDQPsZ2efZFg.jpeg"></div><div class="descriptions"><div class="og-title">We rewrote our IoT platform in Rust and got away with it</div><div class="og-description">At Dwelo, we’ve written the code for our IoT gateways in Rust. It’s fast, it’s reliable, and it’s secure. But we didn’t start with Rust…</div></div></div></a>
 <p>Pythonで書かれていたIoTプラットフォームをRustで置き換えたという話です。<br>スケールさせるためにより高速な言語に置き換えねばならなかったこと、様々な技術的負債が溜まってしまったという状況で、Rustに置き換えるという選択をとったようです。<br>当然、C/C++も候補に入りましたが、nullポインタやキャストのバグなど、言語の性質上起こり得るバグを<a href="https://medium.com/dwelo-r-d/abusing-fire-for-light-a6e6774289fd" target="_blank" rel="noopener">Part2</a>で紹介し、<br><a href="https://medium.com/dwelo-r-d/designing-around-our-flaws-e0fccd7070af" target="_blank" rel="noopener">Part3</a>でRustならそれが起こらないことを説明しています。</p>
 <p><a href="https://osfc.io/uploads/talk/paper/23/Oreboot.pdf" target="_blank" rel="noopener">Oreboot (PDF)</a></p>
 <p>CorebootというオープンソースのブートローダーをRustで書き直すOrebootというプロジェクトの紹介です。<br>Rustを選んだ理由から現在のOrebootの設計・進捗状況を説明しています。現状はQEMUのArmやRISC-Vのボードで動いているようです。</p>
@@ -106,7 +94,7 @@ This Week in RustThis Week in Rust">
 <a href="https://msrc-blog.microsoft.com/2019/07/16/a-proactive-approach-to-more-secure-code/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">A proactive approach to more secure code – Microsoft Security Response Center</div></div></div></a>
 
 <p>続くブログでは、なぜRustがC/C++の代わりとして注目しているかが説明されています。</p>
-
+<a href="https://msrc-blog.microsoft.com/2019/07/22/why-rust-for-safe-systems-programming/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Why Rust for safe systems programming – Microsoft Security Response Center</div></div></div></a>
 <p>C/C++のように低レベルでのパフォーマンスコントロールができる一方で、C/C++より強力な安全性の保証をしてくれます。<br>また、メモリ関連の安全性を犯しにくい、型システムも強力で表現力が高いことなども理由に挙げられています。</p>
 <p>Amazonも去年、<a href="https://github.com/firecracker-microvm/firecracker" target="_blank" rel="noopener">Firecracker</a>というRust製のVMMをオープンソースプロジェクトとして公開し注目されましたが、様々な大企業がRustに注目しだしている、ということがわかります。</p>
 <h2 id="async-await"><a href="#async-await" class="headerlink" title="async/await"></a>async/await</h2><p>今年のRustの変更で一番大きな注目を集めたのはasync/awaitの追加でしょう。それに関連する記事もいくつか紹介はされていました。<br>が、自分自身がasync/awaitの仕様をまったく追えていないので、今回は紹介しないでおきます。</p>
@@ -171,6 +159,10 @@ This Week in RustThis Week in Rust">
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2022/09/16/isucon12.html">ISUCON12予選敗戦記</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
       </li>
     
@@ -184,10 +176,6 @@ This Week in RustThis Week in Rust">
     
       <li>
         <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
   </ul>
@@ -220,13 +208,15 @@ This Week in RustThis Week in Rust">
   
     <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
   
-    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>6</small></li>
   
     <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
     <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/rust/">rust</a><small>1</small></li>
   
     <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
   
@@ -242,13 +232,10 @@ This Week in RustThis Week in Rust">
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2021 garasubo
+  &copy; 2022 garasubo
   
 </div>
-<div class="clearfix"></div>
-<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
-
-</footer>
+<div class="clearfix"></div></footer>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script src="/hexo/js/jquery.imagesloaded.min.js"></script>
 <script src="/hexo/js/gallery.js"></script>

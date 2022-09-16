@@ -26,29 +26,18 @@
 <meta property="og:site_name" content="己の不学を恥じる">
 <meta property="og:description" content="元論文: https://dl.acm.org/doi/10.1145/3341301.3359638 並行システムをテストし、スレッド安全性の違反を効率よく見つけるという論文です。並行システムの検証・テストというトピック自体はかなり有名で様々な方法がすでに提唱はされています。しかし、この論文のポイントは実際のMicrosoft製品のビルドシステムの過程にこのテストシステムを実際に組込み、いくつも">
 <meta property="og:locale" content="ja">
+<meta property="og:image" content="https://opengraph.githubassets.com/5a20a54b6074ee402b5d26abafffffc2eb7e6b509c73a8088edc2b4f48b2b557/microsoft/TSVD">
 <meta property="og:updated_time" content="2020-01-02T12:34:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="論文紹介：Efficient scalable thread-safety-violation detection: finding thousands of concurrency bugs during testing">
 <meta name="twitter:description" content="元論文: https://dl.acm.org/doi/10.1145/3341301.3359638 並行システムをテストし、スレッド安全性の違反を効率よく見つけるという論文です。並行システムの検証・テストというトピック自体はかなり有名で様々な方法がすでに提唱はされています。しかし、この論文のポイントは実際のMicrosoft製品のビルドシステムの過程にこのテストシステムを実際に組込み、いくつも">
+<meta name="twitter:image" content="https://opengraph.githubassets.com/5a20a54b6074ee402b5d26abafffffc2eb7e6b509c73a8088edc2b4f48b2b557/microsoft/TSVD">
 <meta name="twitter:creator" content="@garasubo">
 
   <link href="/hexo/favicon.png" rel="icon">
   <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
   <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  
-<script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-	ga('create', 'UA-130790601-1', 'auto');
-	ga('send', 'pageview');
-
-</script>
-
-
 </head>
 </html>
 
@@ -67,7 +56,6 @@
   </ul>
   <div class="clearfix"></div>
 </nav>
-<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
 <div class="clearfix"></div>
 </header>
   <div id="content" class="inner">
@@ -112,7 +100,7 @@
 <p>また、各pair毎にprobabilityを設定しておき、遅延を挟むごとにprobabilityを下げる、とすることで、同一箇所に過剰に遅延を設定するということを防ぎます。</p>
 <p>これらの遅延挿入アルゴリズムはテストを実行しながら同時に実行できる、というのがポイントのひとつです。<br>これにより、遅延挿入箇所の決定のための独立したテスト実行は不要なので、テスト時間の短縮になります。<br>もちろん、複数回テストを実行させ、前回のテスト情報を次回に引き継ぐこともできます。</p>
 <p>実装については、.NETアプリケーション（C#やF#のプログラム）に限定されますが、理論的には他のタイプのアプリケーションにも使えるとしています。<br>また、実装はGithub上で公開されています。</p>
-
+<a href="https://github.com/microsoft/TSVD" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://opengraph.githubassets.com/5a20a54b6074ee402b5d26abafffffc2eb7e6b509c73a8088edc2b4f48b2b557/microsoft/TSVD"></div><div class="descriptions"><div class="og-title">GitHub - microsoft/TSVD: TSVD is a tool for quickly finding thread-safety violations (e.g., data races) in .NET applications.</div><div class="og-description">TSVD is a tool for quickly finding thread-safety violations (e.g., data races) in .NET applications. - GitHub - microsoft/TSVD: TSVD is a to…</div></div></div></a>
 
 <h2 id="評価"><a href="#評価" class="headerlink" title="評価"></a>評価</h2><p>1,657のMicrosoftで実際に開発しているアプリケーションのビルドプロセスに組込み、1,134箇所のバグを発見できたとしています。<br>false-positiveは存在しなく、いくつかのバグは実際のプロダクション環境で問題を引き起こしているものであったとしています。</p>
 <p>これらのバグの見つかったアプリケーションの内1000のモジュールとスモールベンチマークを用いて、他の手法とのパフォーマンスの比較も行っています。<br>実行時のオーバーヘッドは平均で33％ほどで、既存手法と比べてもかなり少なく、発見できたバグの数も上でした。</p>
@@ -180,6 +168,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2022/09/16/isucon12.html">ISUCON12予選敗戦記</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
       </li>
     
@@ -193,10 +185,6 @@
     
       <li>
         <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
   </ul>
@@ -229,13 +217,15 @@
   
     <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
   
-    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>6</small></li>
   
     <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
     <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/rust/">rust</a><small>1</small></li>
   
     <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
   
@@ -251,13 +241,10 @@
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2021 garasubo
+  &copy; 2022 garasubo
   
 </div>
-<div class="clearfix"></div>
-<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
-
-</footer>
+<div class="clearfix"></div></footer>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script src="/hexo/js/jquery.imagesloaded.min.js"></script>
 <script src="/hexo/js/gallery.js"></script>

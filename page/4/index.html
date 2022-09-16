@@ -28,19 +28,6 @@
   <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
   <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  
-<script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-	ga('create', 'UA-130790601-1', 'auto');
-	ga('send', 'pageview');
-
-</script>
-
-
 </head>
 </html>
 
@@ -59,11 +46,57 @@
   </ul>
   <div class="clearfix"></div>
 </nav>
-<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
 <div class="clearfix"></div>
 </header>
   <div id="content" class="inner">
     <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-12-12T15:00:00.000Z"><a href="/hexo/2018/12/13/rust-arm.html">2018-12-13</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2018/12/13/rust-arm.html">RustでArm Cortex-Mプログラミングをする 2018</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>この記事は<a href="https://adventar.org/calendars/2915" target="_blank" rel="noopener">自作OS Advent Calendar 2018</a>および<a href="https://qiita.com/advent-calendar/2018/rust2" target="_blank" rel="noopener">Rust その2 Advent Calendar 2018</a>の記事です。</p>
+<p>ベアメタルプログラミングといえばC言語であったが、C言語でプログラミングするのはつらい、ということでその代わりとなる言語としてRustが注目されてきている。<br>Rust+Armのベアメタルプログラミングに関しては<a href="https://qiita.com/tatsuya6502/items/7d8aaf3792bdb5b66f93" target="_blank" rel="noopener">去年のRustアドベントカレンダーにも記事</a>があったほか、自分も何件かすでにブログを書いているが、今年はRust Embeded Working Groupが発足し、資料も充実してきた（参考：<a href="https://rust-embedded.github.io/blog/2018-11-14-this-year-in-embedded-rust/" target="_blank" rel="noopener">This Year in Embedded Rust</a>）</p>
+<h2 id="Rustでベアメタル"><a href="#Rustでベアメタル" class="headerlink" title="Rustでベアメタル"></a>Rustでベアメタル</h2><p>Rust Embeddedチームがすでにドキュメントをつくっているので（執筆中の章も存在するが）、これに従えば誰でもCortex-Mのベアメタルプログラミングできる<br><a href="https://rust-embedded.github.io/book/" target="_blank" rel="noopener">The Embedded Rust Book</a><br>ベースとなっているのはjaparic氏のブログなので、それの正式版と思ってもらえば良い。<br>チュートリアルはSTM32F3DISCOVERYをハードウェアと用いていて、<a href="http://akizukidenshi.com/catalog/g/gM-06268/" target="_blank" rel="noopener">秋月電子通商</a>などで日本でも2000円程度で手に入る。<br>以前、<a href="https://garasubo.github.io/hexo/2018/05/28/rust-qemu.html">QEMUで実行する方法</a>もブログにしたが、タイマーなどの一部ペリフェラルが動かない他、やはりLEDが手元で光っている方が楽しいと思うので、がっつりとやりたいのなら実機の購入をおすすめする<br>一応、後述する通り他のcortex-mボードを用いても十分に開発できると思われる。現に僕はSTM社製の他のボードを使っている。</p>
+<h2 id="cortex-m-quickstart"><a href="#cortex-m-quickstart" class="headerlink" title="cortex-m-quickstart"></a>cortex-m-quickstart</h2><p>では実際にArm Cortex-Mでのベアメタルプログラミングの話に入ろうと思うのだが、<br>ベアメタルプログラミングするための手順だけであればThe Embedded Rust Bookがよくまとまっているので、それを読め、で終了してしまう。</p>
+<p>なので今回はThe Embedded Rust Bookでも用いられている<a href="https://github.com/rust-embedded/cortex-m-quickstart" target="_blank" rel="noopener">cortex-m-quickstart</a>からサンプルコードを抜粋して大体なにをしているかを見ていくことにする。</p>
+<h3 id="hello-world"><a href="#hello-world" class="headerlink" title="hello world"></a>hello world</h3><p>example/hello.rsを見てみよう。いわゆるhello worldである。<br>hprintln関数はセミホスティングを利用した出力を利用している。セミホスティングとはSVC命令などを利用することでデバッガに対してメッセージを送る機能である（参考:<a href="https://developer.arm.com/products/software-development-tools/compilers/arm-compiler-5/docs/dui0471/f/semihosting/what-is-semihosting" target="_blank" rel="noopener">https://developer.arm.com/products/software-development-tools/compilers/arm-compiler-5/docs/dui0471/f/semihosting/what-is-semihosting</a>）。<br>なので、UARTなどを利用したものでないため、本来ならデバッガをボードにつなぐ必要がある。が、DISCOVERYボードは基板にデバッガも内蔵しているので簡単に利用できる。</p>
+<p>この<code>#[entry]</code>というアトリビュートがついたものが実質的なmain関数となる。ブートコードはどこにあるか、というとこのcortex-m-quickstartが依存しているライブラリの一つ、<a href="https://rust-embedded.github.io/cortex-m-rt/0.6.1/cortex_m_rt/index.html" target="_blank" rel="noopener">cortex-m-rt</a>が担っている。<br>このライブラリはビルド時のリンカスクリプトの生成もしていて、このアトリビュートをつけた関数を展開し、ブートのための処理を行った後呼び出す、という流れになっている。<br>大まかな仕組みとしてはライブラリに含まれるlink.x.inというスクリプトをベースに<a href="https://doc.rust-lang.org/cargo/reference/build-scripts.html" target="_blank" rel="noopener">build.rs</a>がスタックサイズのチェックや必要に応じて他のライブラリのリンカスクリプトを読み込んだりしている。<br>その他、例外発生時のハンドラの登録用マクロも用意されている。<br>詳しい仕組みはドキュメントを参照。</p>
+<p>このテンプレートが依存しているもう一つのライブラリであるcortex-mライブラリはアセンブラ命令を呼び出すためのラッパやシステムレジスタの抽象化レイヤなどがふくまれている。<br><a href="https://github.com/rust-lang/rust/issues/29722" target="_blank" rel="noopener">インラインのアセンブラはまだ安定版ではないため</a>、対応していない場合、予めコンパイルしてあるアセンブラを関数をextern Cで呼び出している<br>その際のArmのバージョンごとの違いはbuild.rsが指定されたターゲットを見てどのバイナリをリンクするかで吸収している。</p>
+<h3 id="panic"><a href="#panic" class="headerlink" title="panic"></a>panic</h3><p>example/panic.rsはpanicを発生させるだけのコードである。no_std環境でもpanicが発生した際の処理を実装しておかなければならない。<br>これは<a href="https://github.com/rust-lang/rust/issues/44489" target="_blank" rel="noopener">最近安定化されたfeature</a>のひとつでもある。<br>このサンプルコードではpanicハンドラを実装したクレートを読み込むことで動作を決定している。</p>
+<h3 id="allocator"><a href="#allocator" class="headerlink" title="allocator"></a>allocator</h3><p>example/allocator.rsは自前で動的メモリ確保を実装することでno_std環境下でも動的配列を利用する例である。<br>基本的に組込みで動的メモリ確保は行わないほうがいいのだが、どうしても必要というケースは出てくる。<br>これも<a href="https://github.com/rust-lang/rust/issues/27389" target="_blank" rel="noopener">最近安定化されたfeature</a>のひとつでもある。<br>外部クレートで実装されたallocであるが、中身は空き領域をリスト形式で持っておき、要求に応じて空き領域リストを探索して返す、というシンプルなものになっている。<br>ただし、stdに含まれるvecは使えないので、allocクレート内のvecを使ってあげる必要がある。こちらはまだ<a href="https://github.com/rust-lang/rfcs/pull/2480" target="_blank" rel="noopener">unstableなfeature</a>。
+allocクレートの中にはBoxやArcなど、所有権周りの問題を解決するのにおなじみの構造体も含まれている。</p>
+<h3 id="device"><a href="#device" class="headerlink" title="device"></a>device</h3><p>マイコンのペリフェラルを使う例。stm32f103xxというクレートを使っているが、これはチップのMMIOのマッピングを記述したSVDファイルから<a href="https://docs.rs/svd2rust/0.14.0/svd2rust/" target="_blank" rel="noopener">svd2rust</a>を使って自動生成されたものである。<br>そのため、他のタイプのボードを使ってもSVDファイルさえ手に入れれば割と簡単に再現できる。<br>svd2rustはペリフェラルからの割り込みハンドラをリンクするためのcortex-m-rt用のリンカスクリプトもつくっている。<br>これはsvd2rustの生成したライブラリがCARGO_FEATURE_DEVICEというフラグをオンにすることで、device.xをcortex-m-rtが持つリンカスクリプトをインクルードさせている。</p>
+<h2 id="その他の資料"><a href="#その他の資料" class="headerlink" title="その他の資料"></a>その他の資料</h2><p>Armではないが、RISC-V向けの記事が今年の自作OS Advent Calendarに上がってる<br><a href="https://qiita.com/tomoyuki-nakabayashi/items/76f912adb6b7da6030c7" target="_blank" rel="noopener">RustでRISC-V OS自作！はじめの一歩</a></p>
+<p>また、以前も紹介したが、別のアプローチとしてTockという組込みOSが存在しており、そちらのデザインはなかなか工夫されている。<br><a href="https://www.tockos.org/" target="_blank" rel="noopener">Tock</a><br>ただし、こちらは専用ボード向けの実装しかないため、始めるにはハードルが高かったため、自分はまだ手が出ていない。</p>
+<p>また、Cortex-Mではないが、Rasberry Pi 3でのチュートリアルも提供されている<br><a href="https://github.com/rust-embedded/rust-raspi3-tutorial" target="_blank" rel="noopener">Bare Metal Rust Programming on Raspberry Pi 3</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
   <article class="post">
   
   <div class="post-content">
@@ -588,56 +621,6 @@
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2017-11-05T13:06:45.000Z"><a href="/hexo/2017/11/05/rust-os.html">2017-11-05</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/hexo/2017/11/05/rust-os.html">RustでOSを書くプロジェクトもろもろ</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>2020/05/06更新：<br><a href="/hexo/2020/05/06/rust-os.html">新しい記事</a>を書きました。こちらのほうがより新しい情報が乗っていると思います。</p>
-<p>巷でよく聞くRustでOSないしベアメタルプログラミングの試みの備忘録。<br>Rustにはとても興味があってかつ大学での研究分野が低レイヤー系だったので面白そう思ったのだが、<br>いざやろうとしてみるといろいろなハードルがあるようで、ベストプラクティスも確立していないっぽい。<br>ので、とりあえず適当に漁った資料をまとめてみる</p>
-<p><a href="https://speakerdeck.com/orumin/vmmian-qiang-hui-fa-biao-zi-liao" target="_blank" rel="noopener">C以外でのベアメタルプログラミング</a></p>
-<p>oruminさんのKernel/VM勉強会での発表のSpeaker Deck。自前のbinutilsとxargoを使ってベアメタルプログラミングしている</p>
-<p><a href="https://qiita.com/kotetuco/items/54af67d5663013ad0db7" target="_blank" rel="noopener">RustでOSを書いてみる(環境構築編) - Qiita</a><br><a href="https://qiita.com/mopp/items/9c816d58104752180207" target="_blank" rel="noopener">Introduction Rust for Creating Your Operating System - Qiita</a></p>
-<p>実際にOSを書いた（書いている）人の環境設定について。両方共OS自作本をベースとしているっぽい。</p>
-<p><a href="https://github.com/redox-os/redox" target="_blank" rel="noopener">GitHub - redox-os/redox: Redox: A Rust Operating System</a></p>
-<p>Rustによる本格的なOS。GUIが動作している。POSIX準拠とかではなく全く新しいOSをつくろうとしているらしい。<br>独自のツールチェーンを用意する関係、ビルドはDockerによる方法が一番安定すると思う（ビルド周りのドキュメントはいい加減だったりする）。</p>
-<p><a href="https://github.com/rumpkernel/rumprun-packages/tree/master/rust" target="_blank" rel="noopener">rumprun-packages/rust at master · rumpkernel/rumprun-packages · GitHub</a></p>
-<p>Rump Kernelを使ってRustでhello worldしている。しばらくメンテナンスされていないが、一応動くっぽい</p>
-<p><a href="https://os.phil-opp.com/" target="_blank" rel="noopener">Writing an OS in Rust</a></p>
-<p>RustでOSを書いたというブログ（英語）</p>
-<p><a href="https://dl.acm.org/citation.cfm?id=3124717" target="_blank" rel="noopener">The Case for Writing a Kernel in Rust</a></p>
-<p>今年のAPSysでの論文。RustでOSを書くときの所有権周りのデザインについて論じている。この論文ではOSそのもののパフォーマンスとかの評価はない。</p>
-<p><a href="http://www.amitlevy.com/papers/tock-sosp2017.pdf" target="_blank" rel="noopener">Multiprogramming a 64 kB Computer Safely and Efficiently</a></p>
-<p>上の論文の著者がSOSPに出した論文。この論文ではRustがどうのとかよりも単純にOSとしてのデザインについて論じているっぽい（まだちゃんと読んでない）</p>
-<p><a href="https://www.tockos.org/" target="_blank" rel="noopener">Tock Embedded Operating System</a></p>
-<p>上２つのの論文の実際のプロダクト。OSSになっている。</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
 
 <nav id="pagination">
   
@@ -662,6 +645,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2022/09/16/isucon12.html">ISUCON12予選敗戦記</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
       </li>
     
@@ -675,10 +662,6 @@
     
       <li>
         <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
   </ul>
@@ -711,13 +694,15 @@
   
     <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
   
-    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>6</small></li>
   
     <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
     <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/rust/">rust</a><small>1</small></li>
   
     <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
   
@@ -733,13 +718,10 @@
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2021 garasubo
+  &copy; 2022 garasubo
   
 </div>
-<div class="clearfix"></div>
-<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
-
-</footer>
+<div class="clearfix"></div></footer>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script src="/hexo/js/jquery.imagesloaded.min.js"></script>
 <script src="/hexo/js/gallery.js"></script>

@@ -28,19 +28,6 @@
   <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
   <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  
-<script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-	ga('create', 'UA-130790601-1', 'auto');
-	ga('send', 'pageview');
-
-</script>
-
-
 </head>
 </html>
 
@@ -59,11 +46,67 @@
   </ul>
   <div class="clearfix"></div>
 </nav>
-<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
 <div class="clearfix"></div>
 </header>
   <div id="content" class="inner">
     <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2020-05-05T15:00:00.000Z"><a href="/hexo/2020/05/06/rust-os.html">2020-05-06</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/hexo/2020/05/06/rust-os.html">Rustで組込みプログラミングや自作OS作成をするには</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>「Rustで始める自作組込みOS入門」という本というかドキュメントの公開を始めました。</p>
+<a href="https://garasubo.github.io/embedded-book/index.html" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">はじめに - Rustで始める自作組込みOS入門</div></div></div></a>
+
+<p>これは以前からつくっていた<a href="/hexo/2019/05/15/erkos.html">ErkOS</a>という自作OSでの経験を元にして、どうやったらRustで自作組込みOSの最初の一歩を踏み出せるか、というものをドキュメントにしたものです。<br>このドキュメントはこの前の技術書展の告知が来たあたりから構想を練っていて、すきま時間にちまちまと書き進めていたものですが、とりあえず、プロセスの切り替えっぽいところまでの説明を終えることができたので公開しました。</p>
+<p>組込みでRustをやる話や自作OSを書く話というのは先駆者がたくさんいて、僕自身もそれらの資料を参考にしつつ書き進めて来ました。<br>一応、それらの既存のものとは差別化はしているつもりではあるものの、既存のものを完全に上回るというものではないです。内容もまだまだ足りない。</p>
+<p>以前、<a href="/hexo/2017/11/05/rust-os.html">RustでOSを書くプロジェクトもろもろ</a>でいくつかOSを書く際に参考になりそうなプロジェクトをまとめましたが、情報も古くなってきたので、改めて参考になるプロジェクトを紹介していきたいと思います。</p>
+<h2 id="Redox"><a href="#Redox" class="headerlink" title="Redox"></a>Redox</h2><a href="https://www.redox-os.org/jp/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Redox - Your Next(Gen) OS - Redox - Your Next(Gen) OS</div><div class="og-description">The Redox official website</div></div></div></a>
+<p>RustでデスクトップOSを書くというプロジェクト。完成度はかなり高く、GUIツールなどもすべてRustで書き直す、とかなり本格的。<br><a href="https://www.redox-os.org/jp/news/focusing-on-rustc/" target="_blank" rel="noopener">最近のブログポスト</a>によると実際のハードウェアで動くための課題はかなりクリアできているようで、<br>今はコンパイラそのものを改良してRedox上でRedoxをビルドすることを目指しているらしい。</p>
+<p>このRedoxプロジェクトから派生したクレートも役に立つものが多い</p>
+<h2 id="Tock"><a href="#Tock" class="headerlink" title="Tock"></a>Tock</h2><a href="https://www.tockos.org/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Tock Embedded Operating System</div><div class="og-description">Tock is a safe, multitasking operating system for low-power, low-memory microcontrollers.</div></div></div></a>
+<p>Rustで書かれたCortex-M向けの組込みOS。SOSPで<a href="/hexo/2018/05/23/tock.html">論文</a>を出していいたりとOSそのもの構造も興味深い。<br>かつてはRustコンパイラに手を加えたりするものが主流でしたが、このTockはnightlyコンパイラだけでコンパイルできるのも特徴。</p>
+<p>最近、Googleが発表した<a href="https://github.com/google/OpenSK" target="_blank" rel="noopener">OpenSK</a>というUSBのセキュリティキーのオープンな実装を発表したが、そこで使われているのもこのTockです。</p>
+<h2 id="Rust-Embeddedグループ"><a href="#Rust-Embeddedグループ" class="headerlink" title="Rust Embeddedグループ"></a>Rust Embeddedグループ</h2><a href="https://github.com/rust-embedded/wg" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://opengraph.githubassets.com/e8933e02e1d83de906f8c9bc895d76d5bc558e7af324960d99d13d2b75b85c37/rust-embedded/wg"></div><div class="descriptions"><div class="og-title">GitHub - rust-embedded/wg: Coordination repository of the embedded devices Working Group</div><div class="og-description">Coordination repository of the embedded devices Working Group - GitHub - rust-embedded/wg: Coordination repository of the embedded devices W…</div></div></div></a>
+<p>Rustにはいくつかの公式ワーキンググループがあって、そのうちの１つがこのEmbeddedワーキンググループです。<br>各種ドキュメントや組込み開発で使えるクレートを公開しています。<br>主にCortex-MやCortex-A、RISC-Vをターゲットにしています。</p>
+<p><a href="https://docs.rust-embedded.org/embedonomicon/" target="_blank" rel="noopener">The Embedonomicon</a>は一からベアメタルプログラミングするための手引になっていてとても参考になります。</p>
+<p><a href="https://github.com/rust-embedded/rust-raspberrypi-OS-tutorials" target="_blank" rel="noopener">RaspberryPiを使ったOS開発のチュートリアル</a>はGICv2にも対応しているようなので、Cortex-Aで自作OSしたい人は参考になるかもしれません。</p>
+<p>OS開発ということにフォーカスしているわけではないですが、個々のコンポーネントを書く際はかなり参考になります。</p>
+<h2 id="Rust-OSDev"><a href="#Rust-OSDev" class="headerlink" title="Rust OSDev"></a>Rust OSDev</h2><a href="https://github.com/rust-osdev" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://avatars.githubusercontent.com/u/35896598?s=280&v=4"></div><div class="descriptions"><div class="og-title">Rust OSDev</div><div class="og-description">Operating System Development in Rust. Rust OSDev has 26 repositories available. Follow their code on GitHub.</div></div></div></a>
+<p>非公式グループですが、OSを書く、ということに焦点を置いたグループです。<br>こちらはx86系のアーキテクチャをたーゲットにしています。</p>
+<p>UEFIのアプリケーションを書くのに便利な<a href="https://github.com/rust-osdev/uefi-rs" target="_blank" rel="noopener">uefiクレート</a>など、x86系の自作OSに役立つクレートを多く出しています。</p>
+<p>特にこのグループのメンバーの一人であるPhilippさんの自作OSブログは内容が充実していて、自作OSでのテストの書き方やヒープアロケータのデザインと実装といった他のアーキテクチャでも使える項目の解説も充実しています。</p>
+<a href="https://os.phil-opp.com/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Writing an OS in Rust</div><div class="og-description">This blog series creates a small operating system in the Rust programming language. Each post is a small tutorial and includes all needed co…</div></div></div></a>
+
+<h2 id="日本語の資料"><a href="#日本語の資料" class="headerlink" title="日本語の資料"></a>日本語の資料</h2><p>今まで紹介したものはほとんどが英語のものでしたが、日本語のリソースとして<a href="https://twitter.com/LDScell" target="_blank" rel="noopener">@LDScell</a>さんがEmbeddedグループのドキュメントの和訳を公開している他、<br>「組込み/ベアメタルRustクックブック」という資料を公開しています。</p>
+<a href="https://booth.pm/ja/items/1478032" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://booth.pximg.net/c/620x620/e47cf4ad-5f00-4211-90a2-ee0e5a07ef12/i/1478032/9fdc0ed2-32b0-4c0d-9db9-38193b660280_base_resized.jpg"></div><div class="descriptions"><div class="og-title">組込み/ベアメタルRustクックブック（電子版） - emb-sabi - BOOTH</div><div class="og-description">こちらで公開している内容と同じものです。 https://tomoyuki-nakabayashi.github.io/embedded-rust-techniques/ Rustを組込みで使うためのテクニック集です。 HTML版での閲覧をお勧めしています。HTML版を開くには、…</div></div></div></a>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
   <article class="post">
   
   <div class="post-content">
@@ -82,7 +125,7 @@
       
         <p>元論文：<a href="https://www.usenix.org/conference/nsdi20/presentation/agache" target="_blank" rel="noopener">https://www.usenix.org/conference/nsdi20/presentation/agache</a></p>
 <p>2018年末、AWS Lambdaを提供するためのシステムとしてFirecrackerという仮想マシンモニター（VMM）がオープンソースとして公開されて注目を集めました。</p>
-
+<a href="https://aws.amazon.com/jp/blogs/news/firecracker-lightweight-virtualization-for-serverless-computing/" class="link-preview" target="_black"><div class="link-area"><div class="og-image"><img src="https://d2908q01vomqb2.cloudfront.net/827bfc458708f0b442009c9c9836f7e4b65557fb/2020/06/03/Blog-Post_thumbnail.png"></div><div class="descriptions"><div class="og-title">Firecracker – サーバーレスコンピューティングのための軽量な仮想化機能 | Amazon Web Services</div><div class="og-description">私の好きなAmazonリーダーシッププリンシプルの1つはCustomer Obsessionです。 私たちがA […]</div></div></div></a>
 
 <p>この論文は、その中身を解説・評価する論文です。</p>
 <h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
@@ -158,7 +201,7 @@
         <p>コマンドラインツールをつくる際、今まではPythonやRubyなどのスクリプト言語をつかうことが多かった。<br>スクリプト言語はコンパイルする必要がなく、普通のシェルスクリプトよりかは書きやすいし、外部のライブラリも組込みやすい。<br>Java・ScalaなどのJVM系言語はC言語系よりかは書きやすいが、JVMの起動の時間が気になってしまいあまり向いていないように思われる。</p>
 <p>しかしながら、スクリプト言語での開発にも問題はある。<br>動的に型がついて危ない、というのは小さくなりがちなちょっとしたツールでは比較的無視しやすいのでいいとする。<br>一番厄介なのは、実行環境のバージョン違いである。特にプロセス呼び出しで、同じ言語の他のツールを呼び出したりすると突然エラーを吐いたりすることがあった。</p>
 <p>この前、社内でコマンドラインツールを書く機会があり、試しにRustで書いてみることにした。<br>一度コンパイルしてしまいバイナリにしてしまえば、バージョンの違いに苦しむことはないであろう。<br>変更のたびコンパイルする必要があるとはいえ、一度コンパイルさえしてしまえば高速に動作する。<br>実はRustの公式ワーキンググループの中にコマンドラインインターフェース（CLI）のためのチームがあり、ドキュメント・ライブラリが整備されている。</p>
-
+<a href="https://www.rust-lang.org/governance/wgs/cli" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://www.rust-lang.org/static/images/rust-social-wide.jpg"></div><div class="descriptions"><div class="og-title">Command-line interfaces (CLI) working group</div><div class="og-description">A language empowering everyone to build reliable and efficient software.</div></div></div></a>
 
 <p>ドキュメントは優秀で、コマンドライン引数の処理やエラーハンドリングなどでどういうクレートを使えばいいかを紹介してくれている。</p>
 <a href="https://rust-cli.github.io/book/index.html" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Getting started - Command Line Applications in Rust</div></div></div></a>
@@ -201,13 +244,17 @@
       
         <p>Rustで循環参照を含む場合の処理はかなり面倒くさい。<br>基本的にミュータブルな参照は同時に1つしか持てないのだが、例えば双方向連結リストの場合、あるノードに対してその前のノードとその後ろのノードから参照される必要があるので、この場合どうにかしてミュータブルな参照以外の方法で前後のノードへのアクセス方法を確保する必要がある。</p>
 <p>ということで、前回のRust LT会でそのテーマで発表した方がいらっしゃった</p>
-
+<a href="https://speakerdeck.com/u1roh/graph-in-rust-with-unsafe" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://files.speakerdeck.com/presentations/5b1f84e27cf84cb38a2f682f9e01a029/slide_0.jpg?14736342"></div><div class="descriptions"><div class="og-title">Graph in Rust with unsafe</div><div class="og-description">- Rust でグラフ構造むずかしい…
+- 試行錯誤の過程を書きました
+- unsafe 使いましたが、unsafe こわい
+- メモリープールを実装してみました
+- ヤバいところあったら教えて！</div></div></div></a>
 <p>ここで用いられている方法は<code>unsafe</code>を使い、生ポインタとTyped Arenaという動的に同じ生存区間のメモリを確保できるライブラリを使う、または自作のメモリプールを使うというものである。<br>しかし、できれば<code>unsafe</code>は使いたくない。さらにいうとstdだけで実現できると嬉しい。</p>
 <p>Typed Arenaを使う方法は結構有名で、こちらのブログでも紹介されている</p>
 <a href="https://qnighy.hatenablog.com/entry/2017/04/28/070000" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://ogimage.blog.st-hatena.com/13208692334729897634/10328749687239599894/1493330425"></div><div class="descriptions"><div class="og-title">Rustでグラフを表現するにはTyped Arenaが便利 - 簡潔なQ</div><div class="og-description">概要: Rustでグラフのように相互参照を含むデータ構造を表現するには、Typed Arenaという方法が適している。これについて説明する 整数による表現 グラフの表現方法で、最も簡単なのは、ノードを整数で表し、グラフのデータを別に持つ方法である。 fn main() { let…</div></div></div></a>
 <p>ただし、この方法の弱点はメモリを開放する手段がないので、一度ノードをつくってしまうとグラフ全体が生存している間は削除してもメモリが開放されない。<br>ライフタイムの管理も難しく、設計をうまくしてあげる必要もある。</p>
 <p>他の方法としては<code>Rc</code>/<code>Arc</code>を使う方法がある。</p>
-<a href="https://qiita.com/qnighy/items/4bbbb20e71cf4ae527b9#%E5%AF%BE%E7%A7%B0%E3%81%AA%E5%BE%AA%E7%92%B0%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E8%A1%A8%E7%8F%BE%E3%81%99%E3%82%8B" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-user-contents.imgix.net%2Fhttps%253A%252F%252Fcdn.qiita.com%252Fassets%252Fpublic%252Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png%3Fixlib%3Drb-4.0.0%26w%3D1200%26mark64%3DaHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9UnVzdCVFMyU4MSVBRSUyMCU2MEFyYyU2MCUyMCVFMyU4MiU5MiVFOCVBQSVBRCVFMyU4MiU4MCUyODElMjklM0ElMjBBcmMlMkZSYyVFMyU4MSVBRSVFNSU5RiVCQSVFNiU5QyVBQyZ0eHQtY29sb3I9JTIzMjEyMTIxJnR4dC1mb250PUhpcmFnaW5vJTIwU2FucyUyMFc2JnR4dC1zaXplPTU2JnR4dC1jbGlwPWVsbGlwc2lzJnR4dC1hbGlnbj1sZWZ0JTJDdG9wJnM9NjVmZGFkN2E0NmE4N2VkNzFjZjI0MjQ3MDE4MzIyMzk%26mark-x%3D142%26mark-y%3D112%26s%3Dce821c46c1d382b0cc714fc6d4edc66b?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwcW5pZ2h5JnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz1iMjRjOWIzMjFkYjkxYTk0YTJkMTg5ZWI1YzRkZmY4MQ&mark-x=142&mark-y=491&s=8ae280f4e06f7f8a10055db97be955b9"></div><div class="descriptions"><div class="og-title">Rustの `Arc` を読む(1): Arc/Rcの基本 - Qiita</div><div class="og-description">概要: Rustの Arc 型の実装は宝の宝庫です。そこで、これを隅から隅まで解説してみます。
+<a href="https://qiita.com/qnighy/items/4bbbb20e71cf4ae527b9#%E5%AF%BE%E7%A7%B0%E3%81%AA%E5%BE%AA%E7%92%B0%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E8%A1%A8%E7%8F%BE%E3%81%99%E3%82%8B" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9UnVzdCVFMyU4MSVBRSUyMCU2MEFyYyU2MCUyMCVFMyU4MiU5MiVFOCVBQSVBRCVFMyU4MiU4MCUyODElMjklM0ElMjBBcmMlMkZSYyVFMyU4MSVBRSVFNSU5RiVCQSVFNiU5QyVBQyZ0eHQtY29sb3I9JTIzMjEyMTIxJnR4dC1mb250PUhpcmFnaW5vJTIwU2FucyUyMFc2JnR4dC1zaXplPTU2JnR4dC1jbGlwPWVsbGlwc2lzJnR4dC1hbGlnbj1sZWZ0JTJDdG9wJnM9NjVmZGFkN2E0NmE4N2VkNzFjZjI0MjQ3MDE4MzIyMzk&mark-x=142&mark-y=112&blend64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwcW5pZ2h5JnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz1iMjRjOWIzMjFkYjkxYTk0YTJkMTg5ZWI1YzRkZmY4MQ&blend-x=142&blend-y=491&blend-mode=normal&s=d16621ba7d7d7b5610023bb079bd4efb"></div><div class="descriptions"><div class="og-title">Rustの `Arc` を読む(1): Arc/Rcの基本 - Qiita</div><div class="og-description">概要: Rustの Arc 型の実装は宝の宝庫です。そこで、これを隅から隅まで解説してみます。
 
 第1回「Arc/Rcの基本」では、実際に Arc のソースを読む前に Arc/Rc の使い方を解説します。
 
@@ -272,10 +319,12 @@
       
         <p>LinuxのX11向けのGUIアプリケーションでテキスト入力を扱いたい場合、IMEの存在を意識しなければならない（特に日本人ならば）。<br>IMEなしならば、キーボードイベントを見て、そのキーのアルファベットをプリントするだけで済むが、IMEが存在する場合、IMEから送られてくる文字列をきちんと処理する必要がある。<br>そのためには、X11のIMEフレームワークであるXIMの仕様を知る必要がある。</p>
 <p>これらの仕様について解説し、実際のコードも紹介している記事はすでにある。</p>
-
+<a href="https://tedyin.com/posts/a-brief-intro-to-linux-input-method-framework/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">
+      A Brief Intro to Input Method Framework, Linux IME, and XIM | EKG&lt;T&gt;
+    </div></div></div></a>
 
 <p>上記の記事を参考にしたと思われる日本語の記事もある。</p>
-<a href="https://qiita.com/ai56go/items/63abe54f2504ecc940cd" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-user-contents.imgix.net%2Fhttps%253A%252F%252Fcdn.qiita.com%252Fassets%252Fpublic%252Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png%3Fixlib%3Drb-4.0.0%26w%3D1200%26mark64%3DaHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9WElNJTI4WCUyMElucHV0JTIwTWV0aG9kJTI5JUU2JTk3JUE1JUU2JTlDJUFDJUU4JUFBJTlFJUU1JTg1JUE1JUU1JThBJTlCJUUzJTgxJUFFJUU2JUI1JTgxJUUzJTgyJThDJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9NTYmdHh0LWNsaXA9ZWxsaXBzaXMmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz0zYTgxYWNjY2I0MzNhZTExZGJmNWQyNWMxOTQ0ODBkZA%26mark-x%3D142%26mark-y%3D112%26s%3D2b6cc5396cd4aab6657dc7ed29050c03?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwYWk1NmdvJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz00NGExMWFjYTc0MWQ0OTZkMjhmNWRhZmE1NDg1OTg3OA&mark-x=142&mark-y=491&s=e25ba5ccb0682b415d15077d97166cd3"></div><div class="descriptions"><div class="og-title">XIM(X Input Method)日本語入力の流れ - Qiita</div><div class="og-description">2018年3月 作成
+<a href="https://qiita.com/ai56go/items/63abe54f2504ecc940cd" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9WElNJTI4WCUyMElucHV0JTIwTWV0aG9kJTI5JUU2JTk3JUE1JUU2JTlDJUFDJUU4JUFBJTlFJUU1JTg1JUE1JUU1JThBJTlCJUUzJTgxJUFFJUU2JUI1JTgxJUUzJTgyJThDJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9NTYmdHh0LWNsaXA9ZWxsaXBzaXMmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz0zYTgxYWNjY2I0MzNhZTExZGJmNWQyNWMxOTQ0ODBkZA&mark-x=142&mark-y=112&blend64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwYWk1NmdvJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz00NGExMWFjYTc0MWQ0OTZkMjhmNWRhZmE1NDg1OTg3OA&blend-x=142&blend-y=491&blend-mode=normal&s=31b37b9a8e6cda7a055450f418ca5aba"></div><div class="descriptions"><div class="og-title">XIM(X Input Method)日本語入力の流れ - Qiita</div><div class="og-description">2018年3月 作成
 
 「X Window Systemの日本語入力はどうなっているんだろう？」
 そう考えた筆者が、日本語入力の流れを調べてみました。
@@ -342,9 +391,9 @@
 <p>こっちはXlibの実装の解説ではあるが、レイアウトがメチャクチャである</p>
 <p><a href="https://www.x.org/releases/X11R7.5/doc/libX11/libX11.html" target="_blank" rel="noopener">Xlib − C Language X Interface</a></p>
 <p>結局GTKの実装を参照するほうが楽であったが、GTK4（まだリリースはされていない）の最新版ではなんとXIMのサポートが削除されている。</p>
-<a href="https://gitlab.gnome.org/GNOME/gtk/merge_requests/1195" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://gitlab.gnome.org/uploads/-/system/project/avatar/665/gtk-logo.png"></div><div class="descriptions"><div class="og-title">Remove the XIM input method (!1195) · Merge requests · GNOME / gtk</div><div class="og-description">It&#39;s old and busted, and mostly broken in weird ways when it comes to extended input devices. All that XIM does, these days, is make a mess …</div></div></div></a>
+<a href="https://gitlab.gnome.org/GNOME/gtk/merge_requests/1195" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://gitlab.gnome.org/uploads/-/system/project/avatar/665/gtk-logo.png"></div><div class="descriptions"><div class="og-title">Remove the XIM input method (!1195) · Merge requests · GNOME / gtk · GitLab</div><div class="og-description">It&#39;s old and busted, and mostly broken in weird ways when it comes to extended input devices. All that XIM does, these days, is make a mess …</div></div></div></a>
 <p>GTK3までならちゃんと生きているので、そちらを参考にすると良い</p>
-
+<a href="https://gitlab.gnome.org/GNOME/gtk/blob/3.24.13/modules/input/gtkimcontextxim.c" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://gitlab.gnome.org/uploads/-/system/project/avatar/665/gtk-logo.png"></div><div class="descriptions"><div class="og-title">modules/input/gtkimcontextxim.c · 3.24.13 · GNOME / gtk · GitLab</div><div class="og-description">GTK is a multi-platform toolkit for creating graphical user interfaces.</div></div></div></a>
       
     </div>
     <footer>
@@ -401,7 +450,7 @@
 <p>また、各pair毎にprobabilityを設定しておき、遅延を挟むごとにprobabilityを下げる、とすることで、同一箇所に過剰に遅延を設定するということを防ぎます。</p>
 <p>これらの遅延挿入アルゴリズムはテストを実行しながら同時に実行できる、というのがポイントのひとつです。<br>これにより、遅延挿入箇所の決定のための独立したテスト実行は不要なので、テスト時間の短縮になります。<br>もちろん、複数回テストを実行させ、前回のテスト情報を次回に引き継ぐこともできます。</p>
 <p>実装については、.NETアプリケーション（C#やF#のプログラム）に限定されますが、理論的には他のタイプのアプリケーションにも使えるとしています。<br>また、実装はGithub上で公開されています。</p>
-
+<a href="https://github.com/microsoft/TSVD" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://opengraph.githubassets.com/5a20a54b6074ee402b5d26abafffffc2eb7e6b509c73a8088edc2b4f48b2b557/microsoft/TSVD"></div><div class="descriptions"><div class="og-title">GitHub - microsoft/TSVD: TSVD is a tool for quickly finding thread-safety violations (e.g., data races) in .NET applications.</div><div class="og-description">TSVD is a tool for quickly finding thread-safety violations (e.g., data races) in .NET applications. - GitHub - microsoft/TSVD: TSVD is a to…</div></div></div></a>
 
 <h2 id="評価"><a href="#評価" class="headerlink" title="評価"></a>評価</h2><p>1,657のMicrosoftで実際に開発しているアプリケーションのビルドプロセスに組込み、1,134箇所のバグを発見できたとしています。<br>false-positiveは存在しなく、いくつかのバグは実際のプロダクション環境で問題を引き起こしているものであったとしています。</p>
 <p>これらのバグの見つかったアプリケーションの内1000のモジュールとスモールベンチマークを用いて、他の手法とのパフォーマンスの比較も行っています。<br>実行時のオーバーヘッドは平均で33％ほどで、既存手法と比べてもかなり少なく、発見できたバグの数も上でした。</p>
@@ -444,10 +493,10 @@
         <p>今年は以前より取り組んできた組込みシステム上でのRustプログラミングで一定の成果が出せた。<br>他、ブログも去年より色々書けたし、Twitterのフォロワー数も伸びてきた。</p>
 <h2 id="今年の成果"><a href="#今年の成果" class="headerlink" title="今年の成果"></a>今年の成果</h2><h3 id="ブログ記事"><a href="#ブログ記事" class="headerlink" title="ブログ記事"></a>ブログ記事</h3><p>今年はこの記事を除いて12本のブログ記事を書いた。内2本は英語版を<a href="https://medium.com/@garasubo" target="_blank" rel="noopener">Medium</a>に投稿した。<br>去年は9本だったので、アウトプットの数は増えてきている。<br>また、その関連で各種LT会などに参加して、何回か発表もした。</p>
 <h3 id="自作OSプロジェクト"><a href="#自作OSプロジェクト" class="headerlink" title="自作OSプロジェクト"></a>自作OSプロジェクト</h3><p>今年、一番の成果はRustで組込みOSを書くという個人プロジェクトでとりあえず基本的な形が出来上がり、それを公開できたことだ。</p>
-
+<a href="https://github.com/garasubo/erkos" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://opengraph.githubassets.com/9b9cbc7f9ccd00d9e157d7adb6da8477323b73730f83ff8f2c34abe4412a5048/garasubo/erkos"></div><div class="descriptions"><div class="og-title">GitHub - garasubo/erkos: A prototype embedded operating system written in Rust</div><div class="og-description">A prototype embedded operating system written in Rust - GitHub - garasubo/erkos: A prototype embedded operating system written in Rust</div></div></div></a>
 <p>一応、今も機能追加を進めていて、<a href="/hexo/2019/05/15/erkos.html">以前のブログ</a>からだと簡易的なプロセス間通信が実装できた。<br>今はイーサーネットドライバの実装に着手し始めているが、まだ基本的なデバイスの初期化をようやく理解し始めたところなので、まだまだ時間はかかりそう。<br><a href="/hexo/2018/12/30/this-year.html">去年のまとめ</a>ではOLEDモジュールドライバの実装をしたいと言っていたが、それは流れてしまった。<br>正直、この先どういう機能を実装すべきか、というのは結構悩んでいて、というのは自分があまり実際の組込みOSに深く触れたことがないので、どういう機能がどういう構造であるべきなのか、というのがいまいち実感がわかない。<br>一旦、自作OSから離れて、既存の組込みOSで遊んでみる、というのはありなのかなあとぼんやりと計画はしている。</p>
 <h3 id="OSS活動"><a href="#OSS活動" class="headerlink" title="OSS活動"></a>OSS活動</h3><p>OSSのコントリビュートもちょくちょく始めるようにした。<br>組込みRust関連で気がついたことがあったときにPRを送った他、仕事でOSSのコントリビューションを業務時間内にやってもよい、と言われたのでRust製のブラウザエンジンのServoを触り始めている。</p>
-<a href="https://github.com/servo/servo" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://opengraph.githubassets.com/e34e8c013ec2175cbacac0f0691aa48c8d422c648caf296e9d775fdcc6b78c0c/servo/servo"></div><div class="descriptions"><div class="og-title">GitHub - servo/servo: The Servo Browser Engine</div><div class="og-description">The Servo Browser Engine. Contribute to servo/servo development by creating an account on GitHub.</div></div></div></a>
+<a href="https://github.com/servo/servo" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://opengraph.githubassets.com/0927008e7b03428d9431bb5c49fd08f0c345b540d6123e58e4010f031adf53dc/servo/servo"></div><div class="descriptions"><div class="og-title">GitHub - servo/servo: The Servo Browser Engine</div><div class="og-description">The Servo Browser Engine. Contribute to servo/servo development by creating an account on GitHub.</div></div></div></a>
 <p>ブラウザエンジン開発はもちろん、デスクトップのGUIアプリの開発自体ほとんど経験がないので、学ぶべき内容は多い。<br>そのため、現状だと仕様書とにらめっこする時間の方が圧倒的に長く、今年は数行程度の簡単な修正しかできてないが、来年はもうちょっと大きめの変更もできるようになりたい。<br>今はIME周りの実装がまだまだ甘い、ということに気がついたのだが、これを修正するのはかなり大変そうで困っている。</p>
 <h3 id="競技プログラミング"><a href="#競技プログラミング" class="headerlink" title="競技プログラミング"></a>競技プログラミング</h3><p>競技プログラミングもちょくちょく参加するようにした。<br>AtCoderのBeginner Contestをメインで参加するほか、AtCoder Problemsという外部サービスに問題のおすすめ機能がついたので、そのオススメ問題を単体で解く、ということをした。</p>
 <a href="https://kenkoooo.com/atcoder" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">AtCoder Problems</div></div></div></a>
@@ -497,7 +546,7 @@
         <p>これは<a href="https://qiita.com/advent-calendar/2019/rust2" target="_blank" rel="noopener">Rustその2 Advent Calendar 2019</a>7日目の記事です。<br>去年も参加したRust Advent Calendarなのですが、今年は<a href="https://qiita.com/advent-calendar/2019/rust3" target="_blank" rel="noopener">その3</a>まであるようですね。Rustの人気が年々盛り上がっている証拠でしょうか。</p>
 <h2 id="This-Week-in-Rust"><a href="#This-Week-in-Rust" class="headerlink" title="This Week in Rust"></a>This Week in Rust</h2><p><a href="https://this-week-in-rust.org/" target="_blank" rel="noopener">This Week in Rust</a>とは、毎週Rust関連のブログ記事やRustコンパイラへの変更などを紹介してくれるニュースレターです。<br>すべて英語の記事なので、正直読むのがしんどいのですが、気になったタイトルがあったら読むようにしています。<br>今回は今年のThis Week in Rustで紹介された記事からいくつかピックアップして紹介して、今年のRustコミュニティの動向を振り返ってみようと思います。<br>なお、選んだ記事は自分の興味にものすごく影響を受けているため分野は偏り気味です。</p>
 <h2 id="Rustで既存プロダクトを置き換える話"><a href="#Rustで既存プロダクトを置き換える話" class="headerlink" title="Rustで既存プロダクトを置き換える話"></a>Rustで既存プロダクトを置き換える話</h2><p>C/C++やPythonで書かれたプロジェクトをRustで置き換えるという話をかなり見るようになりました。</p>
-
+<a href="https://medium.com/dwelo-r-d/we-rewrote-our-iot-platform-in-rust-and-got-away-with-it-2c8867c61b67?" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://miro.medium.com/max/1200/1*qVIA9q5OBKlDQPsZ2efZFg.jpeg"></div><div class="descriptions"><div class="og-title">We rewrote our IoT platform in Rust and got away with it</div><div class="og-description">At Dwelo, we’ve written the code for our IoT gateways in Rust. It’s fast, it’s reliable, and it’s secure. But we didn’t start with Rust…</div></div></div></a>
 <p>Pythonで書かれていたIoTプラットフォームをRustで置き換えたという話です。<br>スケールさせるためにより高速な言語に置き換えねばならなかったこと、様々な技術的負債が溜まってしまったという状況で、Rustに置き換えるという選択をとったようです。<br>当然、C/C++も候補に入りましたが、nullポインタやキャストのバグなど、言語の性質上起こり得るバグを<a href="https://medium.com/dwelo-r-d/abusing-fire-for-light-a6e6774289fd" target="_blank" rel="noopener">Part2</a>で紹介し、<br><a href="https://medium.com/dwelo-r-d/designing-around-our-flaws-e0fccd7070af" target="_blank" rel="noopener">Part3</a>でRustならそれが起こらないことを説明しています。</p>
 <p><a href="https://osfc.io/uploads/talk/paper/23/Oreboot.pdf" target="_blank" rel="noopener">Oreboot (PDF)</a></p>
 <p>CorebootというオープンソースのブートローダーをRustで書き直すOrebootというプロジェクトの紹介です。<br>Rustを選んだ理由から現在のOrebootの設計・進捗状況を説明しています。現状はQEMUのArmやRISC-Vのボードで動いているようです。</p>
@@ -513,7 +562,7 @@
 <a href="https://msrc-blog.microsoft.com/2019/07/16/a-proactive-approach-to-more-secure-code/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">A proactive approach to more secure code – Microsoft Security Response Center</div></div></div></a>
 
 <p>続くブログでは、なぜRustがC/C++の代わりとして注目しているかが説明されています。</p>
-
+<a href="https://msrc-blog.microsoft.com/2019/07/22/why-rust-for-safe-systems-programming/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">Why Rust for safe systems programming – Microsoft Security Response Center</div></div></div></a>
 <p>C/C++のように低レベルでのパフォーマンスコントロールができる一方で、C/C++より強力な安全性の保証をしてくれます。<br>また、メモリ関連の安全性を犯しにくい、型システムも強力で表現力が高いことなども理由に挙げられています。</p>
 <p>Amazonも去年、<a href="https://github.com/firecracker-microvm/firecracker" target="_blank" rel="noopener">Firecracker</a>というRust製のVMMをオープンソースプロジェクトとして公開し注目されましたが、様々な大企業がRustに注目しだしている、ということがわかります。</p>
 <h2 id="async-await"><a href="#async-await" class="headerlink" title="async/await"></a>async/await</h2><p>今年のRustの変更で一番大きな注目を集めたのはasync/awaitの追加でしょう。それに関連する記事もいくつか紹介はされていました。<br>が、自分自身がasync/awaitの仕様をまったく追えていないので、今回は紹介しないでおきます。</p>
@@ -605,7 +654,7 @@
     <div class="entry">
       
         <p>ISUCONというウェブアプリケーションを高速化させるというコンテストに参加しました。</p>
-
+<a href="http://isucon.net/archives/53570241.html" class="link-preview" target="_blank" rel="nofollow"><div class="link-area"><div class="og-image"><img src="https://parts.blog.livedoor.jp/img/usr/cmn/ogp_image/livedoor.png"></div><div class="descriptions"><div class="og-title">ISUCON9 まとめ : ISUCON公式Blog</div><div class="og-description">予選 参加チーム数 598組　合計 1561名（学生 258名） ・2019年9月7日(土) 　321組 , 755名（学生 124名） ・9月8日(日)　 　277組 , 680名（学生 134名）  本選 ・2019年10月5日(土)  　32組 86名 （学生 20名）　 …</div></div></div></a>
 <p><a href="/hexo/2018/09/17/isucon.html">去年も参加</a>しましたが、結果は惨敗でした。<br>今年もチーム名「ガラスボッチ」で参加しましたが、メンバーは僕一人でした。看板に偽りなし。使用言語はNodejs（Typescript）です。<br>今回は事前に準備を仕込む時間をあまり取れなくまた、メンバー一人ということもあり、結果はGoの初期実装にすら劣るとかいう悲惨な結果でした。</p>
 <h2 id="本戦中にやったこと"><a href="#本戦中にやったこと" class="headerlink" title="本戦中にやったこと"></a>本戦中にやったこと</h2><p>基本的にはMySQLのN+1クエリ問題の解消とCategoryをメモリにキャッシュすることくらいです。<br>マルチサーバー化も試みたのですが、アップロードの画像データの扱いと、MySQLの設定で躓いて手を出せませんでした。</p>
 <p>本番中は<a href="https://github.com/tkuchiki/alp" target="_blank" rel="noopener">alp</a>でアクセスログを解析してボトルネックを探りつつ改善という方針で行きました。<br>本番環境へのデプロイはrsyncコマンドを用いてやりました。リモートのgitレポジトリを仲介させるのは面倒くさい。<br>環境のセットアップとして前回用いた<a href="https://www.ansible.com/" target="_blank" rel="noopener">ansible</a>スクリプトに少々手を加えておいて、必要なツールがすぐに入るようにしておきました。</p>
@@ -619,61 +668,6 @@
 <p>また、bycryptによるパスワード認証が重い、という問題もあります。 実際、ログイン部分の初期実装のレスポンスタイムは他のAPIと比べて高く、特にNodejsの場合、Goに比べてさらに2倍ほど遅い。<br>問題の制約として「パスワードを平文で保存する」ことが禁止されていました。<br>この解決策としては、ログイン専用サーバーをつくってしまい、CPU負荷を分散するという方法が想定解の1つだったようですが、運営の意図的にはシーザー暗号レベルの軽量なハッシュ関数での保存も想定解だったようです。<br>ただし、この「平文で保存する」という文言はかなり曖昧で、何を持って平文保存ではないかが明確でなく、「平文に適当な文字を足して格納する」という方法をとったために失格になりかけたチームがありました。<br>暗号理論などの世界で「平文ではない」とは「平文とは一致しない」だけで十分らしいですが、問題の文脈、すなわちウェブアプリケーションの開発においてカジュアルに「平文で保存しない」といわれたら、「DBのデータが盗まれても大丈夫なような暗号化を施せ」なのかなと自分は考えて、暗号のアルゴリズムを変えるにしても同程度の攻撃耐性を持つものにしか変えられないだろうと考えていました。<br>シーザー暗号のようなアルゴリズムの場合、DBから例えば”abcdefghijk…”といったパスワードがどうハッシュ化されているかを確認する、といった方法で簡単に平文が取得できてしまうという点で、「平文で保存する」と同等なのではという判断です。<br>結局は今回は運営が謝罪して、この制約による失格は全て取り消されましたが、競技者側からするとルールが曖昧な場合、実装の単純さや効果の大きさをとりギリギリを攻めるか、十分に安全をとって最適化を諦めるかは難しい判断です。<br>ISUCONに限らず、競技のルールにはどうしても曖昧性の残り、最後は運営の主観的な采配になってしまうのは仕方のないことだとは思うのですが、今後はもう少しルールを明確化する・（競技性を失わない範囲で）ルールの一部を事前公開してFAQを募るなど、不公平感のない対策があるといいと思いました。</p>
 <h2 id="NodejsでISUCONに勝てるか"><a href="#NodejsでISUCONに勝てるか" class="headerlink" title="NodejsでISUCONに勝てるか"></a>NodejsでISUCONに勝てるか</h2><p>今回、予選参加者のうちNodejsを使っているチームはそこそこいたようですが、決勝にはどのチームをいけていません。決勝に進んだチームではGo言語が圧倒的です。<br>以前からISUCONはGo言語が有利ということは言われていて、前回予選では他の言語を用いたチームもかなり健闘していたのですが、今回はGo言語の強さが色濃く出たのかなあという印象を受けました。<br>bycryptの実行速度はおそらくGoが有利だっただろうし、Nodejsの場合、ISUCONでよく用いられるメモリ上へのキャッシュ化もマルチプロセスするとプロセス間でキャッシュが共有できなくなるので厳しいのかなと思います。<br>私の場合は極端な準備不足だったし、メンバーも一人のみという舐めきった構成だったのでまずはそこをなんとかしなければなのですが…<br>（今年の予選1位と2位は一人チームだったらしいですが、よほど実装力に自信がない限り一人で勝つのは無理でしょう）</p>
 <p>来年開催されるかは未定のようですが、開催されるのであればRustかScalaでの初期実装があるとうれしい</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2019-07-20T15:00:00.000Z"><a href="/hexo/2019/07/21/unikernel.html">2019-07-21</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/hexo/2019/07/21/unikernel.html">論文紹介：A Binary-Compatible Unikernel ー Unikernelの解説も添えて</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>元論文：<a href="https://dl.acm.org/citation.cfm?id=3313817" target="_blank" rel="noopener">https://dl.acm.org/citation.cfm?id=3313817</a></p>
-<p>Linuxアプリケーションをそのまま動かせるバイナリコンパチブルなUnikernelを構築しました、という話です。<br><a href="/hexo/2019/06/30/lightvm.html">前回の記事</a>に引き続きUnikernel関連な話題ですが、意外と自分のブログではUnikernelについての話題を触れていなかったので関連論文も合わせて紹介したいと思います。</p>
-<h2 id="論文概要"><a href="#論文概要" class="headerlink" title="論文概要"></a>論文概要</h2><ul>
-<li>タイトル：A binary-compatible unikernel</li>
-<li>著者：Pierre Olivier, Pierre Olivier, Pierre Olivier et. al.</li>
-<li>会議：Proceedings of the 15th ACM SIGPLAN/SIGOPS International Conference on Virtual Execution Environments (VEE 2019)</li>
-</ul>
-<p>仮想環境関連のトップカンファレンスであるVEEでの論文です。</p>
-<h2 id="Unikernelについて"><a href="#Unikernelについて" class="headerlink" title="Unikernelについて"></a>Unikernelについて</h2><p>Unikernelという概念が初めてでてきたのはASPLOS 2013でのMirageOSの論文です。<br><a href="https://dl.acm.org/citation.cfm?id=2451167" target="_blank" rel="noopener">Unikernels: library operating systems for the cloud</a><br>仮想環境上でアプリケーションを走らせるために、アプリケーションごとに独立した仮想Linuxマシンを立ち上げるのは、どうしてもたくさんの計算資源を消費してしまいます。<br>しかし、Dockerなどのコンテナ仮想化では、特にマルチテナントな仮想環境ではセキュリティの懸念が残ります。<br>そこで彼らのMirageOS、アプリケーションを走らせるためのOSをライブラリとして直接リンクさせるライブラリOS形式を用います。<br>通常、OSは複数のアプリケーションを動かすために計算資源の仮想化を行うわけですが、シングルアプリケーションのためならそのような抽象化レイヤーはいらないという考えです。<br>ライブラリOSの概念自体は古くからあり、SOSP ‘95で発表された<a href="https://dl.acm.org/citation.cfm?id=224076" target="_blank" rel="noopener">Exokernel</a>でも用いられている概念です。<br>ただし、当時はあまりにも極端すぎるアプローチで、特にそのライブラリOS用のデバイスドライバは個別で開発する必要がありました。<br>しかし、仮想環境上ならば、デバイスは仮想デバイスという形でVMM側から共通のインターフェースで与えられるので、仮想デバイス用のドライバさえつくってしまえばこの問題をクリアできます。<br>要するに、計算資源の仮想化をVMM側に完全に任せることで上に乗っかるOSはさほどがんばる必要がない、という考え方です。<br>このアプローチはかなり強力で、評価では起動時間・バイナリサイズを大幅に削減することが示されています。これはシステムコールが関数呼び出しとして実現できる・必要な関数のみリンクさせることでサイズを小さくできるなどによるものです。<br>MirageOSはOCamlで書かれていてGCのコストや型安全性の保障のためのオーバーヘッドがあるはずですが、それを上回るメリットがMirageOSの設計にはあったというわけです。</p>
-<p>MirageOSには１つ大きな問題があり、それはアプリケーションをOCamlでMirageOS用に書き直さなければならない、ということです。<br>彼らの主張としては、今までの型安全ではない言語でかかれたシステムはバグを含んでいることがしばしばあるので、むしろ積極的に書き直すべきだという立場をとっています。<br>一理あるかもしれませんが、やはり何もかも今までの資産を切り捨てるというのは難しいのがUnikernelの課題としてありました。</p>
-<p>Unikernelやそれに類似したシステムは今までいろいろと提案されてきました。<br>Usenix ATC ‘14で発表された<a href="https://www.usenix.org/node/184012" target="_blank" rel="noopener">OSv</a>では、Linux ABIを提供することでLinuxアプリケーションを動かしたり、JVMを提供したりと、より広く使われている言語をサポートしていますが、アプリケーションそのものは再ビルドする必要があります。<br><a href="http://rumpkernel.org/" target="_blank" rel="noopener">Rumpkernel</a>はNetBSDのデバイスドライバを抽出して、OSなしでもアプリケーションで使うことができるというものですが、これもアプリケーションは再ビルドする必要がありました。<br>つまりこれらの手法はソースコードが入手できることが前提のもので、コンパイル済みのバイナリはサポートできません。</p>
-<p>Unikernelを用いたシステムとしては以前紹介した<a href="/hexo/2015/12/12/advent.html">Jitsu</a>や前回のLightVMの論文でもいくつか提案はされています。<br>Unikernelの小さいバイナリサイズ・実行オーバーヘッドの少なさがあってのシステムなのですが、アプリケーション構築のためのエンジニアリングコストをいかに小さくできるか、という課題があったわけです。<br>LightVMの論文ではTinyxというLinuxディストリビューションを必要最低限に小型化する方法が提案されていましたが、この形式ではUnikernelの恩恵はあまり得られず、論文でもこれは折衷案であるということを認めていました。</p>
-<h2 id="提案手法：HermiTux"><a href="#提案手法：HermiTux" class="headerlink" title="提案手法：HermiTux"></a>提案手法：HermiTux</h2><p>彼らはこのアプリケーションの移植コストというものを減らすために、再ビルドなしで完全なLinuxでのバイナリコンパチビリティを保ちつつUnikernelの恩恵も得られるものという手法を提案しています。<br>提案手法のプロトタイプをHermiTuxと名付けています。これはHermitCoreというUnikernelをベースにつくられているからです。</p>
-<p>HermiTuxはLinuxのABIのルールに従い、ロードおよびランタイムにエミュレートしてあげる必要があります。<br>ソースコードの入手を前提としていないため、Linuxシステムの呼び出しを事前に置き換えておいたり、違うライブラリをリンクすることはできません。<br>また、アプリケーションはライブラリを動的にも静的にもリンクしてある可能性があるので、その両方のパターンを考慮しなければなりません。<br>HermiTuxでは、uHyveという軽量なハイパーバイザをVMM上（今回はKVMを用いている）をまずは知らせ、その上でLinuxアプリケーションとHermiTuxのカーネルを動かしています。</p>
-<p>ロードの仕方も論文には書かれていますが、Linuxシステムコールをどう処理するかが特におもしろかったので、今回はそこだけを見ていきます。<br>システムコールハンドラは通常であれば、特権レベルの切り替えが発生するのですが、HermiTuxではその必要がありません。そのため、その切り替えがない分、システムコールを速く処理できます。<br>しかし、呼び出しそのものはsyscall命令によって行われているため、普通の関数呼び出しとしてい実現される通常のUnikernelよりはどうしても遅くなってしまいます。動的にCライブラリがリンクされている場合は、Cライブラリそのものの中にあるシステムコールを予め関数呼び出しに置き換えることによりこの問題を回避できます。<br>Cライブラリ実装のひとつでであるMuslはシステムコールがマクロを経由して呼び出されているため、<a href="http://coccinelle.lip6.fr/" target="_blank" rel="noopener">Coccinelle</a>というコード変換ツールを使い自動的に置き換えられるとしています。</p>
-<p>静的にリンクされている場合は、実行時にバイナリを置き換えるというテクニックを用いています。x86の命令は残念なことに可変長でsyscallは２バイト、通常の関数呼び出しであるcall命令は5バイトです。<br>そのため、syscall命令の次の命令までまとめて別のスニペットへのjmp命令として置き換えて、スニペット中で関数呼び出しと次の命令を実行して戻ってくるという方法で実現されています。</p>
-<p>ひとつの問題として、システムコールの種類は非常に多く、すべてサポートするのは大変ということです。この研究でもすべてのシステムコールはサポートしきれていませんが、それでもいくつかのメジャーなアプリケーションをサポートできています。<br>システムコールのサポートを追加していくのは実装コストだけでなく、カーネルサイズの増大も引き起こします。そこでこの研究ではそれぞれのシステムコールをモジュール化し、必要なシステムコールのみをカーネルに含められるようにしています。<br>問題はアプリケーションがどのシステムコールを使うかです。straceなどのツールで実際にどのシステムコールが呼ばれるかを解析するのは、そのテスト実行のコードカバレッジに依存するため安全ではありません。<br>静的にライブラリがリンクされている場合、静的解析を行うことでかなりの部分を解析することができます。動的にリンクされる場合は、どのライブラリ関数が呼ばれているかを解析することにより、その関数から呼ばれているシステムコールを解析することにより特定することができます。<br>これらのテクニックにより大幅にカーネルサイズを減らせます。</p>
-<p>また、HermiTux用のデバッガとプロファイラといった開発ツールのサポートも行われています。</p>
-<h2 id="評価"><a href="#評価" class="headerlink" title="評価"></a>評価</h2><p>評価では、通常のLinux VM、Dockerコンテナ、OSv、Rumprunと各種ベンチマークを用いた比較を行っています。<br>ベンチマークにはLMbench、<a href="https://parsec.cs.princeton.edu/" target="_blank" rel="noopener">PARSEC</a>、redis、SQLiteなどが用いられています。<br>Hello Worldアプリケーションではバイナリサイズ・起動時間・メモリ使用量を大幅に減らせることが示されていて、他のベンチマークのパフォーマンスでもかなりの性能を示しています。</p>
-<h2 id="まとめ・感想"><a href="#まとめ・感想" class="headerlink" title="まとめ・感想"></a>まとめ・感想</h2><p>Linuxアプリケーションをバイナリコンパチブルで動かせるHermiTuxの手法について解説しました。</p>
-<p>Unikernelはかなり攻めた手法でなかなか実運用されているケースは聞かないですが、段々とその活用の仕方と移植コストの軽減策が出てきていて非常におもしろいですね。<br>将来、コンテナ型仮想化に代わる選択肢として広く使われることになるのか楽しみです。</p>
-<p>Unikernelについてもっと掘り下げて知りたい方は、<a href="https://en.wikipedia.org/wiki/Unikernel" target="_blank" rel="noopener">Wikipedia（英語）</a>でも記事になっている他、こちらのQitta記事とかがいいかもしれません。</p>
-
 
       
     </div>
@@ -714,6 +708,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2022/09/16/isucon12.html">ISUCON12予選敗戦記</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
       </li>
     
@@ -727,10 +725,6 @@
     
       <li>
         <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
   </ul>
@@ -763,13 +757,15 @@
   
     <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
   
-    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>6</small></li>
   
     <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
     <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/rust/">rust</a><small>1</small></li>
   
     <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
   
@@ -785,13 +781,10 @@
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2021 garasubo
+  &copy; 2022 garasubo
   
 </div>
-<div class="clearfix"></div>
-<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
-
-</footer>
+<div class="clearfix"></div></footer>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script src="/hexo/js/jquery.imagesloaded.min.js"></script>
 <script src="/hexo/js/gallery.js"></script>

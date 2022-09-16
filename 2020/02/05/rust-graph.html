@@ -25,33 +25,21 @@
 <meta property="og:site_name" content="己の不学を恥じる">
 <meta property="og:description" content="Rustで循環参照を含む場合の処理はかなり面倒くさい。基本的にミュータブルな参照は同時に1つしか持てないのだが、例えば双方向連結リストの場合、あるノードに対してその前のノードとその後ろのノードから参照される必要があるので、この場合どうにかしてミュータブルな参照以外の方法で前後のノードへのアクセス方法を確保する必要がある。 ということで、前回のRust LT会でそのテーマで発表した方がいらっしゃった">
 <meta property="og:locale" content="ja">
+<meta property="og:image" content="https://files.speakerdeck.com/presentations/5b1f84e27cf84cb38a2f682f9e01a029/slide_0.jpg?14736342">
 <meta property="og:image" content="https://ogimage.blog.st-hatena.com/13208692334729897634/10328749687239599894/1493330425">
-<meta property="og:image" content="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-user-contents.imgix.net%2Fhttps%253A%252F%252Fcdn.qiita.com%252Fassets%252Fpublic%252Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png%3Fixlib%3Drb-4.0.0%26w%3D1200%26mark64%3DaHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9UnVzdCVFMyU4MSVBRSUyMCU2MEFyYyU2MCUyMCVFMyU4MiU5MiVFOCVBQSVBRCVFMyU4MiU4MCUyODElMjklM0ElMjBBcmMlMkZSYyVFMyU4MSVBRSVFNSU5RiVCQSVFNiU5QyVBQyZ0eHQtY29sb3I9JTIzMjEyMTIxJnR4dC1mb250PUhpcmFnaW5vJTIwU2FucyUyMFc2JnR4dC1zaXplPTU2JnR4dC1jbGlwPWVsbGlwc2lzJnR4dC1hbGlnbj1sZWZ0JTJDdG9wJnM9NjVmZGFkN2E0NmE4N2VkNzFjZjI0MjQ3MDE4MzIyMzk%26mark-x%3D142%26mark-y%3D112%26s%3Dce821c46c1d382b0cc714fc6d4edc66b?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwcW5pZ2h5JnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz1iMjRjOWIzMjFkYjkxYTk0YTJkMTg5ZWI1YzRkZmY4MQ&mark-x=142&mark-y=491&s=8ae280f4e06f7f8a10055db97be955b9">
+<meta property="og:image" content="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9UnVzdCVFMyU4MSVBRSUyMCU2MEFyYyU2MCUyMCVFMyU4MiU5MiVFOCVBQSVBRCVFMyU4MiU4MCUyODElMjklM0ElMjBBcmMlMkZSYyVFMyU4MSVBRSVFNSU5RiVCQSVFNiU5QyVBQyZ0eHQtY29sb3I9JTIzMjEyMTIxJnR4dC1mb250PUhpcmFnaW5vJTIwU2FucyUyMFc2JnR4dC1zaXplPTU2JnR4dC1jbGlwPWVsbGlwc2lzJnR4dC1hbGlnbj1sZWZ0JTJDdG9wJnM9NjVmZGFkN2E0NmE4N2VkNzFjZjI0MjQ3MDE4MzIyMzk&mark-x=142&mark-y=112&blend64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwcW5pZ2h5JnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz1iMjRjOWIzMjFkYjkxYTk0YTJkMTg5ZWI1YzRkZmY4MQ&blend-x=142&blend-y=491&blend-mode=normal&s=d16621ba7d7d7b5610023bb079bd4efb">
 <meta property="og:image" content="https://github.githubassets.com/images/modules/gists/gist-og-image.png">
-<meta property="og:updated_time" content="2020-03-31T15:36:39.000Z">
+<meta property="og:updated_time" content="2020-03-31T15:36:39.821Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rustで循環参照を含むグラフをArc&#x2F;Rcを使ってつくる">
 <meta name="twitter:description" content="Rustで循環参照を含む場合の処理はかなり面倒くさい。基本的にミュータブルな参照は同時に1つしか持てないのだが、例えば双方向連結リストの場合、あるノードに対してその前のノードとその後ろのノードから参照される必要があるので、この場合どうにかしてミュータブルな参照以外の方法で前後のノードへのアクセス方法を確保する必要がある。 ということで、前回のRust LT会でそのテーマで発表した方がいらっしゃった">
-<meta name="twitter:image" content="https://ogimage.blog.st-hatena.com/13208692334729897634/10328749687239599894/1493330425">
+<meta name="twitter:image" content="https://files.speakerdeck.com/presentations/5b1f84e27cf84cb38a2f682f9e01a029/slide_0.jpg?14736342">
 <meta name="twitter:creator" content="@garasubo">
 
   <link href="/hexo/favicon.png" rel="icon">
   <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
   <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  
-<script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-	ga('create', 'UA-130790601-1', 'auto');
-	ga('send', 'pageview');
-
-</script>
-
-
 </head>
 </html>
 
@@ -70,7 +58,6 @@
   </ul>
   <div class="clearfix"></div>
 </nav>
-<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
 <div class="clearfix"></div>
 </header>
   <div id="content" class="inner">
@@ -92,13 +79,17 @@
       
         <p>Rustで循環参照を含む場合の処理はかなり面倒くさい。<br>基本的にミュータブルな参照は同時に1つしか持てないのだが、例えば双方向連結リストの場合、あるノードに対してその前のノードとその後ろのノードから参照される必要があるので、この場合どうにかしてミュータブルな参照以外の方法で前後のノードへのアクセス方法を確保する必要がある。</p>
 <p>ということで、前回のRust LT会でそのテーマで発表した方がいらっしゃった</p>
-
+<a href="https://speakerdeck.com/u1roh/graph-in-rust-with-unsafe" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://files.speakerdeck.com/presentations/5b1f84e27cf84cb38a2f682f9e01a029/slide_0.jpg?14736342"></div><div class="descriptions"><div class="og-title">Graph in Rust with unsafe</div><div class="og-description">- Rust でグラフ構造むずかしい…
+- 試行錯誤の過程を書きました
+- unsafe 使いましたが、unsafe こわい
+- メモリープールを実装してみました
+- ヤバいところあったら教えて！</div></div></div></a>
 <p>ここで用いられている方法は<code>unsafe</code>を使い、生ポインタとTyped Arenaという動的に同じ生存区間のメモリを確保できるライブラリを使う、または自作のメモリプールを使うというものである。<br>しかし、できれば<code>unsafe</code>は使いたくない。さらにいうとstdだけで実現できると嬉しい。</p>
 <p>Typed Arenaを使う方法は結構有名で、こちらのブログでも紹介されている</p>
 <a href="https://qnighy.hatenablog.com/entry/2017/04/28/070000" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://ogimage.blog.st-hatena.com/13208692334729897634/10328749687239599894/1493330425"></div><div class="descriptions"><div class="og-title">Rustでグラフを表現するにはTyped Arenaが便利 - 簡潔なQ</div><div class="og-description">概要: Rustでグラフのように相互参照を含むデータ構造を表現するには、Typed Arenaという方法が適している。これについて説明する 整数による表現 グラフの表現方法で、最も簡単なのは、ノードを整数で表し、グラフのデータを別に持つ方法である。 fn main() { let…</div></div></div></a>
 <p>ただし、この方法の弱点はメモリを開放する手段がないので、一度ノードをつくってしまうとグラフ全体が生存している間は削除してもメモリが開放されない。<br>ライフタイムの管理も難しく、設計をうまくしてあげる必要もある。</p>
 <p>他の方法としては<code>Rc</code>/<code>Arc</code>を使う方法がある。</p>
-<a href="https://qiita.com/qnighy/items/4bbbb20e71cf4ae527b9#%E5%AF%BE%E7%A7%B0%E3%81%AA%E5%BE%AA%E7%92%B0%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E8%A1%A8%E7%8F%BE%E3%81%99%E3%82%8B" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-user-contents.imgix.net%2Fhttps%253A%252F%252Fcdn.qiita.com%252Fassets%252Fpublic%252Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png%3Fixlib%3Drb-4.0.0%26w%3D1200%26mark64%3DaHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9UnVzdCVFMyU4MSVBRSUyMCU2MEFyYyU2MCUyMCVFMyU4MiU5MiVFOCVBQSVBRCVFMyU4MiU4MCUyODElMjklM0ElMjBBcmMlMkZSYyVFMyU4MSVBRSVFNSU5RiVCQSVFNiU5QyVBQyZ0eHQtY29sb3I9JTIzMjEyMTIxJnR4dC1mb250PUhpcmFnaW5vJTIwU2FucyUyMFc2JnR4dC1zaXplPTU2JnR4dC1jbGlwPWVsbGlwc2lzJnR4dC1hbGlnbj1sZWZ0JTJDdG9wJnM9NjVmZGFkN2E0NmE4N2VkNzFjZjI0MjQ3MDE4MzIyMzk%26mark-x%3D142%26mark-y%3D112%26s%3Dce821c46c1d382b0cc714fc6d4edc66b?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwcW5pZ2h5JnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz1iMjRjOWIzMjFkYjkxYTk0YTJkMTg5ZWI1YzRkZmY4MQ&mark-x=142&mark-y=491&s=8ae280f4e06f7f8a10055db97be955b9"></div><div class="descriptions"><div class="og-title">Rustの `Arc` を読む(1): Arc/Rcの基本 - Qiita</div><div class="og-description">概要: Rustの Arc 型の実装は宝の宝庫です。そこで、これを隅から隅まで解説してみます。
+<a href="https://qiita.com/qnighy/items/4bbbb20e71cf4ae527b9#%E5%AF%BE%E7%A7%B0%E3%81%AA%E5%BE%AA%E7%92%B0%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E8%A1%A8%E7%8F%BE%E3%81%99%E3%82%8B" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9UnVzdCVFMyU4MSVBRSUyMCU2MEFyYyU2MCUyMCVFMyU4MiU5MiVFOCVBQSVBRCVFMyU4MiU4MCUyODElMjklM0ElMjBBcmMlMkZSYyVFMyU4MSVBRSVFNSU5RiVCQSVFNiU5QyVBQyZ0eHQtY29sb3I9JTIzMjEyMTIxJnR4dC1mb250PUhpcmFnaW5vJTIwU2FucyUyMFc2JnR4dC1zaXplPTU2JnR4dC1jbGlwPWVsbGlwc2lzJnR4dC1hbGlnbj1sZWZ0JTJDdG9wJnM9NjVmZGFkN2E0NmE4N2VkNzFjZjI0MjQ3MDE4MzIyMzk&mark-x=142&mark-y=112&blend64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwcW5pZ2h5JnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz1iMjRjOWIzMjFkYjkxYTk0YTJkMTg5ZWI1YzRkZmY4MQ&blend-x=142&blend-y=491&blend-mode=normal&s=d16621ba7d7d7b5610023bb079bd4efb"></div><div class="descriptions"><div class="og-title">Rustの `Arc` を読む(1): Arc/Rcの基本 - Qiita</div><div class="og-description">概要: Rustの Arc 型の実装は宝の宝庫です。そこで、これを隅から隅まで解説してみます。
 
 第1回「Arc/Rcの基本」では、実際に Arc のソースを読む前に Arc/Rc の使い方を解説します。
 
@@ -189,6 +180,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2022/09/16/isucon12.html">ISUCON12予選敗戦記</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
       </li>
     
@@ -202,10 +197,6 @@
     
       <li>
         <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
   </ul>
@@ -238,13 +229,15 @@
   
     <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
   
-    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>6</small></li>
   
     <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
     <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/rust/">rust</a><small>1</small></li>
   
     <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
   
@@ -260,13 +253,10 @@
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2021 garasubo
+  &copy; 2022 garasubo
   
 </div>
-<div class="clearfix"></div>
-<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
-
-</footer>
+<div class="clearfix"></div></footer>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script src="/hexo/js/jquery.imagesloaded.min.js"></script>
 <script src="/hexo/js/gallery.js"></script>

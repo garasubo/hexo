@@ -26,29 +26,18 @@ Linuxアプリケーションをそのまま動かせるバイナリコンパチ
 <meta property="og:site_name" content="己の不学を恥じる">
 <meta property="og:description" content="元論文：https://dl.acm.org/citation.cfm?id=3313817 Linuxアプリケーションをそのまま動かせるバイナリコンパチブルなUnikernelを構築しました、という話です。前回の記事に引き続きUnikernel関連な話題ですが、意外と自分のブログではUnikernelについての話題を触れていなかったので関連論文も合わせて紹介したいと思います。 論文概要 タイトル">
 <meta property="og:locale" content="ja">
+<meta property="og:image" content="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9VW5pa2VybmVsJUUzJTgxJUFBJUU2JTgzJTg1JUU1JUEwJUIxJTIwJTI4aW4lMjBKYXBhbmVzZSUyOSZ0eHQtY29sb3I9JTIzMjEyMTIxJnR4dC1mb250PUhpcmFnaW5vJTIwU2FucyUyMFc2JnR4dC1zaXplPTU2JnR4dC1jbGlwPWVsbGlwc2lzJnR4dC1hbGlnbj1sZWZ0JTJDdG9wJnM9MTNlZDg3OThkOWZlMDg1ODA4NjUzYzNmZDQwMjhlMzM&mark-x=142&mark-y=112&blend64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwdC1pbWFkYSZ0eHQtY29sb3I9JTIzMjEyMTIxJnR4dC1mb250PUhpcmFnaW5vJTIwU2FucyUyMFc2JnR4dC1zaXplPTM2JnR4dC1hbGlnbj1sZWZ0JTJDdG9wJnM9NGZjYTU5MTE2MGQ5NGQ3N2M1OTczYzBhZGU0MWEwM2E&blend-x=142&blend-y=491&blend-mode=normal&s=56e752f10ef51ac0a995196a9a08ee3b">
 <meta property="og:updated_time" content="2019-12-30T09:17:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="論文紹介：A Binary-Compatible Unikernel ー Unikernelの解説も添えて">
 <meta name="twitter:description" content="元論文：https://dl.acm.org/citation.cfm?id=3313817 Linuxアプリケーションをそのまま動かせるバイナリコンパチブルなUnikernelを構築しました、という話です。前回の記事に引き続きUnikernel関連な話題ですが、意外と自分のブログではUnikernelについての話題を触れていなかったので関連論文も合わせて紹介したいと思います。 論文概要 タイトル">
+<meta name="twitter:image" content="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9VW5pa2VybmVsJUUzJTgxJUFBJUU2JTgzJTg1JUU1JUEwJUIxJTIwJTI4aW4lMjBKYXBhbmVzZSUyOSZ0eHQtY29sb3I9JTIzMjEyMTIxJnR4dC1mb250PUhpcmFnaW5vJTIwU2FucyUyMFc2JnR4dC1zaXplPTU2JnR4dC1jbGlwPWVsbGlwc2lzJnR4dC1hbGlnbj1sZWZ0JTJDdG9wJnM9MTNlZDg3OThkOWZlMDg1ODA4NjUzYzNmZDQwMjhlMzM&mark-x=142&mark-y=112&blend64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwdC1pbWFkYSZ0eHQtY29sb3I9JTIzMjEyMTIxJnR4dC1mb250PUhpcmFnaW5vJTIwU2FucyUyMFc2JnR4dC1zaXplPTM2JnR4dC1hbGlnbj1sZWZ0JTJDdG9wJnM9NGZjYTU5MTE2MGQ5NGQ3N2M1OTczYzBhZGU0MWEwM2E&blend-x=142&blend-y=491&blend-mode=normal&s=56e752f10ef51ac0a995196a9a08ee3b">
 <meta name="twitter:creator" content="@garasubo">
 
   <link href="/hexo/favicon.png" rel="icon">
   <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
   <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  
-<script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-	ga('create', 'UA-130790601-1', 'auto');
-	ga('send', 'pageview');
-
-</script>
-
-
 </head>
 </html>
 
@@ -67,7 +56,6 @@ Linuxアプリケーションをそのまま動かせるバイナリコンパチ
   </ul>
   <div class="clearfix"></div>
 </nav>
-<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
 <div class="clearfix"></div>
 </header>
   <div id="content" class="inner">
@@ -109,7 +97,13 @@ Linuxアプリケーションをそのまま動かせるバイナリコンパチ
 <h2 id="まとめ・感想"><a href="#まとめ・感想" class="headerlink" title="まとめ・感想"></a>まとめ・感想</h2><p>Linuxアプリケーションをバイナリコンパチブルで動かせるHermiTuxの手法について解説しました。</p>
 <p>Unikernelはかなり攻めた手法でなかなか実運用されているケースは聞かないですが、段々とその活用の仕方と移植コストの軽減策が出てきていて非常におもしろいですね。<br>将来、コンテナ型仮想化に代わる選択肢として広く使われることになるのか楽しみです。</p>
 <p>Unikernelについてもっと掘り下げて知りたい方は、<a href="https://en.wikipedia.org/wiki/Unikernel" target="_blank" rel="noopener">Wikipedia（英語）</a>でも記事になっている他、こちらのQitta記事とかがいいかもしれません。</p>
+<a href="https://qiita.com/t-imada/items/ed6a76f5b257f5608ad0" class="link-preview" target="_blank" rel="nofollow"><div class="link-area"><div class="og-image"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9VW5pa2VybmVsJUUzJTgxJUFBJUU2JTgzJTg1JUU1JUEwJUIxJTIwJTI4aW4lMjBKYXBhbmVzZSUyOSZ0eHQtY29sb3I9JTIzMjEyMTIxJnR4dC1mb250PUhpcmFnaW5vJTIwU2FucyUyMFc2JnR4dC1zaXplPTU2JnR4dC1jbGlwPWVsbGlwc2lzJnR4dC1hbGlnbj1sZWZ0JTJDdG9wJnM9MTNlZDg3OThkOWZlMDg1ODA4NjUzYzNmZDQwMjhlMzM&mark-x=142&mark-y=112&blend64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwdC1pbWFkYSZ0eHQtY29sb3I9JTIzMjEyMTIxJnR4dC1mb250PUhpcmFnaW5vJTIwU2FucyUyMFc2JnR4dC1zaXplPTM2JnR4dC1hbGlnbj1sZWZ0JTJDdG9wJnM9NGZjYTU5MTE2MGQ5NGQ3N2M1OTczYzBhZGU0MWEwM2E&blend-x=142&blend-y=491&blend-mode=normal&s=56e752f10ef51ac0a995196a9a08ee3b"></div><div class="descriptions"><div class="og-title">Unikernelな情報 (in Japanese) - Qiita</div><div class="og-description">
 
+はじめに
+
+「Unikernelって知ってますか!?」という質問を日本で(というか海外でも)聞くとだいたい「知らない」と冷たい回答が返ってくるので、啓蒙活動の一環としてこの記事を書いてみることにしました。
+
+サーバ仮想化用ハイパバ...</div></div></div></a>
 
       
     </div>
@@ -170,6 +164,10 @@ Linuxアプリケーションをそのまま動かせるバイナリコンパチ
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2022/09/16/isucon12.html">ISUCON12予選敗戦記</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
       </li>
     
@@ -183,10 +181,6 @@ Linuxアプリケーションをそのまま動かせるバイナリコンパチ
     
       <li>
         <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
   </ul>
@@ -219,13 +213,15 @@ Linuxアプリケーションをそのまま動かせるバイナリコンパチ
   
     <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
   
-    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>6</small></li>
   
     <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
     <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/rust/">rust</a><small>1</small></li>
   
     <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
   
@@ -241,13 +237,10 @@ Linuxアプリケーションをそのまま動かせるバイナリコンパチ
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2021 garasubo
+  &copy; 2022 garasubo
   
 </div>
-<div class="clearfix"></div>
-<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
-
-</footer>
+<div class="clearfix"></div></footer>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script src="/hexo/js/jquery.imagesloaded.min.js"></script>
 <script src="/hexo/js/gallery.js"></script>

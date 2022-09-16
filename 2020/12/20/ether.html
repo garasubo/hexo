@@ -26,29 +26,18 @@ RustでSTM32ボード用の自作OSをしていて、アプリケーションの
 <meta property="og:site_name" content="己の不学を恥じる">
 <meta property="og:description" content="この記事は自作OS Advent Calendar 2020の20日目の記事です。 RustでSTM32ボード用の自作OSをしていて、アプリケーションの幅を増やしたくて、イーサネットドライバを組むことにしました。使用しているのはNucleo-429ZIボードで、イーサネットモジュールが付属しています。去年から取り組みはじめてはいたものの、今までのペリフェラルとは違い仕様が複雑で何度も挫折して中断し">
 <meta property="og:locale" content="ja">
-<meta property="og:updated_time" content="2021-01-17T08:22:22.000Z">
+<meta property="og:image" content="https://opengraph.githubassets.com/af7ad731bc458977ea3c74e8efc77a3752aeeda23d0df5f70372c6c82f5b53d1/stm32-rs/stm32-eth">
+<meta property="og:updated_time" content="2021-01-17T08:22:22.782Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RustのSTM32向けイーサネットドライバを解説する（受信編）">
 <meta name="twitter:description" content="この記事は自作OS Advent Calendar 2020の20日目の記事です。 RustでSTM32ボード用の自作OSをしていて、アプリケーションの幅を増やしたくて、イーサネットドライバを組むことにしました。使用しているのはNucleo-429ZIボードで、イーサネットモジュールが付属しています。去年から取り組みはじめてはいたものの、今までのペリフェラルとは違い仕様が複雑で何度も挫折して中断し">
+<meta name="twitter:image" content="https://opengraph.githubassets.com/af7ad731bc458977ea3c74e8efc77a3752aeeda23d0df5f70372c6c82f5b53d1/stm32-rs/stm32-eth">
 <meta name="twitter:creator" content="@garasubo">
 
   <link href="/hexo/favicon.png" rel="icon">
   <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
   <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  
-<script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-	ga('create', 'UA-130790601-1', 'auto');
-	ga('send', 'pageview');
-
-</script>
-
-
 </head>
 </html>
 
@@ -67,7 +56,6 @@ RustでSTM32ボード用の自作OSをしていて、アプリケーションの
   </ul>
   <div class="clearfix"></div>
 </nav>
-<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
 <div class="clearfix"></div>
 </header>
   <div id="content" class="inner">
@@ -90,7 +78,7 @@ RustでSTM32ボード用の自作OSをしていて、アプリケーションの
         <p>この記事は<a href="https://adventar.org/calendars/4954" target="_blank" rel="noopener">自作OS Advent Calendar 2020</a>の20日目の記事です。</p>
 <p><a href="/hexo/2019/05/15/erkos.html">RustでSTM32ボード用の自作OS</a>をしていて、アプリケーションの幅を増やしたくて、イーサネットドライバを組むことにしました。<br>使用しているのはNucleo-429ZIボードで、イーサネットモジュールが付属しています。<br>去年から取り組みはじめてはいたものの、今までのペリフェラルとは違い仕様が複雑で何度も挫折して中断しまくったのですが、ようやく受信部分だけ完成したので解説していきたいと思います。</p>
 <p>参照するコードは自分が組んだコードでもよかったのですが、送信部分がバグっているのと、参考にしてきた<code>stm32-eth</code>クレートのほうがずっと出来が良いのでそちらを使います。<br>なお、バージョンはv0.1.2とちょっと古いバージョンです。なお、<code>stm32-eth</code>のこのバージョンではいくつか立てる必要のないと思われるビットを立てていたりするので、実際に参考にする場合はちゃんと仕様書で確認しながら見ることをおすすめします。</p>
-
+<a href="https://github.com/stm32-rs/stm32-eth/tree/v0.1.2" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://opengraph.githubassets.com/af7ad731bc458977ea3c74e8efc77a3752aeeda23d0df5f70372c6c82f5b53d1/stm32-rs/stm32-eth"></div><div class="descriptions"><div class="og-title">GitHub - stm32-rs/stm32-eth at v0.1.2</div><div class="og-description">Embedded Ethernet driver in Rust. Contribute to stm32-rs/stm32-eth development by creating an account on GitHub.</div></div></div></a>
 
 <h2 id="仕様書を入手する"><a href="#仕様書を入手する" class="headerlink" title="仕様書を入手する"></a>仕様書を入手する</h2><p>仕様書なくしてドライバはつくれません。今回はCPUのリファレンスマニュアルとデータシート、ボードのユーザーマニュアルがまず必要です。<br>更に、イーサネット通信は外部物理層(PHY)に対してIEEE 802.3で定義されているインターフェスを介してCPUのイーサーネットモジュールと通信することで実現されています。<br>このPHYに関するマニュアルも必要です。ユーザーマニュアルによるとこのボードではLAN8742A-CZ-TRを使っているとのことなので、これの仕様書も入手しましょう。</p>
 <ul>
@@ -201,6 +189,10 @@ RustでSTM32ボード用の自作OSをしていて、アプリケーションの
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2022/09/16/isucon12.html">ISUCON12予選敗戦記</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
       </li>
     
@@ -214,10 +206,6 @@ RustでSTM32ボード用の自作OSをしていて、アプリケーションの
     
       <li>
         <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
   </ul>
@@ -250,13 +238,15 @@ RustでSTM32ボード用の自作OSをしていて、アプリケーションの
   
     <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
   
-    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>6</small></li>
   
     <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
     <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/rust/">rust</a><small>1</small></li>
   
     <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
   
@@ -272,13 +262,10 @@ RustでSTM32ボード用の自作OSをしていて、アプリケーションの
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2021 garasubo
+  &copy; 2022 garasubo
   
 </div>
-<div class="clearfix"></div>
-<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
-
-</footer>
+<div class="clearfix"></div></footer>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script src="/hexo/js/jquery.imagesloaded.min.js"></script>
 <script src="/hexo/js/gallery.js"></script>

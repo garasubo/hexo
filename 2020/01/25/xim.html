@@ -25,33 +25,21 @@
 <meta property="og:site_name" content="己の不学を恥じる">
 <meta property="og:description" content="LinuxのX11向けのGUIアプリケーションでテキスト入力を扱いたい場合、IMEの存在を意識しなければならない（特に日本人ならば）。IMEなしならば、キーボードイベントを見て、そのキーのアルファベットをプリントするだけで済むが、IMEが存在する場合、IMEから送られてくる文字列をきちんと処理する必要がある。そのためには、X11のIMEフレームワークであるXIMの仕様を知る必要がある。 これらの仕">
 <meta property="og:locale" content="ja">
-<meta property="og:image" content="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-user-contents.imgix.net%2Fhttps%253A%252F%252Fcdn.qiita.com%252Fassets%252Fpublic%252Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png%3Fixlib%3Drb-4.0.0%26w%3D1200%26mark64%3DaHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9WElNJTI4WCUyMElucHV0JTIwTWV0aG9kJTI5JUU2JTk3JUE1JUU2JTlDJUFDJUU4JUFBJTlFJUU1JTg1JUE1JUU1JThBJTlCJUUzJTgxJUFFJUU2JUI1JTgxJUUzJTgyJThDJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9NTYmdHh0LWNsaXA9ZWxsaXBzaXMmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz0zYTgxYWNjY2I0MzNhZTExZGJmNWQyNWMxOTQ0ODBkZA%26mark-x%3D142%26mark-y%3D112%26s%3D2b6cc5396cd4aab6657dc7ed29050c03?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwYWk1NmdvJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz00NGExMWFjYTc0MWQ0OTZkMjhmNWRhZmE1NDg1OTg3OA&mark-x=142&mark-y=491&s=e25ba5ccb0682b415d15077d97166cd3">
+<meta property="og:image" content="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9WElNJTI4WCUyMElucHV0JTIwTWV0aG9kJTI5JUU2JTk3JUE1JUU2JTlDJUFDJUU4JUFBJTlFJUU1JTg1JUE1JUU1JThBJTlCJUUzJTgxJUFFJUU2JUI1JTgxJUUzJTgyJThDJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9NTYmdHh0LWNsaXA9ZWxsaXBzaXMmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz0zYTgxYWNjY2I0MzNhZTExZGJmNWQyNWMxOTQ0ODBkZA&mark-x=142&mark-y=112&blend64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwYWk1NmdvJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz00NGExMWFjYTc0MWQ0OTZkMjhmNWRhZmE1NDg1OTg3OA&blend-x=142&blend-y=491&blend-mode=normal&s=31b37b9a8e6cda7a055450f418ca5aba">
 <meta property="og:image" content="https://github.githubassets.com/images/modules/gists/gist-og-image.png">
 <meta property="og:image" content="https://gitlab.gnome.org/uploads/-/system/project/avatar/665/gtk-logo.png">
-<meta property="og:updated_time" content="2020-01-25T05:53:18.000Z">
+<meta property="og:image" content="https://gitlab.gnome.org/uploads/-/system/project/avatar/665/gtk-logo.png">
+<meta property="og:updated_time" content="2020-01-25T05:53:18.679Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="X11環境でIMEの仮入力の情報を取得する">
 <meta name="twitter:description" content="LinuxのX11向けのGUIアプリケーションでテキスト入力を扱いたい場合、IMEの存在を意識しなければならない（特に日本人ならば）。IMEなしならば、キーボードイベントを見て、そのキーのアルファベットをプリントするだけで済むが、IMEが存在する場合、IMEから送られてくる文字列をきちんと処理する必要がある。そのためには、X11のIMEフレームワークであるXIMの仕様を知る必要がある。 これらの仕">
-<meta name="twitter:image" content="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-user-contents.imgix.net%2Fhttps%253A%252F%252Fcdn.qiita.com%252Fassets%252Fpublic%252Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png%3Fixlib%3Drb-4.0.0%26w%3D1200%26mark64%3DaHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9WElNJTI4WCUyMElucHV0JTIwTWV0aG9kJTI5JUU2JTk3JUE1JUU2JTlDJUFDJUU4JUFBJTlFJUU1JTg1JUE1JUU1JThBJTlCJUUzJTgxJUFFJUU2JUI1JTgxJUUzJTgyJThDJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9NTYmdHh0LWNsaXA9ZWxsaXBzaXMmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz0zYTgxYWNjY2I0MzNhZTExZGJmNWQyNWMxOTQ0ODBkZA%26mark-x%3D142%26mark-y%3D112%26s%3D2b6cc5396cd4aab6657dc7ed29050c03?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwYWk1NmdvJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz00NGExMWFjYTc0MWQ0OTZkMjhmNWRhZmE1NDg1OTg3OA&mark-x=142&mark-y=491&s=e25ba5ccb0682b415d15077d97166cd3">
+<meta name="twitter:image" content="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9WElNJTI4WCUyMElucHV0JTIwTWV0aG9kJTI5JUU2JTk3JUE1JUU2JTlDJUFDJUU4JUFBJTlFJUU1JTg1JUE1JUU1JThBJTlCJUUzJTgxJUFFJUU2JUI1JTgxJUUzJTgyJThDJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9NTYmdHh0LWNsaXA9ZWxsaXBzaXMmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz0zYTgxYWNjY2I0MzNhZTExZGJmNWQyNWMxOTQ0ODBkZA&mark-x=142&mark-y=112&blend64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwYWk1NmdvJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz00NGExMWFjYTc0MWQ0OTZkMjhmNWRhZmE1NDg1OTg3OA&blend-x=142&blend-y=491&blend-mode=normal&s=31b37b9a8e6cda7a055450f418ca5aba">
 <meta name="twitter:creator" content="@garasubo">
 
   <link href="/hexo/favicon.png" rel="icon">
   <link rel="alternate" href="/atom.xml" title="己の不学を恥じる" type="application/atom+xml">
   <link rel="stylesheet" href="/hexo/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  
-<script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-	ga('create', 'UA-130790601-1', 'auto');
-	ga('send', 'pageview');
-
-</script>
-
-
 </head>
 </html>
 
@@ -70,7 +58,6 @@
   </ul>
   <div class="clearfix"></div>
 </nav>
-<a href="https://github.com/garasubo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
 <div class="clearfix"></div>
 </header>
   <div id="content" class="inner">
@@ -92,10 +79,12 @@
       
         <p>LinuxのX11向けのGUIアプリケーションでテキスト入力を扱いたい場合、IMEの存在を意識しなければならない（特に日本人ならば）。<br>IMEなしならば、キーボードイベントを見て、そのキーのアルファベットをプリントするだけで済むが、IMEが存在する場合、IMEから送られてくる文字列をきちんと処理する必要がある。<br>そのためには、X11のIMEフレームワークであるXIMの仕様を知る必要がある。</p>
 <p>これらの仕様について解説し、実際のコードも紹介している記事はすでにある。</p>
-
+<a href="https://tedyin.com/posts/a-brief-intro-to-linux-input-method-framework/" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img></div><div class="descriptions"><div class="og-title">
+      A Brief Intro to Input Method Framework, Linux IME, and XIM | EKG&lt;T&gt;
+    </div></div></div></a>
 
 <p>上記の記事を参考にしたと思われる日本語の記事もある。</p>
-<a href="https://qiita.com/ai56go/items/63abe54f2504ecc940cd" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-user-contents.imgix.net%2Fhttps%253A%252F%252Fcdn.qiita.com%252Fassets%252Fpublic%252Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png%3Fixlib%3Drb-4.0.0%26w%3D1200%26mark64%3DaHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9WElNJTI4WCUyMElucHV0JTIwTWV0aG9kJTI5JUU2JTk3JUE1JUU2JTlDJUFDJUU4JUFBJTlFJUU1JTg1JUE1JUU1JThBJTlCJUUzJTgxJUFFJUU2JUI1JTgxJUUzJTgyJThDJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9NTYmdHh0LWNsaXA9ZWxsaXBzaXMmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz0zYTgxYWNjY2I0MzNhZTExZGJmNWQyNWMxOTQ0ODBkZA%26mark-x%3D142%26mark-y%3D112%26s%3D2b6cc5396cd4aab6657dc7ed29050c03?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwYWk1NmdvJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz00NGExMWFjYTc0MWQ0OTZkMjhmNWRhZmE1NDg1OTg3OA&mark-x=142&mark-y=491&s=e25ba5ccb0682b415d15077d97166cd3"></div><div class="descriptions"><div class="og-title">XIM(X Input Method)日本語入力の流れ - Qiita</div><div class="og-description">2018年3月 作成
+<a href="https://qiita.com/ai56go/items/63abe54f2504ecc940cd" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fcdn.qiita.com%2Fassets%2Fpublic%2Farticle-ogp-background-9f5428127621718a910c8b63951390ad.png?ixlib=rb-4.0.0&w=1200&mark64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTkxNiZ0eHQ9WElNJTI4WCUyMElucHV0JTIwTWV0aG9kJTI5JUU2JTk3JUE1JUU2JTlDJUFDJUU4JUFBJTlFJUU1JTg1JUE1JUU1JThBJTlCJUUzJTgxJUFFJUU2JUI1JTgxJUUzJTgyJThDJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9NTYmdHh0LWNsaXA9ZWxsaXBzaXMmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz0zYTgxYWNjY2I0MzNhZTExZGJmNWQyNWMxOTQ0ODBkZA&mark-x=142&mark-y=112&blend64=aHR0cHM6Ly9xaWl0YS11c2VyLWNvbnRlbnRzLmltZ2l4Lm5ldC9-dGV4dD9peGxpYj1yYi00LjAuMCZ3PTYxNiZ0eHQ9JTQwYWk1NmdvJnR4dC1jb2xvcj0lMjMyMTIxMjEmdHh0LWZvbnQ9SGlyYWdpbm8lMjBTYW5zJTIwVzYmdHh0LXNpemU9MzYmdHh0LWFsaWduPWxlZnQlMkN0b3Amcz00NGExMWFjYTc0MWQ0OTZkMjhmNWRhZmE1NDg1OTg3OA&blend-x=142&blend-y=491&blend-mode=normal&s=31b37b9a8e6cda7a055450f418ca5aba"></div><div class="descriptions"><div class="og-title">XIM(X Input Method)日本語入力の流れ - Qiita</div><div class="og-description">2018年3月 作成
 
 「X Window Systemの日本語入力はどうなっているんだろう？」
 そう考えた筆者が、日本語入力の流れを調べてみました。
@@ -162,9 +151,9 @@
 <p>こっちはXlibの実装の解説ではあるが、レイアウトがメチャクチャである</p>
 <p><a href="https://www.x.org/releases/X11R7.5/doc/libX11/libX11.html" target="_blank" rel="noopener">Xlib − C Language X Interface</a></p>
 <p>結局GTKの実装を参照するほうが楽であったが、GTK4（まだリリースはされていない）の最新版ではなんとXIMのサポートが削除されている。</p>
-<a href="https://gitlab.gnome.org/GNOME/gtk/merge_requests/1195" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://gitlab.gnome.org/uploads/-/system/project/avatar/665/gtk-logo.png"></div><div class="descriptions"><div class="og-title">Remove the XIM input method (!1195) · Merge requests · GNOME / gtk</div><div class="og-description">It&#39;s old and busted, and mostly broken in weird ways when it comes to extended input devices. All that XIM does, these days, is make a mess …</div></div></div></a>
+<a href="https://gitlab.gnome.org/GNOME/gtk/merge_requests/1195" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://gitlab.gnome.org/uploads/-/system/project/avatar/665/gtk-logo.png"></div><div class="descriptions"><div class="og-title">Remove the XIM input method (!1195) · Merge requests · GNOME / gtk · GitLab</div><div class="og-description">It&#39;s old and busted, and mostly broken in weird ways when it comes to extended input devices. All that XIM does, these days, is make a mess …</div></div></div></a>
 <p>GTK3までならちゃんと生きているので、そちらを参考にすると良い</p>
-
+<a href="https://gitlab.gnome.org/GNOME/gtk/blob/3.24.13/modules/input/gtkimcontextxim.c" class="link-preview" target="_blank"><div class="link-area"><div class="og-image"><img src="https://gitlab.gnome.org/uploads/-/system/project/avatar/665/gtk-logo.png"></div><div class="descriptions"><div class="og-title">modules/input/gtkimcontextxim.c · 3.24.13 · GNOME / gtk · GitLab</div><div class="og-description">GTK is a multi-platform toolkit for creating graphical user interfaces.</div></div></div></a>
       
     </div>
     <footer>
@@ -224,6 +213,10 @@
   <ul class="entry">
     
       <li>
+        <a href="/hexo/2022/09/16/isucon12.html">ISUCON12予選敗戦記</a>
+      </li>
+    
+      <li>
         <a href="/hexo/2021/12/31/nenmatsu-poem.html">2021年の振り返り</a>
       </li>
     
@@ -237,10 +230,6 @@
     
       <li>
         <a href="/hexo/2021/04/04/theseus.html">論文紹介： Theseus: an Experiment in Operating System Structure and State Management</a>
-      </li>
-    
-      <li>
-        <a href="/hexo/2021/01/17/eth-tx.html">RustのSTM32向けイーサネットドライバを解説する（送信編）</a>
       </li>
     
   </ul>
@@ -273,13 +262,15 @@
   
     <li><a href="/hexo/tags/embedded/">embedded</a><small>1</small></li>
   
-    <li><a href="/hexo/tags/isucon/">isucon</a><small>5</small></li>
+    <li><a href="/hexo/tags/isucon/">isucon</a><small>6</small></li>
   
     <li><a href="/hexo/tags/osdev/">osdev</a><small>6</small></li>
   
     <li><a href="/hexo/tags/paper/">paper</a><small>10</small></li>
   
     <li><a href="/hexo/tags/procon/">procon</a><small>2</small></li>
+  
+    <li><a href="/hexo/tags/rust/">rust</a><small>1</small></li>
   
     <li><a href="/hexo/tags/unikernel/">unikernel</a><small>3</small></li>
   
@@ -295,13 +286,10 @@
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2021 garasubo
+  &copy; 2022 garasubo
   
 </div>
-<div class="clearfix"></div>
-<div><a href="https://policies.google.com/terms?hl=ja&gl=jp">Google Analyticsを利用しています</a></div>
-
-</footer>
+<div class="clearfix"></div></footer>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script src="/hexo/js/jquery.imagesloaded.min.js"></script>
 <script src="/hexo/js/gallery.js"></script>
